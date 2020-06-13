@@ -1,7 +1,7 @@
 package com.outlook.bselzer1.chess.desktop
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration
 import com.outlook.bselzer1.chess.GdxGame
 
 object DesktopLauncher
@@ -9,10 +9,10 @@ object DesktopLauncher
     @JvmStatic
     fun main(arg: Array<String>)
     {
-        val config = LwjglApplicationConfiguration()
-        config.title = "Chess"
-        config.resizable = false
+        val config = Lwjgl3ApplicationConfiguration()
+        config.setTitle("Chess")
+        config.setResizable(false)
 
-        LwjglApplication(GdxGame(), config)
+        Lwjgl3Application(GdxGame(), config)
     }
 }
