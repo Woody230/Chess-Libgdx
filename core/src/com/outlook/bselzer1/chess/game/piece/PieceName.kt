@@ -1,4 +1,4 @@
-package com.outlook.bselzer1.chess.game
+package com.outlook.bselzer1.chess.game.piece
 
 /**
  * The name of the chess piece.
