@@ -3,6 +3,7 @@ package com.outlook.bselzer1.chess
 import android.os.Bundle
 import com.badlogic.gdx.backends.android.AndroidApplication
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
+import com.outlook.bselzer1.chess.ui.GdxGame
 
 class AndroidLauncher : AndroidApplication()
 {

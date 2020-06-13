@@ -1,4 +1,4 @@
-package com.outlook.bselzer1.chess
+package com.outlook.bselzer1.chess.ui
 
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
