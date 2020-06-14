@@ -1,19 +1,17 @@
 package com.outlook.bselzer1.chess.game.board
 
-import com.outlook.bselzer1.chess.game.board.move.Position
 import com.outlook.bselzer1.chess.game.piece.Piece
 
 /**
  * A chess board.
- * @property rowCount the number of rows
- * @property columnCount the number of columns
+ * @property size the size of the board
  */
-abstract class Board(val rowCount: Int, val columnCount: Int)
+abstract class Board(val size: BoardSize)
 {
     /**
-     * The collection of positions which map to their corresponding piece.
+     * The collection of pieces.
      */
-    private val positions: MutableMap<Position, Piece> = mutableMapOf()
+    private val pieces: MutableList<Piece> = mutableListOf()
 
     /**
      * Initialize the board.
@@ -29,22 +27,18 @@ abstract class Board(val rowCount: Int, val columnCount: Int)
     protected abstract fun initializePieces()
 
     /**
-     * Add a [piece] to the position collection at [position].
+     * Add a [piece] to the collection.
      */
-    protected fun addPiece(position: Position, piece: Piece)
+    protected fun addPiece(piece: Piece)
     {
-        positions[position] = piece
+        pieces.add(piece)
     }
 
     /**
-     * Move a [piece] from its position in the position collection to [newPosition].
-     * If there is a piece at [newPosition] it is consequently removed.
+     * @return a read only collection of all of the pieces
      */
-    protected fun movePiece(newPosition: Position, piece: Piece)
+    fun getPieces(): Collection<Piece>
     {
-        val oldPosition = positions.filter { it.value == piece }.keys.first()
-
-        positions.remove(oldPosition)
-        positions[newPosition] = piece
+        return pieces.toList()
     }
 }
