@@ -7,7 +7,7 @@ import com.outlook.bselzer1.chess.game.piece.extend.*
 /**
  * A Western chess board. 8 x 8
  */
-class WesternBoard(private val topColor: PlayerColor = PlayerColor.WHITE, private val bottomColor: PlayerColor = PlayerColor.BLACK) : Board(BoardSize(8, 8))
+class WesternBoard(topColor: PlayerColor = PlayerColor.WHITE, bottomColor: PlayerColor = PlayerColor.BLACK) : Board(BoardSize(8, 8), topColor, bottomColor)
 {
     /**
      * Adds the front row of pawns and back row for both colors.
@@ -21,8 +21,8 @@ class WesternBoard(private val topColor: PlayerColor = PlayerColor.WHITE, privat
         //Add front row
         for (column in 0 until size.columnCount)
         {
-            addPiece(Pawn(bottomColor, Position(1, column)))
-            addPiece(Pawn(topColor, Position(6, column)))
+            addPiece(Pawn(bottomColor, Position(column, 1)))
+            addPiece(Pawn(topColor, Position(column, 6)))
         }
     }
 
