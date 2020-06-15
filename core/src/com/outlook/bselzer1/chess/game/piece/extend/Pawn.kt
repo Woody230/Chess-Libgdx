@@ -1,5 +1,6 @@
 package com.outlook.bselzer1.chess.game.piece.extend
 
+import com.outlook.bselzer1.chess.extension.addVarargs
 import com.outlook.bselzer1.chess.game.board.Board
 import com.outlook.bselzer1.chess.game.board.move.Direction
 import com.outlook.bselzer1.chess.game.board.move.Movement
@@ -20,19 +21,32 @@ import com.outlook.bselzer1.chess.game.piece.PlayerColor
  * 3. Captured pawn must have just used its two square initial move.
  * 4. The capture can ONLY take place the turn after the two square initial move.
  */
-class Pawn(color: PlayerColor, position: Position) : Piece(PieceName.PAWN, color, position)
+class Pawn(color: PlayerColor, position: Position, board: Board) : Piece(PieceName.PAWN, color, position, board)
 {
-    override fun getValidPositions(board: Board): Collection<Position>
+    init
+    {
+        if (color == board.topColor)
+        {
+            movements.addVarargs(
+                    Movement(Direction.DOWN1, 1, board.size, listOf(MovementFlag.BLOCKABLE)),
+                    Movement(Direction.LEFT1_DOWN1, 1, board.size, listOf(MovementFlag.BLOCKABLE_AFTER_CAPTURE, MovementFlag.MUST_CAPTURE)),
+                    Movement(Direction.RIGHT1_DOWN1, 1, board.size, listOf(MovementFlag.BLOCKABLE_AFTER_CAPTURE, MovementFlag.MUST_CAPTURE))
+            )
+        }
+        else
+        {
+            movements.addVarargs(
+                    Movement(Direction.UP1, 1, board.size, listOf(MovementFlag.BLOCKABLE)),
+                    Movement(Direction.LEFT1_UP1, 1, board.size, listOf(MovementFlag.BLOCKABLE_AFTER_CAPTURE, MovementFlag.MUST_CAPTURE)),
+                    Movement(Direction.RIGHT1_UP1, 1, board.size, listOf(MovementFlag.BLOCKABLE_AFTER_CAPTURE, MovementFlag.MUST_CAPTURE))
+            )
+        }
+    }
+
+    override fun getValidPositions(): Collection<Position>
     {
         //TODO en passant, initial two move
 
-        return if (color == board.bottomColor) getValidPositions(board,
-                Movement(Direction.UP1, 1, board.size, listOf(MovementFlag.BLOCKABLE)),
-                Movement(Direction.LEFT1_UP1, 1, board.size, listOf(MovementFlag.BLOCKABLE_AFTER_CAPTURE, MovementFlag.MUST_CAPTURE)),
-                Movement(Direction.RIGHT1_UP1, 1, board.size, listOf(MovementFlag.BLOCKABLE_AFTER_CAPTURE, MovementFlag.MUST_CAPTURE)))
-        else getValidPositions(board,
-                Movement(Direction.DOWN1, 1, board.size, listOf(MovementFlag.BLOCKABLE)),
-                Movement(Direction.LEFT1_DOWN1, 1, board.size, listOf(MovementFlag.BLOCKABLE_AFTER_CAPTURE, MovementFlag.MUST_CAPTURE)),
-                Movement(Direction.RIGHT1_DOWN1, 1, board.size, listOf(MovementFlag.BLOCKABLE_AFTER_CAPTURE, MovementFlag.MUST_CAPTURE)))
+        return super.getValidPositions()
     }
 }

@@ -13,16 +13,25 @@ import com.outlook.bselzer1.chess.game.board.move.Position
  * @property name the name
  * @property color the associated color
  * @property position the position
- * @property id the identifier
+ * @property board the associated board
  */
-abstract class Piece(val name: PieceName, val color: PlayerColor, val position: Position)
+abstract class Piece(val name: PieceName, val color: PlayerColor, val position: Position, val board: Board)
 {
     companion object
     {
         val BLOCKABLE_AFTER_CAPTURE_FLAG = listOf(MovementFlag.BLOCKABLE_AFTER_CAPTURE)
+        val INFINITE_CAP = Int.MAX_VALUE
     }
 
+    /**
+     * The identifier.
+     */
     private val id: Int = nextIntId()
+
+    /**
+     * The possible movements.
+     */
+    protected val movements: MutableCollection<Movement> = mutableListOf()
 
     override fun toString(): String
     {
@@ -55,22 +64,25 @@ abstract class Piece(val name: PieceName, val color: PlayerColor, val position: 
     }
 
     /**
-     * @return the valid positions for a piece that is located at [position] given [board]
+     * @return the valid positions for a piece that is located at [position]
      */
-    abstract fun getValidPositions(board: Board): Collection<Position>
-
-    /**
-     * @return whether or not the [newPosition] is a valid move from the current [position] given [board]
-     */
-    fun isValidPosition(newPosition: Position, board: Board): Boolean
+    open fun getValidPositions(): Collection<Position>
     {
-        return getValidPositions(board).contains(newPosition)
+        return getValidPositions(movements)
     }
 
     /**
-     * @return the valid positions for a piece that can move according to [movements] given [board]
+     * @return whether or not the [newPosition] is a valid move from the current [position]
      */
-    protected fun getValidPositions(board: Board, vararg movements: Movement): Collection<Position>
+    fun isValidPosition(newPosition: Position): Boolean
+    {
+        return getValidPositions().contains(newPosition)
+    }
+
+    /**
+     * @return the valid positions for a piece that can move according to [movements]
+     */
+    protected fun getValidPositions(movements: Collection<Movement>): Collection<Position>
     {
         val collection = mutableSetOf<Position>()
 

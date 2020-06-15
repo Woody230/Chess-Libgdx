@@ -13,7 +13,7 @@ abstract class Board(val size: BoardSize, val topColor: PlayerColor, val bottomC
     /**
      * The collection of pieces.
      */
-    private val pieces: MutableList<Piece> = mutableListOf()
+    private val pieces: MutableCollection<Piece> = mutableListOf()
 
     /**
      * Initializes the pieces on the board.

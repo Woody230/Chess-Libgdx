@@ -21,8 +21,8 @@ class WesternBoard(topColor: PlayerColor = PlayerColor.WHITE, bottomColor: Playe
         //Add front row
         for (column in 0 until size.columnCount)
         {
-            addPiece(Pawn(bottomColor, Position(column, 1)))
-            addPiece(Pawn(topColor, Position(column, 6)))
+            addPiece(Pawn(bottomColor, Position(column, 1), this))
+            addPiece(Pawn(topColor, Position(column, 6), this))
         }
     }
 
@@ -33,13 +33,13 @@ class WesternBoard(topColor: PlayerColor = PlayerColor.WHITE, bottomColor: Playe
     {
         val row = if (color == topColor) size.rowCount - 1 else 0
 
-        addPiece(Rook(color, Position(row, 0)))
-        addPiece(Knight(color, Position(row, 1)))
-        addPiece(Bishop(color, Position(row, 2)))
-        addPiece(Queen(color, Position(row, 3)))
-        addPiece(King(color, Position(row, 4)))
-        addPiece(Bishop(color, Position(row, 5)))
-        addPiece(Knight(color, Position(row, 6)))
-        addPiece(Rook(color, Position(row, 7)))
+        addPiece(Rook(color, Position(row, 0), this))
+        addPiece(Knight(color, Position(row, 1), this))
+        addPiece(Bishop(color, Position(row, 2), this))
+        addPiece(Queen(color, Position(row, 3), this))
+        addPiece(King(color, Position(row, 4), this))
+        addPiece(Bishop(color, Position(row, 5), this))
+        addPiece(Knight(color, Position(row, 6), this))
+        addPiece(Rook(color, Position(row, 7), this))
     }
 }
