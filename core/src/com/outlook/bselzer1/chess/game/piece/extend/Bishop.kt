@@ -16,9 +16,11 @@ class Bishop(color: PlayerColor, position: Position, board: Board) : Piece(Piece
 {
     init
     {
-        movements.addVarargs(Movement(Direction.LEFT1_UP1, Int.MAX_VALUE, board.size, BLOCKABLE_AFTER_CAPTURE_FLAG),
-                Movement(Direction.RIGHT1_UP1, Int.MAX_VALUE, board.size, BLOCKABLE_AFTER_CAPTURE_FLAG),
-                Movement(Direction.RIGHT1_DOWN1, Int.MAX_VALUE, board.size, BLOCKABLE_AFTER_CAPTURE_FLAG),
-                Movement(Direction.LEFT1_DOWN1, Int.MAX_VALUE, board.size, BLOCKABLE_AFTER_CAPTURE_FLAG))
+        movements.addVarargs(
+                Movement(Direction.LEFT1_UP1, INFINITE_CAP, board.size, BLOCKABLE_AFTER_CAPTURE_FLAG),
+                Movement(Direction.RIGHT1_UP1, INFINITE_CAP, board.size, BLOCKABLE_AFTER_CAPTURE_FLAG),
+                Movement(Direction.RIGHT1_DOWN1, INFINITE_CAP, board.size, BLOCKABLE_AFTER_CAPTURE_FLAG),
+                Movement(Direction.LEFT1_DOWN1, INFINITE_CAP, board.size, BLOCKABLE_AFTER_CAPTURE_FLAG)
+        )
     }
 }

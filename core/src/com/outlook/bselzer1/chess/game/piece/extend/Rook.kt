@@ -17,10 +17,10 @@ class Rook(color: PlayerColor, position: Position, board: Board) : Piece(PieceNa
     init
     {
         movements.addVarargs(
-                Movement(Direction.UP1, Int.MAX_VALUE, board.size, BLOCKABLE_AFTER_CAPTURE_FLAG),
-                Movement(Direction.RIGHT1, Int.MAX_VALUE, board.size, BLOCKABLE_AFTER_CAPTURE_FLAG),
-                Movement(Direction.DOWN1, Int.MAX_VALUE, board.size, BLOCKABLE_AFTER_CAPTURE_FLAG),
-                Movement(Direction.LEFT1, Int.MAX_VALUE, board.size, BLOCKABLE_AFTER_CAPTURE_FLAG)
+                Movement(Direction.UP1, INFINITE_CAP, board.size, BLOCKABLE_AFTER_CAPTURE_FLAG),
+                Movement(Direction.RIGHT1, INFINITE_CAP, board.size, BLOCKABLE_AFTER_CAPTURE_FLAG),
+                Movement(Direction.DOWN1, INFINITE_CAP, board.size, BLOCKABLE_AFTER_CAPTURE_FLAG),
+                Movement(Direction.LEFT1, INFINITE_CAP, board.size, BLOCKABLE_AFTER_CAPTURE_FLAG)
         )
     }
 }

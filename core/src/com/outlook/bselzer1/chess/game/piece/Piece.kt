@@ -15,18 +15,39 @@ import com.outlook.bselzer1.chess.game.board.move.Position
  * @property position the position
  * @property board the associated board
  */
-abstract class Piece(val name: PieceName, val color: PlayerColor, val position: Position, val board: Board)
+abstract class Piece(val name: PieceName, val color: PlayerColor, position: Position, val board: Board)
 {
     companion object
     {
         val BLOCKABLE_AFTER_CAPTURE_FLAG = listOf(MovementFlag.BLOCKABLE_AFTER_CAPTURE)
-        val INFINITE_CAP = Int.MAX_VALUE
+        const val INFINITE_CAP = Int.MAX_VALUE
     }
+
+    /**
+     * The position.
+     */
+    var position: Position = position
+        get() = field.copy()
+        set(value)
+        {
+            if(field == value)
+            {
+                return
+            }
+
+            field = value
+            hasMoved = true
+        }
 
     /**
      * The identifier.
      */
     private val id: Int = nextIntId()
+
+    /**
+     * Whether or not the piece has moved already.
+     */
+    open var hasMoved: Boolean = false
 
     /**
      * The possible movements.

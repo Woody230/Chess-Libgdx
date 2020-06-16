@@ -1,6 +1,7 @@
 package com.outlook.bselzer1.chess.game.piece.extend
 
 import com.outlook.bselzer1.chess.extension.addVarargs
+import com.outlook.bselzer1.chess.extension.isOneOf
 import com.outlook.bselzer1.chess.game.board.Board
 import com.outlook.bselzer1.chess.game.board.move.Direction
 import com.outlook.bselzer1.chess.game.board.move.Movement
@@ -23,12 +24,29 @@ import com.outlook.bselzer1.chess.game.piece.PlayerColor
  */
 class Pawn(color: PlayerColor, position: Position, board: Board) : Piece(PieceName.PAWN, color, position, board)
 {
+    override var hasMoved: Boolean = false
+        get() = super.hasMoved
+        set(value)
+        {
+            //Once true, never overwrite.
+            if (field || !value)
+            {
+                return
+            }
+
+            field = value
+
+            //Remove the initial 2 square movement once this piece has moved.
+            movements.filter { movement -> movement.direction.isOneOf(Direction.DOWN1, Direction.UP1) }
+                    .forEach { movement -> movement.cap = 1 }
+        }
+
     init
     {
         if (color == board.topColor)
         {
             movements.addVarargs(
-                    Movement(Direction.DOWN1, 1, board.size, listOf(MovementFlag.BLOCKABLE)),
+                    Movement(Direction.DOWN1, 2, board.size, listOf(MovementFlag.BLOCKABLE)),
                     Movement(Direction.LEFT1_DOWN1, 1, board.size, listOf(MovementFlag.BLOCKABLE_AFTER_CAPTURE, MovementFlag.MUST_CAPTURE)),
                     Movement(Direction.RIGHT1_DOWN1, 1, board.size, listOf(MovementFlag.BLOCKABLE_AFTER_CAPTURE, MovementFlag.MUST_CAPTURE))
             )
@@ -36,7 +54,7 @@ class Pawn(color: PlayerColor, position: Position, board: Board) : Piece(PieceNa
         else
         {
             movements.addVarargs(
-                    Movement(Direction.UP1, 1, board.size, listOf(MovementFlag.BLOCKABLE)),
+                    Movement(Direction.UP1, 2, board.size, listOf(MovementFlag.BLOCKABLE)),
                     Movement(Direction.LEFT1_UP1, 1, board.size, listOf(MovementFlag.BLOCKABLE_AFTER_CAPTURE, MovementFlag.MUST_CAPTURE)),
                     Movement(Direction.RIGHT1_UP1, 1, board.size, listOf(MovementFlag.BLOCKABLE_AFTER_CAPTURE, MovementFlag.MUST_CAPTURE))
             )
@@ -45,7 +63,7 @@ class Pawn(color: PlayerColor, position: Position, board: Board) : Piece(PieceNa
 
     override fun getValidPositions(): Collection<Position>
     {
-        //TODO en passant, initial two move
+        //TODO en passant
 
         return super.getValidPositions()
     }
