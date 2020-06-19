@@ -1,5 +1,6 @@
 package com.outlook.bselzer1.chess.game.board
 
+import com.outlook.bselzer1.chess.game.board.move.Move
 import com.outlook.bselzer1.chess.game.board.move.Position
 import com.outlook.bselzer1.chess.game.piece.Piece
 import com.outlook.bselzer1.chess.game.piece.PlayerColor
@@ -13,7 +14,12 @@ abstract class Board(val size: BoardSize, val topColor: PlayerColor, val bottomC
     /**
      * The collection of pieces.
      */
-    private val pieces: MutableCollection<Piece> = mutableListOf()
+    private val pieces: MutableCollection<Piece<*>> = mutableListOf()
+
+    /**
+     * The collection of previous moves.
+     */
+    private val moveHistory: MutableCollection<Move> = mutableListOf()
 
     /**
      * Initializes the pieces on the board.
@@ -23,32 +29,24 @@ abstract class Board(val size: BoardSize, val topColor: PlayerColor, val bottomC
     /**
      * Add a [piece] to the collection.
      */
-    protected fun addPiece(piece: Piece)
+    protected fun addPiece(piece: Piece<*>)
     {
         pieces.add(piece)
     }
 
     /**
-     * @return a read only collection of all of the pieces
-     */
-    fun getPieces(): Collection<Piece>
-    {
-        return pieces.toList()
-    }
-
-    /**
-     * @return whether or not a piece is at [position]
-     */
-    fun hasPieceAt(position: Position): Boolean
-    {
-        return getPieceAt(position) != null
-    }
-
-    /**
      * @return the piece at [position] if it exists
      */
-    fun getPieceAt(position: Position): Piece?
+    fun getPieceAt(position: Position): Piece<*>?
     {
-        return pieces.firstOrNull { piece -> piece.position == position }
+        return pieces.firstOrNull { piece -> piece.position == position }?.copy()
+    }
+
+    /**
+     * @return the last move previously played
+     */
+    fun getLastMove(): Move?
+    {
+        return moveHistory.lastOrNull()?.copy()
     }
 }

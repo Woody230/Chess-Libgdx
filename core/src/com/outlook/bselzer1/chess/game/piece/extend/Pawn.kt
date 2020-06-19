@@ -1,7 +1,5 @@
 package com.outlook.bselzer1.chess.game.piece.extend
 
-import com.outlook.bselzer1.chess.extension.addVarargs
-import com.outlook.bselzer1.chess.extension.isOneOf
 import com.outlook.bselzer1.chess.game.board.Board
 import com.outlook.bselzer1.chess.game.board.move.Direction
 import com.outlook.bselzer1.chess.game.board.move.Movement
@@ -10,6 +8,10 @@ import com.outlook.bselzer1.chess.game.board.move.Position
 import com.outlook.bselzer1.chess.game.piece.Piece
 import com.outlook.bselzer1.chess.game.piece.PieceName
 import com.outlook.bselzer1.chess.game.piece.PlayerColor
+import com.outlook.bselzer1.chess.sharedfunctions.extension.addNoNull
+import com.outlook.bselzer1.chess.sharedfunctions.extension.addVarargs
+import com.outlook.bselzer1.chess.sharedfunctions.extension.isOneOf
+import kotlin.math.abs
 
 /**
  * Moves one square toward the other side of the board.
@@ -22,7 +24,7 @@ import com.outlook.bselzer1.chess.game.piece.PlayerColor
  * 3. Captured pawn must have just used its two square initial move.
  * 4. The capture can ONLY take place the turn after the two square initial move.
  */
-class Pawn(color: PlayerColor, position: Position, board: Board) : Piece(PieceName.PAWN, color, position, board)
+class Pawn(color: PlayerColor, position: Position, board: Board) : Piece<Pawn>(PieceName.PAWN, color, position, board)
 {
     override var hasMoved: Boolean = false
         get() = super.hasMoved
@@ -61,10 +63,39 @@ class Pawn(color: PlayerColor, position: Position, board: Board) : Piece(PieceNa
         }
     }
 
-    override fun getValidPositions(): Collection<Position>
+    override fun getValidPositions(): MutableCollection<Position>
     {
-        //TODO en passant
+        val collection = super.getValidPositions()
+        collection.addNoNull(getEnPassantPosition())
+        return collection
+    }
 
-        return super.getValidPositions()
+    override fun createCopy(): Pawn
+    {
+        return Pawn(color, position, board)
+    }
+
+    /**
+     * @return the valid en passant capture if it exists
+     */
+    private fun getEnPassantPosition(): Position?
+    {
+        val move = board.getLastMove() ?: return null
+
+        //Stop processing if the piece to capture is not valid.
+        //Piece to capture must be an enemy, has not moved, and used the initial 2 movement.
+        if (this.isAlly(move.fromPiece) || move.fromPiece.hasMoved || abs(move.fromPosition.y - move.toPosition.y) != 2)
+        {
+            return null
+        }
+
+        //Stop processing if this piece can not capture from the current position.
+        //This piece must be in an adjacent column and in the same row as the piece to capture.
+        if (abs(this.position.x - move.toPosition.x) != 1 || this.position.y != move.toPosition.y)
+        {
+            return null
+        }
+
+        return Position(move.fromPosition.x, move.fromPosition.y + if (this.color == board.topColor) -1 else 1)
     }
 }

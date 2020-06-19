@@ -1,10 +1,11 @@
 package com.outlook.bselzer1.chess.game.piece
 
-import com.outlook.bselzer1.chess.extension.nextIntId
 import com.outlook.bselzer1.chess.game.board.Board
 import com.outlook.bselzer1.chess.game.board.move.Movement
 import com.outlook.bselzer1.chess.game.board.move.MovementFlag
 import com.outlook.bselzer1.chess.game.board.move.Position
+import com.outlook.bselzer1.chess.sharedfunctions.Copy
+import com.outlook.bselzer1.chess.sharedfunctions.extension.nextIntId
 
 //TODO position caching
 
@@ -15,7 +16,7 @@ import com.outlook.bselzer1.chess.game.board.move.Position
  * @property position the position
  * @property board the associated board
  */
-abstract class Piece(val name: PieceName, val color: PlayerColor, position: Position, val board: Board)
+abstract class Piece<T : Piece<T>>(val name: PieceName, val color: PlayerColor, position: Position, val board: Board) : Copy<T>
 {
     companion object
     {
@@ -30,7 +31,7 @@ abstract class Piece(val name: PieceName, val color: PlayerColor, position: Posi
         get() = field.copy()
         set(value)
         {
-            if(field == value)
+            if (field == value)
             {
                 return
             }
@@ -64,7 +65,7 @@ abstract class Piece(val name: PieceName, val color: PlayerColor, position: Posi
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as Piece
+        other as Piece<*>
 
         if (id != other.id) return false
 
@@ -77,9 +78,24 @@ abstract class Piece(val name: PieceName, val color: PlayerColor, position: Posi
     }
 
     /**
+     * Create a copy of this piece.
+     */
+    override fun copy(): T
+    {
+        val piece = createCopy()
+        piece.hasMoved = this.hasMoved
+        return piece
+    }
+
+    /**
+     * Create a copy of this piece.
+     */
+    abstract fun createCopy(): T
+
+    /**
      * @return whether or not [piece] is an ally to this piece
      */
-    fun isAlly(piece: Piece): Boolean
+    fun isAlly(piece: Piece<*>): Boolean
     {
         return color == piece.color
     }
@@ -87,7 +103,7 @@ abstract class Piece(val name: PieceName, val color: PlayerColor, position: Posi
     /**
      * @return the valid positions for a piece that is located at [position]
      */
-    open fun getValidPositions(): Collection<Position>
+    open fun getValidPositions(): MutableCollection<Position>
     {
         return getValidPositions(movements)
     }
@@ -103,7 +119,7 @@ abstract class Piece(val name: PieceName, val color: PlayerColor, position: Posi
     /**
      * @return the valid positions for a piece that can move according to [movements]
      */
-    protected fun getValidPositions(movements: Collection<Movement>): Collection<Position>
+    private fun getValidPositions(movements: Collection<Movement>): MutableCollection<Position>
     {
         val collection = mutableSetOf<Position>()
 

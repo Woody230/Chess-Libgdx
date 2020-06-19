@@ -1,6 +1,5 @@
 package com.outlook.bselzer1.chess.game.piece.extend
 
-import com.outlook.bselzer1.chess.extension.addVarargs
 import com.outlook.bselzer1.chess.game.board.Board
 import com.outlook.bselzer1.chess.game.board.move.Direction
 import com.outlook.bselzer1.chess.game.board.move.Movement
@@ -8,6 +7,7 @@ import com.outlook.bselzer1.chess.game.board.move.Position
 import com.outlook.bselzer1.chess.game.piece.Piece
 import com.outlook.bselzer1.chess.game.piece.PieceName
 import com.outlook.bselzer1.chess.game.piece.PlayerColor
+import com.outlook.bselzer1.chess.sharedfunctions.extension.addVarargs
 
 /**
  * Moves one square in any direction.
@@ -19,7 +19,7 @@ import com.outlook.bselzer1.chess.game.piece.PlayerColor
  * 4. The king is not and will not be in check.
  * 5. The king does not pass a square which would be in check.
  */
-class King(color: PlayerColor, position: Position, board: Board) : Piece(PieceName.KING, color, position, board)
+class King(color: PlayerColor, position: Position, board: Board) : Piece<King>(PieceName.KING, color, position, board)
 {
     init
     {
@@ -35,10 +35,15 @@ class King(color: PlayerColor, position: Position, board: Board) : Piece(PieceNa
         )
     }
 
-    override fun getValidPositions(): Collection<Position>
+    override fun getValidPositions(): MutableCollection<Position>
     {
         //TODO castling -- remove moves that would put in check
 
         return super.getValidPositions()
+    }
+
+    override fun createCopy(): King
+    {
+        return King(color, position, board)
     }
 }

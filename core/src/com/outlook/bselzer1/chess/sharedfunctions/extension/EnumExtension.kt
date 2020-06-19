@@ -1,11 +1,11 @@
-package com.outlook.bselzer1.chess.extension
+package com.outlook.bselzer1.chess.sharedfunctions.extension
 
 import java.util.*
 
 /**
  * @return a user friendly string of the enum name
  */
-fun <E : Enum<E>> Enum<E>.toDisplayableString(): String
+fun <T : Enum<T>> Enum<T>.toDisplayableString(): String
 {
     val name: String = this.name.toLowerCase(Locale.getDefault()).replace("_", " ")
     val builder = StringBuilder(name.length)

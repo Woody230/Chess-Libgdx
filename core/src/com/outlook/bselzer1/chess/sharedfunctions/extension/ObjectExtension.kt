@@ -1,4 +1,4 @@
-package com.outlook.bselzer1.chess.extension
+package com.outlook.bselzer1.chess.sharedfunctions.extension
 
 import java.util.concurrent.atomic.AtomicInteger
 
