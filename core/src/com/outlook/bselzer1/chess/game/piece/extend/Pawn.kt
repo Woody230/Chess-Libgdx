@@ -84,7 +84,7 @@ class Pawn(color: PlayerColor, position: Position, board: Board) : Piece<Pawn>(P
 
         //Stop processing if the piece to capture is not valid.
         //Piece to capture must be an enemy, has not moved, and used the initial 2 movement.
-        if (this.isAlly(move.fromPiece) || move.fromPiece.hasMoved || abs(move.fromPosition.y - move.toPosition.y) != 2)
+        if (this.isAlly(move.fromPiece) || move.fromPiece.hasMoved() || abs(move.fromPosition.y - move.toPosition.y) != 2)
         {
             return null
         }
@@ -96,6 +96,6 @@ class Pawn(color: PlayerColor, position: Position, board: Board) : Piece<Pawn>(P
             return null
         }
 
-        return Position(move.fromPosition.x, move.fromPosition.y + if (this.color == board.topColor) -1 else 1)
+        return Position(move.fromPosition.x, move.fromPosition.y + if (move.fromPiece.color == board.topColor) -1 else 1)
     }
 }

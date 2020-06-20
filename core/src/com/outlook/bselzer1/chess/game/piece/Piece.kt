@@ -46,9 +46,9 @@ abstract class Piece<T : Piece<T>>(val name: PieceName, val color: PlayerColor, 
     private val id: Int = nextIntId()
 
     /**
-     * Whether or not the piece has moved already.
+     * Whether or not this piece has moved already.
      */
-    open var hasMoved: Boolean = false
+    protected open var hasMoved: Boolean = false
 
     /**
      * The possible movements.
@@ -91,6 +91,14 @@ abstract class Piece<T : Piece<T>>(val name: PieceName, val color: PlayerColor, 
      * Create a copy of this piece.
      */
     abstract fun createCopy(): T
+
+    /**
+     * @return whether or not this piece has moved already
+     */
+    fun hasMoved(): Boolean
+    {
+        return hasMoved
+    }
 
     /**
      * @return whether or not [piece] is an ally to this piece

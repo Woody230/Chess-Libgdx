@@ -27,9 +27,31 @@ abstract class Board(val size: BoardSize, val topColor: PlayerColor, val bottomC
     abstract fun initializePieces()
 
     /**
+     * Resets the pieces and move history.
+     */
+    fun clear()
+    {
+        pieces.clear()
+        moveHistory.clear()
+    }
+
+    /**
+     * Move a piece at the position [fromPosition] to the position [toPosition].
+     */
+    fun move(fromPosition: Position, toPosition: Position)
+    {
+        val fromPiece = getPieceAt(fromPosition) ?: throw KotlinNullPointerException("Unable to retrieve the piece at $fromPosition.")
+        val toPiece = getPieceAt(toPosition)
+
+        pieces.remove(toPiece)
+        fromPiece.position = toPosition
+        moveHistory.add(Move(fromPosition, toPosition, fromPiece, toPiece))
+    }
+
+    /**
      * Add a [piece] to the collection.
      */
-    protected fun addPiece(piece: Piece<*>)
+    protected open fun addPiece(piece: Piece<*>)
     {
         pieces.add(piece)
     }

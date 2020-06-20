@@ -27,3 +27,11 @@ fun <T> MutableCollection<T>.addNoNull(element: T?): Boolean
 
     return this.add(element)
 }
+
+/**
+ * @return whether or not this and [that] have the exact same elements
+ */
+fun <T> Collection<T>.contentEquals(that: Collection<T>?): Boolean
+{
+    return that != null && this.size == that.size && this.containsAll(that)
+}

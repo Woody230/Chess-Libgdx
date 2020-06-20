@@ -99,8 +99,11 @@ project(":ios") {
 project(":core") {
     apply plugin: "kotlin"
 
+    sourceSets.test.java.srcDirs = ["test/"]
 
     dependencies {
+        testImplementation 'org.junit.jupiter:junit-jupiter:5.6.2'
+
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
         api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"

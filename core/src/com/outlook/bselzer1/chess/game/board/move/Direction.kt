@@ -22,6 +22,6 @@ enum class Direction(val xIncrement: Int, val yIncrement: Int)
     RIGHT2_UP1(2, 1),
     RIGHT2_DOWN1(2, -1),
     RIGHT1_DOWN2(1, -2),
-    LEFT1_DOWN2(-1, 2),
+    LEFT1_DOWN2(-1, -2),
     LEFT2_DOWN1(-2, -1)
 }
