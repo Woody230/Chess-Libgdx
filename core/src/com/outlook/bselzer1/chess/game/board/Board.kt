@@ -4,6 +4,8 @@ import com.outlook.bselzer1.chess.game.board.move.Move
 import com.outlook.bselzer1.chess.game.board.move.Position
 import com.outlook.bselzer1.chess.game.piece.Piece
 import com.outlook.bselzer1.chess.game.piece.PlayerColor
+import com.outlook.bselzer1.chess.sharedfunctions.extension.addNoNull
+import com.outlook.bselzer1.chess.sharedfunctions.extension.copy
 
 /**
  * A chess board.
@@ -14,7 +16,10 @@ abstract class Board(val size: BoardSize, val topColor: PlayerColor, val bottomC
     /**
      * The collection of pieces.
      */
-    private val pieces: MutableCollection<Piece<*>> = mutableListOf()
+    private val pieces: MutableCollection<Piece<*>> = sortedSetOf(Comparator { a, b ->
+        //Comparator needs to handle nulls to avoid exception on trying to remove a null element.
+        compareValues(a?.getId(), b?.getId())
+    })
 
     /**
      * The collection of previous moves.
@@ -40,8 +45,9 @@ abstract class Board(val size: BoardSize, val topColor: PlayerColor, val bottomC
      */
     fun move(fromPosition: Position, toPosition: Position)
     {
-        val fromPiece = getPieceAt(fromPosition) ?: throw KotlinNullPointerException("Unable to retrieve the piece at $fromPosition.")
-        val toPiece = getPieceAt(toPosition)
+        val fromPiece = pieces.firstOrNull { piece -> piece.position == fromPosition }
+                ?: throw KotlinNullPointerException("Unable to retrieve the piece at $fromPosition.")
+        val toPiece = pieces.firstOrNull { piece -> piece.position == toPosition }
 
         pieces.remove(toPiece)
         fromPiece.position = toPosition
@@ -70,5 +76,53 @@ abstract class Board(val size: BoardSize, val topColor: PlayerColor, val bottomC
     fun getLastMove(): Move?
     {
         return moveHistory.lastOrNull()?.copy()
+    }
+
+    //TODO checkmate
+
+    /**
+     * @param onlyValidPositions whether or not to use [Piece.getValidPositions] or [Piece.getPositions]
+     * @return whether or not a player is in check
+     */
+    protected abstract fun isInCheck(color: PlayerColor, onlyValidPositions: Boolean): Boolean
+
+    /**
+     * @return whether or not a player is in check
+     */
+    fun isInCheck(color: PlayerColor): Boolean
+    {
+        return isInCheck(color, true)
+    }
+
+    /**
+     * @return whether or not a player will be in check given [piece] moves to [newPosition]
+     */
+    fun willBeInCheck(piece: Piece<*>, newPosition: Position): Boolean
+    {
+        //Pretend the move is done.
+        //A copy is used instead of setting the position to avoid consequences such as changing hasMoved.
+        //MUST do removals first since the copy has the same id.
+        val copy = piece.copy()
+        val capture = pieces.firstOrNull { it.position == newPosition }
+        pieces.remove(piece)
+        pieces.remove(capture)
+        pieces.add(copy)
+        copy.position = newPosition
+
+        //Undo the move.
+        val check = isInCheck(piece.color, false)
+        pieces.remove(copy)
+        pieces.add(piece)
+        pieces.addNoNull(capture)
+
+        return check
+    }
+
+    /**
+     * @return the pieces
+     */
+    fun getPieces(): Collection<Piece<*>>
+    {
+        return pieces.copy()
     }
 }

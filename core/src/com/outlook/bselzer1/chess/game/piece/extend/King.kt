@@ -35,11 +35,11 @@ class King(color: PlayerColor, position: Position, board: Board) : Piece<King>(P
         )
     }
 
-    override fun getValidPositions(): MutableCollection<Position>
+    override fun getPositions(): MutableCollection<Position>
     {
-        //TODO castling -- remove moves that would put in check
+        //TODO castling
 
-        return super.getValidPositions()
+        return super.getPositions()
     }
 
     override fun createCopy(): King

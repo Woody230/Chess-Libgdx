@@ -43,7 +43,7 @@ abstract class Piece<T : Piece<T>>(val name: PieceName, val color: PlayerColor, 
     /**
      * The identifier.
      */
-    private val id: Int = nextIntId()
+    private var id: Int = nextIntId()
 
     /**
      * Whether or not this piece has moved already.
@@ -83,6 +83,7 @@ abstract class Piece<T : Piece<T>>(val name: PieceName, val color: PlayerColor, 
     override fun copy(): T
     {
         val piece = createCopy()
+        piece.id = this.id
         piece.hasMoved = this.hasMoved
         return piece
     }
@@ -90,7 +91,7 @@ abstract class Piece<T : Piece<T>>(val name: PieceName, val color: PlayerColor, 
     /**
      * Create a copy of this piece.
      */
-    abstract fun createCopy(): T
+    protected abstract fun createCopy(): T
 
     /**
      * @return whether or not this piece has moved already
@@ -98,6 +99,14 @@ abstract class Piece<T : Piece<T>>(val name: PieceName, val color: PlayerColor, 
     fun hasMoved(): Boolean
     {
         return hasMoved
+    }
+
+    /**
+     * @return the identifier
+     */
+    fun getId(): Int
+    {
+        return id
     }
 
     /**
@@ -109,25 +118,27 @@ abstract class Piece<T : Piece<T>>(val name: PieceName, val color: PlayerColor, 
     }
 
     /**
-     * @return the valid positions for a piece that is located at [position]
+     * @return the positions that this piece can move to that do stop or do not cause a check
      */
-    open fun getValidPositions(): MutableCollection<Position>
+    fun getValidPositions(): MutableCollection<Position>
     {
-        return getValidPositions(movements)
+        val positions = getPositions(movements)
+        positions.removeAll { board.willBeInCheck(this, it) }
+        return positions
     }
 
     /**
-     * @return whether or not the [newPosition] is a valid move from the current [position]
+     * @return the positions that this piece can move to based on [movements]
      */
-    fun isValidPosition(newPosition: Position): Boolean
+    open fun getPositions(): MutableCollection<Position>
     {
-        return getValidPositions().contains(newPosition)
+        return getPositions(movements)
     }
 
     /**
-     * @return the valid positions for a piece that can move according to [movements]
+     * @return the positions that this piece can move to according to [movements]
      */
-    private fun getValidPositions(movements: Collection<Movement>): MutableCollection<Position>
+    private fun getPositions(movements: Collection<Movement>): MutableCollection<Position>
     {
         val collection = mutableSetOf<Position>()
 

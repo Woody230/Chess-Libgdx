@@ -26,6 +26,8 @@ import kotlin.math.abs
  */
 class Pawn(color: PlayerColor, position: Position, board: Board) : Piece<Pawn>(PieceName.PAWN, color, position, board)
 {
+    //TODO promotion
+
     override var hasMoved: Boolean = false
         get() = super.hasMoved
         set(value)
@@ -63,9 +65,9 @@ class Pawn(color: PlayerColor, position: Position, board: Board) : Piece<Pawn>(P
         }
     }
 
-    override fun getValidPositions(): MutableCollection<Position>
+    override fun getPositions(): MutableCollection<Position>
     {
-        val collection = super.getValidPositions()
+        val collection = super.getPositions()
         collection.addNoNull(getEnPassantPosition())
         return collection
     }

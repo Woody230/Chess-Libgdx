@@ -1,6 +1,9 @@
-package com.outlook.bselzer1.chess.game.board
+package com.outlook.bselzer1.chess.game.board.extend
 
+import com.outlook.bselzer1.chess.game.board.Board
+import com.outlook.bselzer1.chess.game.board.BoardSize
 import com.outlook.bselzer1.chess.game.board.move.Position
+import com.outlook.bselzer1.chess.game.piece.PieceName
 import com.outlook.bselzer1.chess.game.piece.PlayerColor
 import com.outlook.bselzer1.chess.game.piece.extend.*
 
@@ -41,5 +44,19 @@ class WesternBoard(topColor: PlayerColor = PlayerColor.WHITE, bottomColor: Playe
         addPiece(Bishop(color, Position(row, 5), this))
         addPiece(Knight(color, Position(row, 6), this))
         addPiece(Rook(color, Position(row, 7), this))
+    }
+
+    /**
+     * @return whether or not the [King] is being attacked
+     */
+    override fun isInCheck(color: PlayerColor, onlyValidPositions: Boolean): Boolean
+    {
+        val pieces = getPieces()
+        val king = pieces.first { it.name == PieceName.KING && it.color == color }
+
+        return pieces.any {
+            val positions = if (onlyValidPositions) it.getValidPositions() else it.getPositions()
+            return@any it.color != color && positions.contains(king.position)
+        }
     }
 }

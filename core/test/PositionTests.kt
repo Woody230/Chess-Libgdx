@@ -1,5 +1,5 @@
 import com.outlook.bselzer1.chess.game.board.Board
-import com.outlook.bselzer1.chess.game.board.WesternBoard
+import com.outlook.bselzer1.chess.game.board.extend.WesternBoard
 import com.outlook.bselzer1.chess.game.board.move.Direction
 import com.outlook.bselzer1.chess.game.board.move.Position
 import com.outlook.bselzer1.chess.game.piece.Piece
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test
 /**
  * Tests that valid positions are being generated.
  */
-class ValidPositionTests
+class PositionTests
 {
     companion object
     {
@@ -196,6 +196,7 @@ class ValidPositionTests
         //Needed since addPiece() is protected.
         addPiece.isAccessible = true
 
+        addPiece(customBoard, King(PlayerColor.WHITE, Position(0, 0), customBoard))
         addPiece(customBoard, Pawn(PlayerColor.WHITE, Position(3, 0), customBoard))
         addPiece(customBoard, Pawn(PlayerColor.WHITE, Position(0, 1), customBoard))
         addPiece(customBoard, Pawn(PlayerColor.WHITE, Position(3, 1), customBoard))
@@ -210,6 +211,7 @@ class ValidPositionTests
         addPiece(customBoard, Pawn(PlayerColor.WHITE, Position(2, 6), customBoard))
         addPiece(customBoard, Pawn(PlayerColor.BLACK, Position(3, 6), customBoard))
         addPiece(customBoard, Pawn(PlayerColor.WHITE, Position(4, 6), customBoard))
+        addPiece(customBoard, King(PlayerColor.BLACK, Position(0, 7), customBoard))
         addPiece(customBoard, Pawn(PlayerColor.BLACK, Position(6, 7), customBoard))
     }
 
@@ -219,9 +221,9 @@ class ValidPositionTests
     @Test
     fun directionIncrements()
     {
-        for(direction in Direction.values())
+        for (direction in Direction.values())
         {
-            for(component in direction.name.split("_"))
+            for (component in direction.name.split("_"))
             {
                 val directionality = directionalities.filter { component.startsWith(it.key, true) }.entries.first()
                 val directionIncrement = if (directionality.key == "left" || directionality.key == "right") direction.xIncrement else direction.yIncrement
@@ -250,7 +252,7 @@ class ValidPositionTests
 
         piece = Bishop(PlayerColor.BLACK, TEST_PIECE_POSITION, blankBoard)
         addPiece(blankBoard, piece)
-        assert(piece.getValidPositions().contentEquals(BLANK_DIAGONALS))
+        assert(piece.getPositions().contentEquals(BLANK_DIAGONALS))
     }
 
     /**
@@ -259,13 +261,15 @@ class ValidPositionTests
     @Test
     fun king()
     {
-        var piece = King(PlayerColor.BLACK, TEST_PIECE_POSITION, customBoard)
-        addPiece(customBoard, piece)
-        assert(piece.getValidPositions().contentEquals(CUSTOM_KING))
+        //Need to use the existing king since it would be the first one retrieved instead of a new king.
+        customBoard.move(Position(0, 7), TEST_PIECE_POSITION)
+
+        var piece = customBoard.getPieceAt(TEST_PIECE_POSITION)
+        assert(piece!!.getValidPositions().contentEquals(CUSTOM_KING))
 
         piece = King(PlayerColor.BLACK, TEST_PIECE_POSITION, blankBoard)
         addPiece(blankBoard, piece)
-        assert(piece.getValidPositions().contentEquals(BLANK_KING))
+        assert(piece.getPositions().contentEquals(BLANK_KING))
     }
 
     /**
@@ -280,7 +284,7 @@ class ValidPositionTests
 
         piece = Knight(PlayerColor.BLACK, TEST_PIECE_POSITION, blankBoard)
         addPiece(blankBoard, piece)
-        assert(piece.getValidPositions().contentEquals(BLANK_KNIGHT))
+        assert(piece.getPositions().contentEquals(BLANK_KNIGHT))
     }
 
     @Test
@@ -292,19 +296,19 @@ class ValidPositionTests
 
         piece = Pawn(PlayerColor.BLACK, TEST_PIECE_POSITION, blankBoard)
         addPiece(blankBoard, piece)
-        assert(piece.getValidPositions().contentEquals(BLANK_PAWN_NOT_MOVED))
+        assert(piece.getPositions().contentEquals(BLANK_PAWN_NOT_MOVED))
 
         blankBoard.clear()
         piece = Pawn(PlayerColor.BLACK, Position(-1, -1), blankBoard)
         piece.position = TEST_PIECE_POSITION //To set hasMoved
         addPiece(blankBoard, piece)
-        assert(piece.getValidPositions().contentEquals(BLANK_PAWN_HAS_MOVED))
+        assert(piece.getPositions().contentEquals(BLANK_PAWN_HAS_MOVED))
 
         //Test en passant after the has moved case since it does not make sense if the capturing piece has not moved.
         val enPassantCapture = Pawn(PlayerColor.WHITE, Position(4, 6), blankBoard)
         addPiece(blankBoard, enPassantCapture)
         blankBoard.move(enPassantCapture.position, Position(4, 4))
-        assert(piece.getValidPositions().contentEquals(EN_PASSANT))
+        assert(piece.getPositions().contentEquals(EN_PASSANT))
     }
 
     /**
@@ -319,7 +323,7 @@ class ValidPositionTests
 
         piece = Queen(PlayerColor.BLACK, TEST_PIECE_POSITION, blankBoard)
         addPiece(blankBoard, piece)
-        assert(piece.getValidPositions().contentEquals(BLANK_CARTESIAN.plus(BLANK_DIAGONALS)))
+        assert(piece.getPositions().contentEquals(BLANK_CARTESIAN.plus(BLANK_DIAGONALS)))
     }
 
     /**
@@ -334,6 +338,6 @@ class ValidPositionTests
 
         piece = Rook(PlayerColor.BLACK, TEST_PIECE_POSITION, blankBoard)
         addPiece(blankBoard, piece)
-        assert(piece.getValidPositions().contentEquals(BLANK_CARTESIAN))
+        assert(piece.getPositions().contentEquals(BLANK_CARTESIAN))
     }
 }
