@@ -70,4 +70,32 @@ class CheckTests
 
         assert(rook.getValidPositions().isEmpty())
     }
+
+    /**
+     * Tests a valid checkmate situation.
+     */
+    @Test
+    fun isCheckmated()
+    {
+        addPiece(board, King(PlayerColor.BLACK, Position(0, 0), board))
+        addPiece(board, Queen(PlayerColor.WHITE, Position(1, 1), board))
+        addPiece(board, Bishop(PlayerColor.WHITE, Position(2, 2), board))
+        addPiece(board, King(PlayerColor.WHITE, Position(7, 7), board))
+
+        assert(board.isCheckmated(PlayerColor.BLACK))
+    }
+
+    /**
+     * Tests that a player is not checkmated when the king has valid moves.
+     */
+    @Test
+    fun isNotCheckmated()
+    {
+        addPiece(board, King(PlayerColor.BLACK, Position(0, 0), board))
+        addPiece(board, Bishop(PlayerColor.WHITE, Position(1, 1), board))
+        addPiece(board, Queen(PlayerColor.WHITE, Position(2, 1), board))
+        addPiece(board, King(PlayerColor.WHITE, Position(7, 7), board))
+
+        assert(!board.isCheckmated(PlayerColor.BLACK))
+    }
 }

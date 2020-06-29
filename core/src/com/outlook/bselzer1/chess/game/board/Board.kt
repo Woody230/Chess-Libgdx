@@ -78,8 +78,6 @@ abstract class Board(val size: BoardSize, val topColor: PlayerColor, val bottomC
         return moveHistory.lastOrNull()?.copy()
     }
 
-    //TODO checkmate
-
     /**
      * @param onlyValidPositions whether or not to use [Piece.getValidPositions] or [Piece.getPositions]
      * @return whether or not a player is in check
@@ -117,6 +115,11 @@ abstract class Board(val size: BoardSize, val topColor: PlayerColor, val bottomC
 
         return check
     }
+
+    /**
+     * @return whether or not a player is checkmated
+     */
+    abstract fun isCheckmated(color: PlayerColor): Boolean
 
     /**
      * @return the pieces

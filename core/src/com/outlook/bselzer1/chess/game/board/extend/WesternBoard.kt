@@ -59,4 +59,13 @@ class WesternBoard(topColor: PlayerColor = PlayerColor.WHITE, bottomColor: Playe
             return@any it.color != color && positions.contains(king.position)
         }
     }
+
+    /**
+     * @return whether or not the [King] has a valid move
+     */
+    override fun isCheckmated(color: PlayerColor): Boolean
+    {
+        val king = getPieces().first { it.name == PieceName.KING && it.color == color }
+        return !king.getValidPositions().any()
+    }
 }
