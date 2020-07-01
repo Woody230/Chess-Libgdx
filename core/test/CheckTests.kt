@@ -10,6 +10,9 @@ import com.outlook.bselzer1.chess.game.piece.extend.Rook
 import com.outlook.bselzer1.chess.sharedfunctions.extension.contentEquals
 import org.junit.jupiter.api.Test
 
+/**
+ * Tests that checks and checkmates are properly determined.
+ */
 class CheckTests
 {
     /**

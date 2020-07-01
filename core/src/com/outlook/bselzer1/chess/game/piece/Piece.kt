@@ -4,7 +4,9 @@ import com.outlook.bselzer1.chess.game.board.Board
 import com.outlook.bselzer1.chess.game.board.move.Movement
 import com.outlook.bselzer1.chess.game.board.move.MovementFlag
 import com.outlook.bselzer1.chess.game.board.move.Position
+import com.outlook.bselzer1.chess.game.piece.promotion.Promotion
 import com.outlook.bselzer1.chess.sharedfunctions.Copy
+import com.outlook.bselzer1.chess.sharedfunctions.extension.contains
 import com.outlook.bselzer1.chess.sharedfunctions.extension.nextIntId
 
 //TODO position caching
@@ -16,7 +18,7 @@ import com.outlook.bselzer1.chess.sharedfunctions.extension.nextIntId
  * @property position the position
  * @property board the associated board
  */
-abstract class Piece<T : Piece<T>>(val name: PieceName, val color: PlayerColor, position: Position, val board: Board) : Copy<T>
+abstract class Piece<T : Piece<T>>(val name: PieceName, val color: PlayerColor, position: Position, val board: Board, val promotion: Promotion? = null) : Copy<T>
 {
     companion object
     {
@@ -36,6 +38,7 @@ abstract class Piece<T : Piece<T>>(val name: PieceName, val color: PlayerColor, 
                 return
             }
 
+            promotion?.setEligible(field, value)
             field = value
             hasMoved = true
         }
@@ -57,7 +60,7 @@ abstract class Piece<T : Piece<T>>(val name: PieceName, val color: PlayerColor, 
 
     override fun toString(): String
     {
-        return "Piece(name=$name, color=$color, position=$position, id=$id)"
+        return "Piece(name=$name, color=$color, board=$board, promotion=$promotion, id=$id, hasMoved=$hasMoved, movements=$movements)"
     }
 
     override fun equals(other: Any?): Boolean
@@ -160,7 +163,7 @@ abstract class Piece<T : Piece<T>>(val name: PieceName, val color: PlayerColor, 
                 position.y += movement.direction.yIncrement
 
                 //Stop processing when outside of the bounds.
-                if (!movement.container.contains(position.x.toFloat(), position.y.toFloat()))
+                if (!movement.container.contains(position))
                 {
                     break
                 }

@@ -3,6 +3,7 @@ package com.outlook.bselzer1.chess.game.board
 import com.outlook.bselzer1.chess.game.board.move.Move
 import com.outlook.bselzer1.chess.game.board.move.Position
 import com.outlook.bselzer1.chess.game.piece.Piece
+import com.outlook.bselzer1.chess.game.piece.PieceName
 import com.outlook.bselzer1.chess.game.piece.PlayerColor
 import com.outlook.bselzer1.chess.sharedfunctions.extension.addNoNull
 import com.outlook.bselzer1.chess.sharedfunctions.extension.copy
@@ -127,5 +128,19 @@ abstract class Board(val size: BoardSize, val topColor: PlayerColor, val bottomC
     fun getPieces(): Collection<Piece<*>>
     {
         return pieces.copy()
+    }
+
+    /**
+     * Replaces [piece] with a new piece of [type].
+     */
+    fun promotePiece(piece: Piece<*>, type: PieceName)
+    {
+        if (piece.promotion == null || !piece.promotion.isEligible() || !piece.promotion.successors.contains(type))
+        {
+            throw UnsupportedOperationException("Unable to promote $piece into $type.")
+        }
+
+        pieces.remove(piece)
+        pieces.add(type.promoteFrom(piece))
     }
 }
