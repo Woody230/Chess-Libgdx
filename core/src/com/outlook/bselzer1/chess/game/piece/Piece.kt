@@ -125,7 +125,7 @@ abstract class Piece<T : Piece<T>>(val name: PieceName, val color: PlayerColor, 
      */
     fun getValidPositions(): MutableCollection<Position>
     {
-        val positions = getPositions(movements)
+        val positions = getPositions()
         positions.removeAll { board.willBeInCheck(this, it) }
         return positions
     }

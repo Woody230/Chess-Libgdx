@@ -5,6 +5,7 @@ import com.outlook.bselzer1.chess.game.board.move.Position
 import com.outlook.bselzer1.chess.game.piece.Piece
 import com.outlook.bselzer1.chess.game.piece.PieceName
 import com.outlook.bselzer1.chess.game.piece.PlayerColor
+import com.outlook.bselzer1.chess.game.piece.extend.King
 import com.outlook.bselzer1.chess.sharedfunctions.extension.addNoNull
 import com.outlook.bselzer1.chess.sharedfunctions.extension.copy
 
@@ -49,6 +50,20 @@ abstract class Board(val size: BoardSize, val topColor: PlayerColor, val bottomC
         val fromPiece = pieces.firstOrNull { piece -> piece.position == fromPosition }
                 ?: throw KotlinNullPointerException("Unable to retrieve the piece at $fromPosition.")
         val toPiece = pieces.firstOrNull { piece -> piece.position == toPosition }
+
+        //Attempt to castle.
+        if (fromPiece.name == PieceName.KING)
+        {
+            val king = fromPiece as King
+            val castlingPosition = king.castlingPositions.firstOrNull { it.king == king && it.newKingPosition == toPosition}
+
+            //Found a castling position so move the rook.
+            if (castlingPosition != null)
+            {
+                val oldRookPosition = pieces.first { it == castlingPosition.rook }.position
+                move(oldRookPosition, castlingPosition.newRookPosition)
+            }
+        }
 
         pieces.remove(toPiece)
         fromPiece.position = toPosition
@@ -108,8 +123,9 @@ abstract class Board(val size: BoardSize, val topColor: PlayerColor, val bottomC
         pieces.add(copy)
         copy.position = newPosition
 
-        //Undo the move.
         val check = isInCheck(piece.color, false)
+
+        //Undo the move.
         pieces.remove(copy)
         pieces.add(piece)
         pieces.addNoNull(capture)

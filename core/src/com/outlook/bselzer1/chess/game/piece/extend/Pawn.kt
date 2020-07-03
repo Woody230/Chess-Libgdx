@@ -94,7 +94,7 @@ class Pawn(color: PlayerColor, position: Position, board: Board) : Piece<Pawn>(P
     }
 
     /**
-     * @return the valid en passant capture if it exists
+     * @return the en passant capture if it exists
      */
     private fun getEnPassantPosition(): Position?
     {

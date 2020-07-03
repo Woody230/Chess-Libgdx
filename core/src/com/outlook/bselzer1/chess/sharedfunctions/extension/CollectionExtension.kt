@@ -47,3 +47,11 @@ fun <T : Copy<T>> Collection<T>.copy(): Collection<T>
     this.forEach { collection.add(it.copy()) }
     return collection
 }
+
+/**
+ * @return whether or not the collections contains all of the [items]
+ */
+fun <T> Collection<T>.containsAll(vararg items: T): Boolean
+{
+    return this.containsAll(items.toList())
+}

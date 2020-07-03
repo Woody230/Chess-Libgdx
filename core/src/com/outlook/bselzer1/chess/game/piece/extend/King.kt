@@ -1,6 +1,7 @@
 package com.outlook.bselzer1.chess.game.piece.extend
 
 import com.outlook.bselzer1.chess.game.board.Board
+import com.outlook.bselzer1.chess.game.board.move.CastlingPosition
 import com.outlook.bselzer1.chess.game.board.move.Direction
 import com.outlook.bselzer1.chess.game.board.move.Movement
 import com.outlook.bselzer1.chess.game.board.move.Position
@@ -8,6 +9,7 @@ import com.outlook.bselzer1.chess.game.piece.Piece
 import com.outlook.bselzer1.chess.game.piece.PieceName
 import com.outlook.bselzer1.chess.game.piece.PlayerColor
 import com.outlook.bselzer1.chess.sharedfunctions.extension.addVarargs
+import com.outlook.bselzer1.chess.sharedfunctions.extension.toExclusive
 
 /**
  * Moves one square in any direction.
@@ -21,6 +23,11 @@ import com.outlook.bselzer1.chess.sharedfunctions.extension.addVarargs
  */
 class King(color: PlayerColor, position: Position, board: Board) : Piece<King>(PieceName.KING, color, position, board)
 {
+    /**
+     * The collection of castling positions.
+     */
+    val castlingPositions = mutableSetOf<CastlingPosition>()
+
     init
     {
         movements.addVarargs(
@@ -37,9 +44,48 @@ class King(color: PlayerColor, position: Position, board: Board) : Piece<King>(P
 
     override fun getPositions(): MutableCollection<Position>
     {
-        //TODO castling
+        val positions = super.getPositions()
+        positions.addAll(getCastlingPositions())
+        return positions
+    }
 
-        return super.getPositions()
+    /**
+     * @return the castling positions if they exist
+     */
+    private fun getCastlingPositions(): MutableCollection<Position>
+    {
+        val positions = mutableListOf<Position>()
+
+        //Stop processing if the king has already moved.
+        if (this.hasMoved) //TODO king not currently checked
+        {
+            return positions
+        }
+
+        //Get all of the player's rooks that have not moved and are in the same row.
+        for (rook in board.getPieces().filter { it.name == PieceName.ROOK && it.color == this.color && !it.hasMoved() && it.position.y == this.position.y })
+        {
+            val inBetween = this.position.x toExclusive rook.position.x
+            val kingSide = inBetween.take(2)
+
+            //Make sure there are no pieces in between and the king will not pass through or end in check.
+            //Need at least two squares in between, which could occur during testing situations.
+            if (inBetween.any { x -> board.getPieceAt(Position(x, this.position.y)) != null }
+                    || kingSide.size < 2
+                    || kingSide.any { x -> board.willBeInCheck(this, Position(x, this.position.y)) }
+            )
+            {
+                continue
+            }
+
+            //King's new position is two squares in the direction of the rook.
+            //Rook's new position is one square in the direction of the rook.
+            val newKingPosition = Position(kingSide.last(), this.position.y)
+            positions.add(newKingPosition)
+            castlingPositions.add(CastlingPosition(newKingPosition, Position(kingSide.first(), this.position.y), this, rook))
+        }
+
+        return positions
     }
 
     override fun createCopy(): King

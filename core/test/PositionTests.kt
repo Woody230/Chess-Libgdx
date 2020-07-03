@@ -5,6 +5,7 @@ import com.outlook.bselzer1.chess.game.board.move.Position
 import com.outlook.bselzer1.chess.game.piece.Piece
 import com.outlook.bselzer1.chess.game.piece.PlayerColor
 import com.outlook.bselzer1.chess.game.piece.extend.*
+import com.outlook.bselzer1.chess.sharedfunctions.extension.containsAll
 import com.outlook.bselzer1.chess.sharedfunctions.extension.contentEquals
 import org.junit.jupiter.api.Test
 
@@ -339,5 +340,80 @@ class PositionTests
         piece = Rook(PlayerColor.BLACK, TEST_PIECE_POSITION, blankBoard)
         addPiece(blankBoard, piece)
         assert(piece.getPositions().contentEquals(BLANK_CARTESIAN))
+    }
+
+    /**
+     * Test the castling movements.
+     */
+    @Test
+    fun castling()
+    {
+        val leftPosition = Position(2, 0)
+        val rightPosition = Position(6, 0)
+
+        val king = King(PlayerColor.BLACK, Position(4, 0), blankBoard)
+        val rook1 = Rook(PlayerColor.BLACK, Position(0, 0), blankBoard)
+        val rook2 = Rook(PlayerColor.BLACK, Position(7, 0), blankBoard)
+        val king2 = King(PlayerColor.WHITE, Position(7, 7), blankBoard)
+        addPiece(blankBoard, king)
+        addPiece(blankBoard, rook1)
+        addPiece(blankBoard, rook2)
+        addPiece(blankBoard, king2)
+
+        //Test success
+        assert(king.getValidPositions().containsAll(
+                leftPosition,
+                rightPosition
+        ))
+
+        //Test blocked by pieces
+        for (x in 0..7)
+        {
+            blankBoard.clear()
+            addPiece(blankBoard, king)
+            addPiece(blankBoard, rook1)
+            addPiece(blankBoard, rook2)
+            addPiece(blankBoard, king2)
+
+            //Skip rook/king positions.
+            val position = Position(x, 0)
+            if (blankBoard.getPieceAt(position) != null)
+            {
+                continue
+            }
+
+            val blocker = Bishop(if (x % 2 == 0) PlayerColor.BLACK else PlayerColor.WHITE, position, blankBoard)
+            addPiece(blankBoard, blocker)
+
+            //Only one of the positions should be valid.
+            val validPositions = king.getValidPositions()
+            assert(validPositions.contains(if (x > king.position.x) leftPosition else rightPosition))
+            assert(!validPositions.contains(if (x > king.position.x) rightPosition else leftPosition))
+        }
+
+        //Test initially in/pass through/end in check prevent castling.
+        for (x in 0..7)
+        {
+            //TODO fail for x = 4
+
+            blankBoard.clear()
+            addPiece(blankBoard, king)
+            addPiece(blankBoard, rook1)
+            addPiece(blankBoard, rook2)
+            addPiece(blankBoard, king2)
+
+            val checker = Rook(PlayerColor.WHITE, Position(x, 7), blankBoard)
+            addPiece(blankBoard, checker)
+
+            val validPositions = king.getValidPositions()
+            val invalidPositions = mutableListOf<Position>()
+            if (x <= king.position.x && x >= king.position.x - 2) invalidPositions.add(leftPosition)
+            if (x >= king.position.x && x <= king.position.x + 2) invalidPositions.add(rightPosition)
+
+            //Both positions should be invalid when initially in check.
+            invalidPositions.forEach { assert(!validPositions.contains(it)) }
+        }
+
+        //TODO test black rook on (4, 7) can't be castled
     }
 }
