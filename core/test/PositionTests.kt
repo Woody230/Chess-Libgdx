@@ -6,8 +6,7 @@ import com.outlook.bselzer1.chess.game.board.move.PositionFlag
 import com.outlook.bselzer1.chess.game.piece.Piece
 import com.outlook.bselzer1.chess.game.piece.PlayerColor
 import com.outlook.bselzer1.chess.game.piece.extend.*
-import com.outlook.bselzer1.chess.sharedfunctions.extension.containsAll
-import com.outlook.bselzer1.chess.sharedfunctions.extension.contentEquals
+import org.amshove.kluent.*
 import org.junit.jupiter.api.Test
 
 /**
@@ -237,7 +236,7 @@ class PositionTests
                     componentIncrement *= -1
                 }
 
-                assert(componentIncrement == directionIncrement)
+                componentIncrement shouldBeEqualTo directionIncrement
             }
         }
     }
@@ -250,11 +249,11 @@ class PositionTests
     {
         var piece = Bishop(PlayerColor.BLACK, TEST_PIECE_POSITION, customBoard)
         addPiece(customBoard, piece)
-        assert(piece.getPositions(PositionFlag.VALIDATE).contentEquals(CUSTOM_DIAGONALS))
+        piece.getPositions(PositionFlag.VALIDATE) shouldContainSame CUSTOM_DIAGONALS
 
         piece = Bishop(PlayerColor.BLACK, TEST_PIECE_POSITION, blankBoard)
         addPiece(blankBoard, piece)
-        assert(piece.getPositions().contentEquals(BLANK_DIAGONALS))
+        piece.getPositions() shouldContainSame BLANK_DIAGONALS
     }
 
     /**
@@ -267,11 +266,11 @@ class PositionTests
         customBoard.move(Position(0, 7), TEST_PIECE_POSITION)
 
         var piece = customBoard.getPieceAt(TEST_PIECE_POSITION)
-        assert(piece!!.getPositions(PositionFlag.VALIDATE).contentEquals(CUSTOM_KING))
+        piece!!.getPositions(PositionFlag.VALIDATE) shouldContainSame CUSTOM_KING
 
         piece = King(PlayerColor.BLACK, TEST_PIECE_POSITION, blankBoard)
         addPiece(blankBoard, piece)
-        assert(piece.getPositions().contentEquals(BLANK_KING))
+        piece.getPositions() shouldContainSame BLANK_KING
     }
 
     /**
@@ -282,11 +281,11 @@ class PositionTests
     {
         var piece = Knight(PlayerColor.BLACK, TEST_PIECE_POSITION, customBoard)
         addPiece(customBoard, piece)
-        assert(piece.getPositions(PositionFlag.VALIDATE).contentEquals(CUSTOM_KNIGHT))
+        piece.getPositions(PositionFlag.VALIDATE) shouldContainSame CUSTOM_KNIGHT
 
         piece = Knight(PlayerColor.BLACK, TEST_PIECE_POSITION, blankBoard)
         addPiece(blankBoard, piece)
-        assert(piece.getPositions().contentEquals(BLANK_KNIGHT))
+        piece.getPositions() shouldContainSame BLANK_KNIGHT
     }
 
     @Test
@@ -294,23 +293,23 @@ class PositionTests
     {
         var piece = Pawn(PlayerColor.BLACK, TEST_PIECE_POSITION, customBoard)
         addPiece(customBoard, piece)
-        assert(piece.getPositions(PositionFlag.VALIDATE).contentEquals(CUSTOM_PAWN))
+        piece.getPositions(PositionFlag.VALIDATE) shouldContainSame CUSTOM_PAWN
 
         piece = Pawn(PlayerColor.BLACK, TEST_PIECE_POSITION, blankBoard)
         addPiece(blankBoard, piece)
-        assert(piece.getPositions().contentEquals(BLANK_PAWN_NOT_MOVED))
+        piece.getPositions() shouldContainSame BLANK_PAWN_NOT_MOVED
 
         blankBoard.clear()
         piece = Pawn(PlayerColor.BLACK, Position(-1, -1), blankBoard)
         piece.position = TEST_PIECE_POSITION //To set hasMoved
         addPiece(blankBoard, piece)
-        assert(piece.getPositions().contentEquals(BLANK_PAWN_HAS_MOVED))
+        piece.getPositions() shouldContainSame BLANK_PAWN_HAS_MOVED
 
         //Test en passant after the has moved case since it does not make sense if the capturing piece has not moved.
         val enPassantCapture = Pawn(PlayerColor.WHITE, Position(4, 6), blankBoard)
         addPiece(blankBoard, enPassantCapture)
         blankBoard.move(enPassantCapture.position, Position(4, 4))
-        assert(piece.getPositions().contentEquals(EN_PASSANT))
+        piece.getPositions() shouldContainSame EN_PASSANT
     }
 
     /**
@@ -321,11 +320,11 @@ class PositionTests
     {
         var piece = Queen(PlayerColor.BLACK, TEST_PIECE_POSITION, customBoard)
         addPiece(customBoard, piece)
-        assert(piece.getPositions(PositionFlag.VALIDATE).contentEquals(CUSTOM_CARTESIAN.plus(CUSTOM_DIAGONALS)))
+        piece.getPositions(PositionFlag.VALIDATE) shouldContainSame CUSTOM_CARTESIAN.plus(CUSTOM_DIAGONALS)
 
         piece = Queen(PlayerColor.BLACK, TEST_PIECE_POSITION, blankBoard)
         addPiece(blankBoard, piece)
-        assert(piece.getPositions().contentEquals(BLANK_CARTESIAN.plus(BLANK_DIAGONALS)))
+        piece.getPositions() shouldContainSame BLANK_CARTESIAN.plus(BLANK_DIAGONALS)
     }
 
     /**
@@ -336,11 +335,11 @@ class PositionTests
     {
         var piece = Rook(PlayerColor.BLACK, TEST_PIECE_POSITION, customBoard)
         addPiece(customBoard, piece)
-        assert(piece.getPositions(PositionFlag.VALIDATE).contentEquals(CUSTOM_CARTESIAN))
+        piece.getPositions(PositionFlag.VALIDATE) shouldContainSame CUSTOM_CARTESIAN
 
         piece = Rook(PlayerColor.BLACK, TEST_PIECE_POSITION, blankBoard)
         addPiece(blankBoard, piece)
-        assert(piece.getPositions().contentEquals(BLANK_CARTESIAN))
+        piece.getPositions() shouldContainSame BLANK_CARTESIAN
     }
 
     /**
@@ -354,10 +353,10 @@ class PositionTests
         val king = initializeCastlingBoard()
 
         //Test success
-        assert(king.getPositions(PositionFlag.VALIDATE).containsAll(
+        king.getPositions(PositionFlag.VALIDATE) shouldContainAll listOf(
                 leftPosition,
                 rightPosition
-        ))
+        )
 
         //Test blocked by pieces
         for (x in 0..7)
@@ -376,8 +375,8 @@ class PositionTests
 
             //Only one of the positions should be valid.
             val validPositions = king.getPositions(PositionFlag.VALIDATE)
-            assert(validPositions.contains(if (x > king.position.x) leftPosition else rightPosition))
-            assert(!validPositions.contains(if (x > king.position.x) rightPosition else leftPosition))
+            validPositions shouldContain if (x > king.position.x) leftPosition else rightPosition
+            validPositions shouldNotContain if (x > king.position.x) rightPosition else leftPosition
         }
 
         //Test initially in/pass through/end in check prevent castling.
@@ -394,13 +393,13 @@ class PositionTests
             if (x >= king.position.x && x <= king.position.x + 2) invalidPositions.add(rightPosition)
 
             //Both positions should be invalid when initially in check.
-            invalidPositions.forEach { assert(!validPositions.contains(it)) }
+            invalidPositions.forEach { validPositions shouldNotContain it }
         }
 
         //Test that vertical castling is prevented
         initializeCastlingBoard()
         addPiece(blankBoard, Rook(PlayerColor.BLACK, Position(4, 7), blankBoard))
-        assert(king.getPositions(PositionFlag.VALIDATE).contentEquals(listOf(
+        king.getPositions(PositionFlag.VALIDATE) shouldContainSame listOf(
                 leftPosition,
                 rightPosition,
                 Position(3, 0),
@@ -408,7 +407,7 @@ class PositionTests
                 Position(4, 1),
                 Position(5, 1),
                 Position(5, 0)
-        )))
+        )
     }
 
     /**

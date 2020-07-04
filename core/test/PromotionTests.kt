@@ -4,6 +4,7 @@ import com.outlook.bselzer1.chess.game.board.move.Position
 import com.outlook.bselzer1.chess.game.piece.Piece
 import com.outlook.bselzer1.chess.game.piece.PlayerColor
 import com.outlook.bselzer1.chess.game.piece.extend.Pawn
+import org.amshove.kluent.shouldBeEqualTo
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
 
@@ -49,7 +50,7 @@ class PromotionTests
             board.move(oldPosition, newPosition) //Move -> set position -> set eligibility
             board.promotePiece(pawn, successor)
 
-            assert(board.getPieceAt(newPosition)!!.name == successor)
+            board.getPieceAt(newPosition)!!.name shouldBeEqualTo successor
         }
     }
 }

@@ -31,14 +31,6 @@ fun <T> MutableCollection<T>.addNoNull(element: T?): Boolean
 }
 
 /**
- * @return whether or not this and [that] have the exact same elements
- */
-fun <T> Collection<T>.contentEquals(that: Collection<T>?): Boolean
-{
-    return that != null && this.size == that.size && this.containsAll(that)
-}
-
-/**
  * @return a copy of the collection
  */
 fun <T : Copy<T>> Collection<T>.copy(): Collection<T>
@@ -46,12 +38,4 @@ fun <T : Copy<T>> Collection<T>.copy(): Collection<T>
     val collection = mutableListOf<T>()
     this.forEach { collection.add(it.copy()) }
     return collection
-}
-
-/**
- * @return whether or not the collections contains all of the [items]
- */
-fun <T> Collection<T>.containsAll(vararg items: T): Boolean
-{
-    return this.containsAll(items.toList())
 }

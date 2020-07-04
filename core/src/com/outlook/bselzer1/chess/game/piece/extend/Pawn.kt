@@ -8,7 +8,6 @@ import com.outlook.bselzer1.chess.game.piece.PieceName
 import com.outlook.bselzer1.chess.game.piece.PlayerColor
 import com.outlook.bselzer1.chess.game.piece.promotion.Promotion
 import com.outlook.bselzer1.chess.game.piece.promotion.PromotionCondition
-import com.outlook.bselzer1.chess.sharedfunctions.extension.addNoNull
 import com.outlook.bselzer1.chess.sharedfunctions.extension.addVarargs
 import com.outlook.bselzer1.chess.sharedfunctions.extension.isOneOf
 import kotlin.math.abs

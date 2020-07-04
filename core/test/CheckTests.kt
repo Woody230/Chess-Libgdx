@@ -8,7 +8,8 @@ import com.outlook.bselzer1.chess.game.piece.extend.Bishop
 import com.outlook.bselzer1.chess.game.piece.extend.King
 import com.outlook.bselzer1.chess.game.piece.extend.Queen
 import com.outlook.bselzer1.chess.game.piece.extend.Rook
-import com.outlook.bselzer1.chess.sharedfunctions.extension.contentEquals
+import org.amshove.kluent.shouldBeEmpty
+import org.amshove.kluent.shouldContainSame
 import org.junit.jupiter.api.Test
 
 /**
@@ -46,17 +47,17 @@ class CheckTests
         addPiece(board, Bishop(PlayerColor.WHITE, Position(4, 6), board))
         addPiece(board, King(PlayerColor.WHITE, Position(4, 7), board))
 
-        assert(king.getPositions(PositionFlag.VALIDATE).contentEquals(listOf(
+        king.getPositions(PositionFlag.VALIDATE) shouldContainSame listOf(
                 Position(0, 3),
                 Position(1, 2),
                 Position(1, 1),
                 Position(0, 1)
-        )))
+        )
 
-        assert(queen.getPositions(PositionFlag.VALIDATE).contentEquals(listOf(
+        queen.getPositions(PositionFlag.VALIDATE) shouldContainSame listOf(
                 Position(4, 6),
                 Position(1, 3)
-        )))
+        )
     }
 
     /**
@@ -72,7 +73,7 @@ class CheckTests
         addPiece(board, Queen(PlayerColor.WHITE, Position(4, 3), board))
         addPiece(board, King(PlayerColor.WHITE, Position(7, 0), board))
 
-        assert(rook.getPositions(PositionFlag.VALIDATE).isEmpty())
+        rook.getPositions(PositionFlag.VALIDATE).shouldBeEmpty()
     }
 
     /**

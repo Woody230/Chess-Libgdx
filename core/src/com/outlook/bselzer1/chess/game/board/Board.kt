@@ -56,7 +56,7 @@ abstract class Board(val size: BoardSize, val topColor: PlayerColor, val bottomC
         if (fromPiece.name == PieceName.KING)
         {
             val king = fromPiece as King
-            val castlingPosition = king.castlingPositions.firstOrNull { it.king == king && it.newKingPosition == toPosition}
+            val castlingPosition = king.castlingPositions.firstOrNull { it.king == king && it.newKingPosition == toPosition }
 
             //Found a castling position so move the rook.
             if (castlingPosition != null)
