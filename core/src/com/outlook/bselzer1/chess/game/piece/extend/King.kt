@@ -1,10 +1,7 @@
 package com.outlook.bselzer1.chess.game.piece.extend
 
 import com.outlook.bselzer1.chess.game.board.Board
-import com.outlook.bselzer1.chess.game.board.move.CastlingPosition
-import com.outlook.bselzer1.chess.game.board.move.Direction
-import com.outlook.bselzer1.chess.game.board.move.Movement
-import com.outlook.bselzer1.chess.game.board.move.Position
+import com.outlook.bselzer1.chess.game.board.move.*
 import com.outlook.bselzer1.chess.game.piece.Piece
 import com.outlook.bselzer1.chess.game.piece.PieceName
 import com.outlook.bselzer1.chess.game.piece.PlayerColor
@@ -42,22 +39,23 @@ class King(color: PlayerColor, position: Position, board: Board) : Piece<King>(P
         )
     }
 
-    override fun getPositions(): MutableCollection<Position>
+    /**
+     * @return the castling positions if they exist
+     */
+    override fun getSpecialPositions(vararg flags: PositionFlag): MutableCollection<Position>
     {
-        val positions = super.getPositions()
-        positions.addAll(getCastlingPositions())
-        return positions
+        return getCastlingPositions(*flags)
     }
 
     /**
      * @return the castling positions if they exist
      */
-    private fun getCastlingPositions(): MutableCollection<Position>
+    private fun getCastlingPositions(vararg flags: PositionFlag): MutableCollection<Position>
     {
         val positions = mutableListOf<Position>()
 
-        //Stop processing if the king has already moved.
-        if (this.hasMoved) //TODO king not currently checked
+        //Stop processing if the king has already moved or is currently in check.
+        if (this.hasMoved || (!flags.contains(PositionFlag.SKIP_CHECK) && board.isInCheck(color)))
         {
             return positions
         }

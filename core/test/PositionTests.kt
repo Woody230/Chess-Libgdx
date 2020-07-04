@@ -2,6 +2,7 @@ import com.outlook.bselzer1.chess.game.board.Board
 import com.outlook.bselzer1.chess.game.board.extend.WesternBoard
 import com.outlook.bselzer1.chess.game.board.move.Direction
 import com.outlook.bselzer1.chess.game.board.move.Position
+import com.outlook.bselzer1.chess.game.board.move.PositionFlag
 import com.outlook.bselzer1.chess.game.piece.Piece
 import com.outlook.bselzer1.chess.game.piece.PlayerColor
 import com.outlook.bselzer1.chess.game.piece.extend.*
@@ -185,7 +186,7 @@ class PositionTests
     /**
      * A blank board.
      */
-    private val blankBoard: Board = WesternBoard()
+    private val blankBoard: Board = WesternBoard(PlayerColor.WHITE, PlayerColor.BLACK)
 
     /**
      * Add piece method.
@@ -249,7 +250,7 @@ class PositionTests
     {
         var piece = Bishop(PlayerColor.BLACK, TEST_PIECE_POSITION, customBoard)
         addPiece(customBoard, piece)
-        assert(piece.getValidPositions().contentEquals(CUSTOM_DIAGONALS))
+        assert(piece.getPositions(PositionFlag.VALIDATE).contentEquals(CUSTOM_DIAGONALS))
 
         piece = Bishop(PlayerColor.BLACK, TEST_PIECE_POSITION, blankBoard)
         addPiece(blankBoard, piece)
@@ -266,7 +267,7 @@ class PositionTests
         customBoard.move(Position(0, 7), TEST_PIECE_POSITION)
 
         var piece = customBoard.getPieceAt(TEST_PIECE_POSITION)
-        assert(piece!!.getValidPositions().contentEquals(CUSTOM_KING))
+        assert(piece!!.getPositions(PositionFlag.VALIDATE).contentEquals(CUSTOM_KING))
 
         piece = King(PlayerColor.BLACK, TEST_PIECE_POSITION, blankBoard)
         addPiece(blankBoard, piece)
@@ -281,7 +282,7 @@ class PositionTests
     {
         var piece = Knight(PlayerColor.BLACK, TEST_PIECE_POSITION, customBoard)
         addPiece(customBoard, piece)
-        assert(piece.getValidPositions().contentEquals(CUSTOM_KNIGHT))
+        assert(piece.getPositions(PositionFlag.VALIDATE).contentEquals(CUSTOM_KNIGHT))
 
         piece = Knight(PlayerColor.BLACK, TEST_PIECE_POSITION, blankBoard)
         addPiece(blankBoard, piece)
@@ -293,7 +294,7 @@ class PositionTests
     {
         var piece = Pawn(PlayerColor.BLACK, TEST_PIECE_POSITION, customBoard)
         addPiece(customBoard, piece)
-        assert(piece.getValidPositions().contentEquals(CUSTOM_PAWN))
+        assert(piece.getPositions(PositionFlag.VALIDATE).contentEquals(CUSTOM_PAWN))
 
         piece = Pawn(PlayerColor.BLACK, TEST_PIECE_POSITION, blankBoard)
         addPiece(blankBoard, piece)
@@ -320,7 +321,7 @@ class PositionTests
     {
         var piece = Queen(PlayerColor.BLACK, TEST_PIECE_POSITION, customBoard)
         addPiece(customBoard, piece)
-        assert(piece.getValidPositions().contentEquals(CUSTOM_CARTESIAN.plus(CUSTOM_DIAGONALS)))
+        assert(piece.getPositions(PositionFlag.VALIDATE).contentEquals(CUSTOM_CARTESIAN.plus(CUSTOM_DIAGONALS)))
 
         piece = Queen(PlayerColor.BLACK, TEST_PIECE_POSITION, blankBoard)
         addPiece(blankBoard, piece)
@@ -335,7 +336,7 @@ class PositionTests
     {
         var piece = Rook(PlayerColor.BLACK, TEST_PIECE_POSITION, customBoard)
         addPiece(customBoard, piece)
-        assert(piece.getValidPositions().contentEquals(CUSTOM_CARTESIAN))
+        assert(piece.getPositions(PositionFlag.VALIDATE).contentEquals(CUSTOM_CARTESIAN))
 
         piece = Rook(PlayerColor.BLACK, TEST_PIECE_POSITION, blankBoard)
         addPiece(blankBoard, piece)
@@ -350,18 +351,10 @@ class PositionTests
     {
         val leftPosition = Position(2, 0)
         val rightPosition = Position(6, 0)
-
-        val king = King(PlayerColor.BLACK, Position(4, 0), blankBoard)
-        val rook1 = Rook(PlayerColor.BLACK, Position(0, 0), blankBoard)
-        val rook2 = Rook(PlayerColor.BLACK, Position(7, 0), blankBoard)
-        val king2 = King(PlayerColor.WHITE, Position(7, 7), blankBoard)
-        addPiece(blankBoard, king)
-        addPiece(blankBoard, rook1)
-        addPiece(blankBoard, rook2)
-        addPiece(blankBoard, king2)
+        val king = initializeCastlingBoard()
 
         //Test success
-        assert(king.getValidPositions().containsAll(
+        assert(king.getPositions(PositionFlag.VALIDATE).containsAll(
                 leftPosition,
                 rightPosition
         ))
@@ -369,11 +362,7 @@ class PositionTests
         //Test blocked by pieces
         for (x in 0..7)
         {
-            blankBoard.clear()
-            addPiece(blankBoard, king)
-            addPiece(blankBoard, rook1)
-            addPiece(blankBoard, rook2)
-            addPiece(blankBoard, king2)
+            initializeCastlingBoard()
 
             //Skip rook/king positions.
             val position = Position(x, 0)
@@ -386,7 +375,7 @@ class PositionTests
             addPiece(blankBoard, blocker)
 
             //Only one of the positions should be valid.
-            val validPositions = king.getValidPositions()
+            val validPositions = king.getPositions(PositionFlag.VALIDATE)
             assert(validPositions.contains(if (x > king.position.x) leftPosition else rightPosition))
             assert(!validPositions.contains(if (x > king.position.x) rightPosition else leftPosition))
         }
@@ -394,18 +383,12 @@ class PositionTests
         //Test initially in/pass through/end in check prevent castling.
         for (x in 0..7)
         {
-            //TODO fail for x = 4
-
-            blankBoard.clear()
-            addPiece(blankBoard, king)
-            addPiece(blankBoard, rook1)
-            addPiece(blankBoard, rook2)
-            addPiece(blankBoard, king2)
+            initializeCastlingBoard()
 
             val checker = Rook(PlayerColor.WHITE, Position(x, 7), blankBoard)
             addPiece(blankBoard, checker)
 
-            val validPositions = king.getValidPositions()
+            val validPositions = king.getPositions(PositionFlag.VALIDATE)
             val invalidPositions = mutableListOf<Position>()
             if (x <= king.position.x && x >= king.position.x - 2) invalidPositions.add(leftPosition)
             if (x >= king.position.x && x <= king.position.x + 2) invalidPositions.add(rightPosition)
@@ -414,6 +397,37 @@ class PositionTests
             invalidPositions.forEach { assert(!validPositions.contains(it)) }
         }
 
-        //TODO test black rook on (4, 7) can't be castled
+        //Test that vertical castling is prevented
+        initializeCastlingBoard()
+        addPiece(blankBoard, Rook(PlayerColor.BLACK, Position(4, 7), blankBoard))
+        assert(king.getPositions(PositionFlag.VALIDATE).contentEquals(listOf(
+                leftPosition,
+                rightPosition,
+                Position(3, 0),
+                Position(3, 1),
+                Position(4, 1),
+                Position(5, 1),
+                Position(5, 0)
+        )))
+    }
+
+    /**
+     * Initialize the [blankBoard] for castling.
+     * @return the piece being tested
+     */
+    private fun initializeCastlingBoard(): King
+    {
+        val king = King(PlayerColor.BLACK, Position(4, 0), blankBoard)
+        val rook1 = Rook(PlayerColor.BLACK, Position(0, 0), blankBoard)
+        val rook2 = Rook(PlayerColor.BLACK, Position(7, 0), blankBoard)
+        val king2 = King(PlayerColor.WHITE, Position(7, 7), blankBoard)
+
+        blankBoard.clear()
+        addPiece(blankBoard, king)
+        addPiece(blankBoard, rook1)
+        addPiece(blankBoard, rook2)
+        addPiece(blankBoard, king2)
+
+        return king
     }
 }

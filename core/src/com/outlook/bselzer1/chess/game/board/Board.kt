@@ -2,6 +2,7 @@ package com.outlook.bselzer1.chess.game.board
 
 import com.outlook.bselzer1.chess.game.board.move.Move
 import com.outlook.bselzer1.chess.game.board.move.Position
+import com.outlook.bselzer1.chess.game.board.move.PositionFlag
 import com.outlook.bselzer1.chess.game.piece.Piece
 import com.outlook.bselzer1.chess.game.piece.PieceName
 import com.outlook.bselzer1.chess.game.piece.PlayerColor
@@ -95,18 +96,9 @@ abstract class Board(val size: BoardSize, val topColor: PlayerColor, val bottomC
     }
 
     /**
-     * @param onlyValidPositions whether or not to use [Piece.getValidPositions] or [Piece.getPositions]
      * @return whether or not a player is in check
      */
-    protected abstract fun isInCheck(color: PlayerColor, onlyValidPositions: Boolean): Boolean
-
-    /**
-     * @return whether or not a player is in check
-     */
-    fun isInCheck(color: PlayerColor): Boolean
-    {
-        return isInCheck(color, true)
-    }
+    abstract fun isInCheck(color: PlayerColor, vararg flags: PositionFlag): Boolean
 
     /**
      * @return whether or not a player will be in check given [piece] moves to [newPosition]
@@ -123,7 +115,7 @@ abstract class Board(val size: BoardSize, val topColor: PlayerColor, val bottomC
         pieces.add(copy)
         copy.position = newPosition
 
-        val check = isInCheck(piece.color, false)
+        val check = isInCheck(piece.color)
 
         //Undo the move.
         pieces.remove(copy)

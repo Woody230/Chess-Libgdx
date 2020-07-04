@@ -1,6 +1,7 @@
 import com.outlook.bselzer1.chess.game.board.Board
 import com.outlook.bselzer1.chess.game.board.extend.WesternBoard
 import com.outlook.bselzer1.chess.game.board.move.Position
+import com.outlook.bselzer1.chess.game.board.move.PositionFlag
 import com.outlook.bselzer1.chess.game.piece.Piece
 import com.outlook.bselzer1.chess.game.piece.PlayerColor
 import com.outlook.bselzer1.chess.game.piece.extend.Bishop
@@ -45,14 +46,14 @@ class CheckTests
         addPiece(board, Bishop(PlayerColor.WHITE, Position(4, 6), board))
         addPiece(board, King(PlayerColor.WHITE, Position(4, 7), board))
 
-        assert(king.getValidPositions().contentEquals(listOf(
+        assert(king.getPositions(PositionFlag.VALIDATE).contentEquals(listOf(
                 Position(0, 3),
                 Position(1, 2),
                 Position(1, 1),
                 Position(0, 1)
         )))
 
-        assert(queen.getValidPositions().contentEquals(listOf(
+        assert(queen.getPositions(PositionFlag.VALIDATE).contentEquals(listOf(
                 Position(4, 6),
                 Position(1, 3)
         )))
@@ -71,7 +72,7 @@ class CheckTests
         addPiece(board, Queen(PlayerColor.WHITE, Position(4, 3), board))
         addPiece(board, King(PlayerColor.WHITE, Position(7, 0), board))
 
-        assert(rook.getValidPositions().isEmpty())
+        assert(rook.getPositions(PositionFlag.VALIDATE).isEmpty())
     }
 
     /**

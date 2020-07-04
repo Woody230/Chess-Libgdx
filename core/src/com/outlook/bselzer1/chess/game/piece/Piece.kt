@@ -4,6 +4,7 @@ import com.outlook.bselzer1.chess.game.board.Board
 import com.outlook.bselzer1.chess.game.board.move.Movement
 import com.outlook.bselzer1.chess.game.board.move.MovementFlag
 import com.outlook.bselzer1.chess.game.board.move.Position
+import com.outlook.bselzer1.chess.game.board.move.PositionFlag
 import com.outlook.bselzer1.chess.game.piece.promotion.Promotion
 import com.outlook.bselzer1.chess.sharedfunctions.Copy
 import com.outlook.bselzer1.chess.sharedfunctions.extension.contains
@@ -121,21 +122,28 @@ abstract class Piece<T : Piece<T>>(val name: PieceName, val color: PlayerColor, 
     }
 
     /**
-     * @return the positions that this piece can move to that do stop or do not cause a check
+     * @return the positions that this piece can move
      */
-    fun getValidPositions(): MutableCollection<Position>
+    fun getPositions(vararg flags: PositionFlag): MutableCollection<Position>
     {
-        val positions = getPositions()
-        positions.removeAll { board.willBeInCheck(this, it) }
+        val positions = getPositions(movements)
+        positions.addAll(getSpecialPositions(*flags))
+
+        if (flags.contains(PositionFlag.VALIDATE))
+        {
+            //Remove all positions that do not stop or would cause a check
+            positions.removeAll { board.willBeInCheck(this, it) }
+        }
+
         return positions
     }
 
     /**
-     * @return the positions that this piece can move to based on [movements]
+     * @return positions that do not strictly rely on [movements]
      */
-    open fun getPositions(): MutableCollection<Position>
+    protected open fun getSpecialPositions(vararg flags: PositionFlag): MutableCollection<Position>
     {
-        return getPositions(movements)
+        return mutableListOf()
     }
 
     /**

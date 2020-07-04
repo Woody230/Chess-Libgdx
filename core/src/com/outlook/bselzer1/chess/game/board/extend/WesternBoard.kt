@@ -3,6 +3,7 @@ package com.outlook.bselzer1.chess.game.board.extend
 import com.outlook.bselzer1.chess.game.board.Board
 import com.outlook.bselzer1.chess.game.board.BoardSize
 import com.outlook.bselzer1.chess.game.board.move.Position
+import com.outlook.bselzer1.chess.game.board.move.PositionFlag
 import com.outlook.bselzer1.chess.game.piece.PieceName
 import com.outlook.bselzer1.chess.game.piece.PlayerColor
 import com.outlook.bselzer1.chess.game.piece.extend.*
@@ -49,15 +50,11 @@ class WesternBoard(topColor: PlayerColor = PlayerColor.WHITE, bottomColor: Playe
     /**
      * @return whether or not the [King] is being attacked
      */
-    override fun isInCheck(color: PlayerColor, onlyValidPositions: Boolean): Boolean
+    override fun isInCheck(color: PlayerColor, vararg flags: PositionFlag): Boolean
     {
         val pieces = getPieces()
         val king = pieces.first { it.name == PieceName.KING && it.color == color }
-
-        return pieces.any {
-            val positions = if (onlyValidPositions) it.getValidPositions() else it.getPositions()
-            return@any it.color != color && positions.contains(king.position)
-        }
+        return pieces.any { it.color != color && it.getPositions(*flags, PositionFlag.SKIP_CHECK).contains(king.position) }
     }
 
     /**
@@ -66,6 +63,6 @@ class WesternBoard(topColor: PlayerColor = PlayerColor.WHITE, bottomColor: Playe
     override fun isCheckmated(color: PlayerColor): Boolean
     {
         val king = getPieces().first { it.name == PieceName.KING && it.color == color }
-        return !king.getValidPositions().any()
+        return !king.getPositions(PositionFlag.VALIDATE).any()
     }
 }

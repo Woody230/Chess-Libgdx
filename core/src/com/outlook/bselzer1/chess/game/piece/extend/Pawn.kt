@@ -2,10 +2,7 @@ package com.outlook.bselzer1.chess.game.piece.extend
 
 import com.badlogic.gdx.math.Rectangle
 import com.outlook.bselzer1.chess.game.board.Board
-import com.outlook.bselzer1.chess.game.board.move.Direction
-import com.outlook.bselzer1.chess.game.board.move.Movement
-import com.outlook.bselzer1.chess.game.board.move.MovementFlag
-import com.outlook.bselzer1.chess.game.board.move.Position
+import com.outlook.bselzer1.chess.game.board.move.*
 import com.outlook.bselzer1.chess.game.piece.Piece
 import com.outlook.bselzer1.chess.game.piece.PieceName
 import com.outlook.bselzer1.chess.game.piece.PlayerColor
@@ -81,11 +78,12 @@ class Pawn(color: PlayerColor, position: Position, board: Board) : Piece<Pawn>(P
         }
     }
 
-    override fun getPositions(): MutableCollection<Position>
+    /**
+     * @return the en passant position if it exists
+     */
+    override fun getSpecialPositions(vararg flags: PositionFlag): MutableCollection<Position>
     {
-        val collection = super.getPositions()
-        collection.addNoNull(getEnPassantPosition())
-        return collection
+        return listOfNotNull(getEnPassantPosition()).toMutableList()
     }
 
     override fun createCopy(): Pawn
