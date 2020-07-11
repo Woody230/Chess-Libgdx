@@ -1,5 +1,6 @@
 package com.outlook.bselzer1.chess.game.board.extend
 
+import com.outlook.bselzer1.chess.game.BoardName
 import com.outlook.bselzer1.chess.game.board.Board
 import com.outlook.bselzer1.chess.game.board.BoardSize
 import com.outlook.bselzer1.chess.game.board.move.Position
@@ -11,7 +12,7 @@ import com.outlook.bselzer1.chess.game.piece.extend.*
 /**
  * A Western chess board. 8 x 8
  */
-class WesternBoard(topColor: PlayerColor = PlayerColor.WHITE, bottomColor: PlayerColor = PlayerColor.BLACK) : Board(BoardSize(8, 8), topColor, bottomColor)
+class WesternBoard(topColor: PlayerColor = PlayerColor.WHITE, bottomColor: PlayerColor = PlayerColor.BLACK) : Board(BoardName.WESTERN, BoardSize(8, 8), topColor, bottomColor)
 {
     /**
      * Adds the front row of pawns and back row for both colors.

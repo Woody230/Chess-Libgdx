@@ -1,5 +1,6 @@
 package com.outlook.bselzer1.chess.game.board
 
+import com.outlook.bselzer1.chess.game.BoardName
 import com.outlook.bselzer1.chess.game.board.move.Move
 import com.outlook.bselzer1.chess.game.board.move.Position
 import com.outlook.bselzer1.chess.game.board.move.PositionFlag
@@ -14,7 +15,7 @@ import com.outlook.bselzer1.chess.sharedfunctions.extension.copy
  * A chess board.
  * @property size the size of the board
  */
-abstract class Board(val size: BoardSize, val topColor: PlayerColor, val bottomColor: PlayerColor)
+abstract class Board(val name: BoardName, val size: BoardSize, val topColor: PlayerColor, val bottomColor: PlayerColor)
 {
     /**
      * The collection of pieces.
