@@ -1,6 +1,5 @@
 package com.outlook.bselzer1.chess.game.board
 
-import com.outlook.bselzer1.chess.game.BoardName
 import com.outlook.bselzer1.chess.game.board.move.Move
 import com.outlook.bselzer1.chess.game.board.move.Position
 import com.outlook.bselzer1.chess.game.board.move.PositionFlag

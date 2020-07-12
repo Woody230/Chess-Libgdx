@@ -10,10 +10,11 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.ScreenViewport
 import com.badlogic.gdx.utils.viewport.Viewport
-import com.outlook.bselzer1.chess.game.BoardName
 import com.outlook.bselzer1.chess.game.board.Board
+import com.outlook.bselzer1.chess.game.board.BoardName
 import com.outlook.bselzer1.chess.sharedfunctions.extension.renderBackgroundColor
 import com.outlook.bselzer1.chess.ui.GdxGame
+import com.outlook.bselzer1.chess.ui.actor.board.BoardActor
 import com.outlook.bselzer1.chess.ui.sharedfunctions.CameraGestureListener
 import com.outlook.bselzer1.chess.ui.sharedfunctions.GameColor
 
@@ -23,6 +24,8 @@ import com.outlook.bselzer1.chess.ui.sharedfunctions.GameColor
  */
 class GameScreen(game: GdxGame, boardName: BoardName) : Screen
 {
+    //TODO center camera on the board
+
     /**
      * The camera.
      */
@@ -46,12 +49,20 @@ class GameScreen(game: GdxGame, boardName: BoardName) : Screen
     /**
      * The game board.
      */
-    private val board: Board = boardName.createBoard()
+    private val board: Board = boardName.createBoard().apply { initializePieces() }
+
+    /**
+     * The game board actor.
+     */
+    private val boardActor: BoardActor
 
     init
     {
         viewport = ScreenViewport(camera)
         stage = Stage(viewport, game.batch)
+
+        //Create after the viewport is applied to use default scaling.
+        boardActor = BoardActor.createActor(board, camera)
     }
 
     override fun hide()
@@ -65,6 +76,8 @@ class GameScreen(game: GdxGame, boardName: BoardName) : Screen
         input.addProcessor(stage)
         input.addProcessor(GestureDetector(CameraGestureListener(camera)))
         Gdx.input.inputProcessor = input
+
+        stage.addActor(boardActor)
     }
 
     override fun render(delta: Float)
@@ -94,7 +107,7 @@ class GameScreen(game: GdxGame, boardName: BoardName) : Screen
 
     override fun dispose()
     {
-
+        boardActor.dispose()
     }
 
     /**

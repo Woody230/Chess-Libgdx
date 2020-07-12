@@ -1,4 +1,4 @@
-package com.outlook.bselzer1.chess.sharedfunctions
+package com.outlook.bselzer1.chess.sharedfunctions.implement
 
 interface Copy<out T>
 {

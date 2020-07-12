@@ -1,6 +1,6 @@
 package com.outlook.bselzer1.chess.sharedfunctions.extension
 
-import com.outlook.bselzer1.chess.sharedfunctions.Copy
+import com.outlook.bselzer1.chess.sharedfunctions.implement.Copy
 
 /**
  * Adds each object in [items] to the collection.

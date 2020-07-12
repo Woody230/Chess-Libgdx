@@ -6,9 +6,9 @@ import com.outlook.bselzer1.chess.game.board.move.MovementFlag
 import com.outlook.bselzer1.chess.game.board.move.Position
 import com.outlook.bselzer1.chess.game.board.move.PositionFlag
 import com.outlook.bselzer1.chess.game.piece.promotion.Promotion
-import com.outlook.bselzer1.chess.sharedfunctions.Copy
 import com.outlook.bselzer1.chess.sharedfunctions.extension.contains
 import com.outlook.bselzer1.chess.sharedfunctions.extension.nextIntId
+import com.outlook.bselzer1.chess.sharedfunctions.implement.Copy
 
 //TODO position caching
 

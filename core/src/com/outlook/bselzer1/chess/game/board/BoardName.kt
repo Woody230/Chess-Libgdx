@@ -1,6 +1,5 @@
-package com.outlook.bselzer1.chess.game
+package com.outlook.bselzer1.chess.game.board
 
-import com.outlook.bselzer1.chess.game.board.Board
 import com.outlook.bselzer1.chess.game.board.extend.WesternBoard
 import com.outlook.bselzer1.chess.sharedfunctions.extension.toDisplayableString
 

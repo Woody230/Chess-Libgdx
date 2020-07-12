@@ -1,7 +1,7 @@
 package com.outlook.bselzer1.chess.game.board.extend
 
-import com.outlook.bselzer1.chess.game.BoardName
 import com.outlook.bselzer1.chess.game.board.Board
+import com.outlook.bselzer1.chess.game.board.BoardName
 import com.outlook.bselzer1.chess.game.board.BoardSize
 import com.outlook.bselzer1.chess.game.board.move.Position
 import com.outlook.bselzer1.chess.game.board.move.PositionFlag
