@@ -9,7 +9,9 @@ import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile
+import com.badlogic.gdx.math.Vector2
 import com.outlook.bselzer1.chess.game.board.extend.WesternBoard
+import com.outlook.bselzer1.chess.game.board.move.Position
 import com.outlook.bselzer1.chess.ui.sharedfunctions.GameColor
 import kotlin.math.min
 
@@ -27,6 +29,11 @@ class WesternActor(westernBoard: WesternBoard, camera: OrthographicCamera) : Boa
      * The tiled map renderer.
      */
     private val renderer = OrthogonalTiledMapRenderer(tiledMap)
+
+    /**
+     * The length of the cell.
+     */
+    private var cellLength: Int = 0
 
     init
     {
@@ -46,6 +53,11 @@ class WesternActor(westernBoard: WesternBoard, camera: OrthographicCamera) : Boa
         super.draw(batch, parentAlpha)
     }
 
+    override fun getPieceActorUIPosition(position: Position): Vector2
+    {
+        return Vector2((cellLength * position.x).toFloat(), (cellLength * position.y).toFloat())
+    }
+
     override fun dispose()
     {
         tiledMap.dispose()
@@ -61,21 +73,24 @@ class WesternActor(westernBoard: WesternBoard, camera: OrthographicCamera) : Boa
 
         //Create the length to fit based on the smaller side.
         val minSide = min(width, height)
-        val length = minSide / if (minSide == width) board.size.columnCount else board.size.rowCount
+        cellLength = minSide / if (minSide == width) board.size.columnCount else board.size.rowCount
+
+        //Match the piece actor size to the new cell size.
+        pieceActors.forEach { actor -> actor.setSize(cellLength.toFloat(), cellLength.toFloat()) }
 
         //Create a pixmap to alternate colors.
-        val pixmap = Pixmap(length * 2, length, Pixmap.Format.RGBA8888)
+        val pixmap = Pixmap(cellLength * 2, cellLength, Pixmap.Format.RGBA8888)
         pixmap.setColor(GameColor.WESTERN_TILE_1.color)
-        pixmap.fillRectangle(0, 0, length, length)
+        pixmap.fillRectangle(0, 0, cellLength, cellLength)
         pixmap.setColor(GameColor.WESTERN_TILE_2.color)
-        pixmap.fillRectangle(length, 0, length, length)
+        pixmap.fillRectangle(cellLength, 0, cellLength, cellLength)
 
         val texture = Texture(pixmap)
-        val leftRegion = TextureRegion(texture, 0, 0, length, length)
-        val rightRegion = TextureRegion(texture, length, 0, length, length)
+        val leftRegion = TextureRegion(texture, 0, 0, cellLength, cellLength)
+        val rightRegion = TextureRegion(texture, cellLength, 0, cellLength, cellLength)
 
         //Create the tiles.
-        val layer = TiledMapTileLayer(board.size.columnCount, board.size.rowCount, length, length)
+        val layer = TiledMapTileLayer(board.size.columnCount, board.size.rowCount, cellLength, cellLength)
         for (x in 0 until board.size.columnCount)
         {
             for (y in 0 until board.size.rowCount)

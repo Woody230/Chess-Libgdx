@@ -7,6 +7,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics
 import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter
@@ -148,4 +149,26 @@ fun Graphics.isUndecorated(): Boolean
 
     val window = this.window.windowHandle
     return GLFW.glfwGetWindowAttrib(window, GLFW.GLFW_DECORATED) == GLFW.GLFW_FALSE
+}
+
+/**
+ * Fill the pixmap, ignoring any transparent pixels.
+ */
+fun Pixmap.replacementFill()
+{
+    for (x in 0 until this.width)
+    {
+        for (y in 0 until this.height)
+        {
+            val pixel = this.getPixel(x, y)
+
+            //Ignore transparent
+            if (Color.alpha(pixel.toFloat()) == 0)
+            {
+                continue
+            }
+
+            this.fillRectangle(x, y, 1, 1)
+        }
+    }
 }

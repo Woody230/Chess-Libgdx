@@ -2,10 +2,12 @@ package com.outlook.bselzer1.chess.ui.actor.board
 
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.utils.Disposable
 import com.outlook.bselzer1.chess.game.board.Board
 import com.outlook.bselzer1.chess.game.board.extend.WesternBoard
+import com.outlook.bselzer1.chess.game.board.move.Position
 import com.outlook.bselzer1.chess.ui.actor.PieceActor
 
 /**
@@ -33,21 +35,28 @@ abstract class BoardActor(protected val board: Board, protected val camera: Orth
     /**
      * The actors for the pieces on the [board]
      */
-    private val pieceActors: Collection<PieceActor> = board.getPieces().map { piece -> PieceActor(piece) }
+    protected val pieceActors: Collection<PieceActor> = board.getPieces().map { piece -> PieceActor(piece) }
 
     override fun draw(batch: Batch, parentAlpha: Float)
     {
         super.draw(batch, parentAlpha)
 
-        //In case of promotion or being captured, attempt to retrieve the piece based on the id of the currently stored piece.
         pieceActors.forEach { actor ->
+            //In case of promotion or being captured, attempt to retrieve the piece based on the id of the currently stored piece.
             val id = actor.getAssociatedId()
             actor.piece = if (id == null) null else board.getPieces().firstOrNull { piece -> piece.getId() == id }
+
+            val position = if (actor.piece == null) Vector2(0f, 0f) else getPieceActorUIPosition(actor.piece!!.position)
+            actor.setPosition(position.x, position.y)
+
             actor.draw(batch, parentAlpha)
         }
     }
 
-    //TODO piece actor size scaling -- abstract method
+    /**
+     * Get the graphical position of the piece actor based on its board [position].
+     */
+    abstract fun getPieceActorUIPosition(position: Position): Vector2
 
     override fun dispose()
     {

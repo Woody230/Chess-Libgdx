@@ -36,16 +36,16 @@ class WesternBoard(topColor: PlayerColor = PlayerColor.WHITE, bottomColor: Playe
      */
     private fun addBackRow(color: PlayerColor)
     {
-        val row = if (color == topColor) size.rowCount - 1 else 0
+        val column = if (color == topColor) size.columnCount - 1 else 0
 
-        addPiece(Rook(color, Position(row, 0), this))
-        addPiece(Knight(color, Position(row, 1), this))
-        addPiece(Bishop(color, Position(row, 2), this))
-        addPiece(Queen(color, Position(row, 3), this))
-        addPiece(King(color, Position(row, 4), this))
-        addPiece(Bishop(color, Position(row, 5), this))
-        addPiece(Knight(color, Position(row, 6), this))
-        addPiece(Rook(color, Position(row, 7), this))
+        addPiece(Rook(color, Position(0, column), this))
+        addPiece(Knight(color, Position(1, column), this))
+        addPiece(Bishop(color, Position(2, column), this))
+        addPiece(Queen(color, Position(3, column), this))
+        addPiece(King(color, Position(4, column), this))
+        addPiece(Bishop(color, Position(5, column), this))
+        addPiece(Knight(color, Position(6, column), this))
+        addPiece(Rook(color, Position(7, column), this))
     }
 
     /**

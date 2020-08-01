@@ -6,14 +6,16 @@ import com.outlook.bselzer1.chess.game.piece.extend.*
 /**
  * The name of the chess piece.
  */
-enum class PieceName
+enum class PieceName(val assetLocation: String)
 {
-    BISHOP,
-    KING,
-    KNIGHT,
-    PAWN,
-    QUEEN,
-    ROOK;
+    //TODO https://creativecommons.org/licenses/by/3.0/ for assets
+
+    BISHOP("piece/bishop.png"),
+    KING("piece/king.png"),
+    KNIGHT("piece/knight.png"),
+    PAWN("piece/pawn.png"),
+    QUEEN("piece/queen.png"),
+    ROOK("piece/rook.png");
 
     companion object
     {
