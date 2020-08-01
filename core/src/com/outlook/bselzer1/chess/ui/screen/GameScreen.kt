@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport
 import com.badlogic.gdx.utils.viewport.Viewport
 import com.outlook.bselzer1.chess.game.board.Board
 import com.outlook.bselzer1.chess.game.board.BoardName
+import com.outlook.bselzer1.chess.sharedfunctions.extension.applyContinuousRendering
 import com.outlook.bselzer1.chess.sharedfunctions.extension.renderBackgroundColor
 import com.outlook.bselzer1.chess.ui.GdxGame
 import com.outlook.bselzer1.chess.ui.actor.board.BoardActor
@@ -58,6 +59,7 @@ class GameScreen(game: GdxGame, boardName: BoardName) : Screen
 
     init
     {
+        Gdx.graphics.applyContinuousRendering(true)
         viewport = ScreenViewport(camera)
         stage = Stage(viewport, game.batch)
 

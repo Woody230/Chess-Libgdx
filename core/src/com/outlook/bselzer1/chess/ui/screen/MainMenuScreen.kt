@@ -198,8 +198,8 @@ class MainMenuScreen(private val game: GdxGame) : Screen
      */
     init
     {
+        Gdx.graphics.applyContinuousRendering(false)
         viewport = ScreenViewport(camera)
         stage = Stage(viewport, game.batch)
-        Gdx.graphics.applyContinuousRendering(false)
     }
 }
