@@ -24,14 +24,14 @@ class PieceActor(piece: Piece<*>) : Image(), Disposable
             }
 
             //Use the cache.
-            var pieceTexture = PIECE_TEXTURES.firstOrNull { it.name == value.name && it.color == value.color }
-            if (pieceTexture == null)
+            var texture = TEXTURES.firstOrNull { texture -> texture.name == value.name && texture.color == value.color }
+            if (texture == null)
             {
-                pieceTexture = PieceTexture(piece!!.name, piece!!.color)
-                PIECE_TEXTURES.add(pieceTexture)
+                texture = PieceTexture(piece!!.name, piece!!.color)
+                TEXTURES.add(texture)
             }
 
-            drawable = TextureRegionDrawable(pieceTexture.texture)
+            drawable = TextureRegionDrawable(texture)
         }
 
     companion object
@@ -39,15 +39,15 @@ class PieceActor(piece: Piece<*>) : Image(), Disposable
         /**
          * The cached textures.
          */
-        private val PIECE_TEXTURES = mutableSetOf<PieceTexture>()
+        private val TEXTURES = mutableSetOf<PieceTexture>()
 
         /**
          * Dispose of static variables.
          */
         fun dispose()
         {
-            PIECE_TEXTURES.forEach { it.texture.dispose() }
-            PIECE_TEXTURES.clear()
+            TEXTURES.forEach { texture -> texture.dispose() }
+            TEXTURES.clear()
         }
     }
 

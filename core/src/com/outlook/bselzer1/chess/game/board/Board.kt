@@ -56,12 +56,12 @@ abstract class Board(val name: BoardName, val size: BoardSize, val topColor: Pla
         if (fromPiece.name == PieceName.KING)
         {
             val king = fromPiece as King
-            val castlingPosition = king.castlingPositions.firstOrNull { it.king == king && it.newKingPosition == toPosition }
+            val castlingPosition = king.castlingPositions.firstOrNull { position -> position.king == king && position.newKingPosition == toPosition }
 
             //Found a castling position so move the rook.
             if (castlingPosition != null)
             {
-                val oldRookPosition = pieces.first { it == castlingPosition.rook }.position
+                val oldRookPosition = pieces.first { piece -> piece == castlingPosition.rook }.position
                 move(oldRookPosition, castlingPosition.newRookPosition)
             }
         }
@@ -109,7 +109,7 @@ abstract class Board(val name: BoardName, val size: BoardSize, val topColor: Pla
         //A copy is used instead of setting the position to avoid consequences such as changing hasMoved.
         //MUST do removals first since the copy has the same id.
         val copy = piece.copy()
-        val capture = pieces.firstOrNull { it.position == newPosition }
+        val capture = pieces.firstOrNull { boardPiece -> boardPiece.position == newPosition }
         pieces.remove(piece)
         pieces.remove(capture)
         pieces.add(copy)

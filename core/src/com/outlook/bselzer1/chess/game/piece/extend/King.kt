@@ -61,7 +61,7 @@ class King(color: PlayerColor, position: Position, board: Board) : Piece<King>(P
         }
 
         //Get all of the player's rooks that have not moved and are in the same row.
-        for (rook in board.getPieces().filter { it.name == PieceName.ROOK && it.color == this.color && !it.hasMoved() && it.position.y == this.position.y })
+        for (rook in board.getPieces().filter { piece -> piece.name == PieceName.ROOK && piece.color == this.color && !piece.hasMoved() && piece.position.y == this.position.y })
         {
             val inBetween = this.position.x toExclusive rook.position.x
             val kingSide = inBetween.take(2)

@@ -54,8 +54,8 @@ class WesternBoard(topColor: PlayerColor = PlayerColor.WHITE, bottomColor: Playe
     override fun isInCheck(color: PlayerColor, vararg flags: PositionFlag): Boolean
     {
         val pieces = getPieces()
-        val king = pieces.first { it.name == PieceName.KING && it.color == color }
-        return pieces.any { it.color != color && it.getPositions(*flags, PositionFlag.SKIP_CHECK).contains(king.position) }
+        val king = pieces.first { piece -> piece.name == PieceName.KING && piece.color == color }
+        return pieces.any { piece -> piece.color != color && piece.getPositions(*flags, PositionFlag.SKIP_CHECK).contains(king.position) }
     }
 
     /**
@@ -63,7 +63,7 @@ class WesternBoard(topColor: PlayerColor = PlayerColor.WHITE, bottomColor: Playe
      */
     override fun isCheckmated(color: PlayerColor): Boolean
     {
-        val king = getPieces().first { it.name == PieceName.KING && it.color == color }
+        val king = getPieces().first { piece -> piece.name == PieceName.KING && piece.color == color }
         return !king.getPositions(PositionFlag.VALIDATE).any()
     }
 }

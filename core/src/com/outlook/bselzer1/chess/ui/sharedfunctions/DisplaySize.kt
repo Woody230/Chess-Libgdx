@@ -59,9 +59,9 @@ enum class DisplaySize(width: Int, height: Int)
                 field = Array()
                 if (Gdx.graphics.supportsDisplayModeChange())
                 {
-                    values().map { it.resolution }
-                            .filter { it.fits(resolutionDisplay) }
-                            .forEach { field!!.add(it) }
+                    values().map { displaySize -> displaySize.resolution }
+                            .filter { displaySize -> displaySize.fits(resolutionDisplay) }
+                            .forEach { displaySize -> field!!.add(displaySize) }
                 }
 
                 val currentResolution = Resolution.CURRENT_RESOLUTION

@@ -10,19 +10,19 @@ import com.outlook.bselzer1.chess.sharedfunctions.extension.replacementFill
 /**
  * Abstraction of a texture for a piece.
  */
-data class PieceTexture(val name: PieceName, val color: PlayerColor)
+data class PieceTexture(val name: PieceName, val color: PlayerColor) : Texture(createPixmap(name, color))
 {
-    /**
-     * The texture.
-     */
-    val texture: Texture
-
-    init
+    companion object
     {
-        val pixmap = Pixmap(Gdx.files.internal(name.assetLocation))
-        pixmap.setColor(color.color)
-        pixmap.replacementFill()
-        texture = Texture(pixmap)
-        pixmap.dispose()
+        /**
+         * Create a pixmap to match the [color] for the asset associated with the [name].
+         */
+        private fun createPixmap(name: PieceName, color: PlayerColor): Pixmap
+        {
+            val pixmap = Pixmap(Gdx.files.internal(name.assetLocation))
+            pixmap.setColor(color.color)
+            pixmap.replacementFill()
+            return pixmap
+        }
     }
 }

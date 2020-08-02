@@ -28,7 +28,7 @@ enum class DisplayType
          */
         fun getDisplayType(type: String): DisplayType?
         {
-            return values().firstOrNull { it.toString() == type }
+            return values().firstOrNull { displayType -> displayType.toString() == type }
         }
 
         /**

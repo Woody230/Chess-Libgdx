@@ -226,7 +226,7 @@ class PositionTests
         {
             for (component in direction.name.split("_"))
             {
-                val directionality = directionalities.filter { component.startsWith(it.key, true) }.entries.first()
+                val directionality = directionalities.filter { directionality -> component.startsWith(directionality.key, true) }.entries.first()
                 val directionIncrement = if (directionality.key == "left" || directionality.key == "right") direction.xIncrement else direction.yIncrement
                 var componentIncrement = component.replaceFirst(directionality.key, "", true).toInt()
 

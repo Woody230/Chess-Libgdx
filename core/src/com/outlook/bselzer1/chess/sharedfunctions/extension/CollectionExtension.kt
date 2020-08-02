@@ -36,6 +36,6 @@ fun <T> MutableCollection<T>.addNoNull(element: T?): Boolean
 fun <T : Copy<T>> Collection<T>.copy(): Collection<T>
 {
     val collection = mutableListOf<T>()
-    this.forEach { collection.add(it.copy()) }
+    this.forEach { element -> collection.add(element.copy()) }
     return collection
 }
