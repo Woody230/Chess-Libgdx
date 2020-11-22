@@ -20,5 +20,10 @@ enum class GameColor(var color: Color)
     /**
      * Brown.
      */
-    WESTERN_TILE_2(Color(0.8f, 0.4f, 0f, 1f))
+    WESTERN_TILE_2(Color(0.8f, 0.4f, 0f, 1f)),
+
+    /**
+     * Green.
+     */
+    WESTERN_VALID_TILE(Color.FOREST)
 }

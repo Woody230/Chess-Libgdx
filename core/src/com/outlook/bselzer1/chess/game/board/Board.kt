@@ -7,8 +7,10 @@ import com.outlook.bselzer1.chess.game.piece.Piece
 import com.outlook.bselzer1.chess.game.piece.PieceName
 import com.outlook.bselzer1.chess.game.piece.PlayerColor
 import com.outlook.bselzer1.chess.game.piece.extend.King
+import com.outlook.bselzer1.chess.game.piece.extend.Pawn
 import com.outlook.bselzer1.chess.sharedfunctions.extension.addNoNull
 import com.outlook.bselzer1.chess.sharedfunctions.extension.copy
+import com.outlook.bselzer3.libgdxlogger.LibgdxLogger
 
 /**
  * A chess board.
@@ -44,15 +46,31 @@ abstract class Board(val name: BoardName, val size: BoardSize, val topColor: Pla
     }
 
     /**
+     * Validate that a move is able to be made and then perform it if it is valid.
+     */
+    fun attemptMove(fromPosition: Position, toPosition: Position)
+    {
+        val fromPiece = getPieceAt(fromPosition)!!
+        if (!fromPiece.getPositions(PositionFlag.VALIDATE).contains(toPosition))
+        {
+            LibgdxLogger.debug("Attempted to move from $fromPosition to $toPosition but the position is not valid.")
+            return
+        }
+
+        move(fromPosition, toPosition)
+    }
+
+    //TODO private
+    /**
      * Move a piece at the position [fromPosition] to the position [toPosition].
      */
     fun move(fromPosition: Position, toPosition: Position)
     {
+        //Must get actual piece, not a copy (which would occur using getPieceAt)
         val fromPiece = pieces.firstOrNull { piece -> piece.position == fromPosition }
                 ?: throw KotlinNullPointerException("Unable to retrieve the piece at $fromPosition.")
-        val toPiece = pieces.firstOrNull { piece -> piece.position == toPosition }
+        var toPiece = pieces.firstOrNull { piece -> piece.position == toPosition }
 
-        //Attempt to castle.
         if (fromPiece.name == PieceName.KING)
         {
             val king = fromPiece as King
@@ -65,10 +83,23 @@ abstract class Board(val name: BoardName, val size: BoardSize, val topColor: Pla
                 move(oldRookPosition, castlingPosition.newRookPosition)
             }
         }
+        else if(fromPiece.name == PieceName.PAWN)
+        {
+            val pawn = fromPiece as Pawn
+            if (pawn.getEnPassantPosition() == toPosition)
+            {
+                //En passant means that toPiece will be null at this point since toPiece is not at toPosition.
+                //Due to the rules of en passant, the piece to capture must be the piece that just moved.
+                //Must get actual piece, not a copy (which would occur using getLastMove)
+                toPiece = moveHistory.last().fromPiece
+            }
+        }
 
         pieces.remove(toPiece)
         fromPiece.position = toPosition
         moveHistory.add(Move(fromPosition, toPosition, fromPiece, toPiece))
+
+        //TODO determine victory abstract method
     }
 
     /**

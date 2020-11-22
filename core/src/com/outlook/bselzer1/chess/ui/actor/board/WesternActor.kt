@@ -29,14 +29,19 @@ class WesternActor(westernBoard: WesternBoard, camera: OrthographicCamera) : Boa
     private var cellHeight: Int = 0
 
     /**
-     * The sprite for the first colored cell.
+     * The sprite for the first colored tile.
      */
-    private lateinit var sprite1: Sprite
+    private lateinit var tile1Sprite: Sprite
 
     /**
-     * The sprite for the second colored cell.
+     * The sprite for the second colored tile.
      */
-    private lateinit var sprite2: Sprite
+    private lateinit var tile2Sprite: Sprite
+
+    /**
+     * The sprite for the valid position tile.
+     */
+    private lateinit var validTileSprite: Sprite
 
     init
     {
@@ -50,7 +55,15 @@ class WesternActor(westernBoard: WesternBoard, camera: OrthographicCamera) : Boa
         //Alternate the cell colors.
         (0 until board.size.columnCount).forEach { column ->
             (0 until board.size.rowCount).forEach { row ->
-                val sprite = if (row % 2 == 0 && column % 2 == 0 || row % 2 == 1 && column % 2 == 1) sprite1 else sprite2
+                val sprite = when
+                {
+                    //Highlight valid positions while dragging.
+                    draggedActor != null && draggedValidPositions.contains(Position(column, row)) -> validTileSprite
+
+                    row % 2 == 0 && column % 2 == 0 || row % 2 == 1 && column % 2 == 1 -> tile1Sprite
+                    else -> tile2Sprite
+                }
+
                 val vector = getAbsoluteUiPosition(Position(column, row))
                 sprite.setPosition(vector.x, vector.y)
                 sprite.draw(batch)
@@ -100,16 +113,19 @@ class WesternActor(westernBoard: WesternBoard, camera: OrthographicCamera) : Boa
         //Match the piece actor size to the cell size.
         pieceActors.forEach { actor -> actor.setSize(cellWidth.toFloat(), cellHeight.toFloat()) }
 
-        //Create a pixmap for the two distinctly colored cells.
-        val pixmap = Pixmap(cellWidth * 2, cellHeight, Pixmap.Format.RGBA8888)
+        //Create a pixmap for the two distinctly colored tiles and valid position tile.
+        val pixmap = Pixmap(cellWidth * 3, cellHeight, Pixmap.Format.RGBA8888)
         pixmap.setColor(GameColor.WESTERN_TILE_1.color)
         pixmap.fillRectangle(0, 0, cellWidth, cellHeight)
         pixmap.setColor(GameColor.WESTERN_TILE_2.color)
         pixmap.fillRectangle(cellWidth, 0, cellWidth, cellHeight)
+        pixmap.setColor(GameColor.WESTERN_VALID_TILE.color)
+        pixmap.fillRectangle(cellWidth * 2, 0, cellWidth, cellHeight)
 
         val texture = Texture(pixmap)
-        sprite1 = Sprite(TextureRegion(texture, 0, 0, cellWidth, cellHeight))
-        sprite2 = Sprite(TextureRegion(texture, cellWidth, 0, cellWidth, cellHeight))
+        tile1Sprite = Sprite(TextureRegion(texture, 0, 0, cellWidth, cellHeight))
+        tile2Sprite = Sprite(TextureRegion(texture, cellWidth, 0, cellWidth, cellHeight))
+        validTileSprite = Sprite(TextureRegion(texture, cellWidth * 2, 0, cellWidth, cellHeight))
         pixmap.dispose()
     }
 

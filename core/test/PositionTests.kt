@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Test
  */
 class PositionTests
 {
+    //TODO more comprehensive position tests
+
     companion object
     {
         /**

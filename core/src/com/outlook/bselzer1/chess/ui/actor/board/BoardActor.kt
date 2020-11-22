@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Disposable
 import com.outlook.bselzer1.chess.game.board.Board
 import com.outlook.bselzer1.chess.game.board.extend.WesternBoard
 import com.outlook.bselzer1.chess.game.board.move.Position
+import com.outlook.bselzer1.chess.game.board.move.PositionFlag
 import com.outlook.bselzer1.chess.sharedfunctions.extension.containsPoint
 import com.outlook.bselzer1.chess.ui.actor.PieceActor
 import com.outlook.bselzer3.libgdxlogger.LibgdxLogger
@@ -51,28 +52,30 @@ abstract class BoardActor(protected val board: Board, protected val camera: Orth
     /**
      * The actor being dragged.
      */
-    private var draggedActor: PieceActor? = null
+    protected var draggedActor: PieceActor? = null
+
+    /**
+     * The valid positions to highlight when dragging a piece.
+     */
+    protected lateinit var draggedValidPositions: Collection<Position>
 
     override fun draw(batch: Batch, parentAlpha: Float)
     {
         super.draw(batch, parentAlpha)
 
-        //TODO dragged actor on top
+        pieceActors.filter { actor -> actor != draggedActor }.forEach { actor ->
+            //In case of promotion or being captured, attempt to retrieve the piece based on the id of the currently stored piece.
+            val id = actor.getAssociatedId()
+            actor.piece = if (id == null) null else board.getPieces().firstOrNull { piece -> piece.getId() == id }
 
-        pieceActors.forEach { actor ->
-            //Drag listener will handle position if the actor is being dragged.
-            if (draggedActor != actor)
-            {
-                //In case of promotion or being captured, attempt to retrieve the piece based on the id of the currently stored piece.
-                val id = actor.getAssociatedId()
-                actor.piece = if (id == null) null else board.getPieces().firstOrNull { piece -> piece.getId() == id }
-
-                val position = if (actor.piece == null) Vector2(0f, 0f) else getPieceActorUiPosition(actor.piece!!.position)
-                actor.setPosition(position.x, position.y)
-            }
-
+            val position = if (actor.piece == null) Vector2(0f, 0f) else getPieceActorUiPosition(actor.piece!!.position)
+            actor.setPosition(position.x, position.y)
             actor.draw(batch, parentAlpha)
         }
+
+        //Draw dragged actor last to keep on top.
+        //Drag listener will handle position if the actor is being dragged.
+        draggedActor?.draw(batch, parentAlpha)
     }
 
     /**
@@ -110,6 +113,7 @@ abstract class BoardActor(protected val board: Board, protected val camera: Orth
             {
                 val vector = camera.unproject(Vector3(Gdx.input.x.toFloat(), Gdx.input.y.toFloat(), 0f))
                 draggedActor = pieceActors.firstOrNull { actor -> actor.containsPoint(vector.x, vector.y) }
+                draggedValidPositions = draggedActor?.piece?.getPositions(PositionFlag.VALIDATE) ?: emptyList()
             }
 
             /**
@@ -140,10 +144,9 @@ abstract class BoardActor(protected val board: Board, protected val camera: Orth
                     return
                 }
 
-                //TODO attempt move method on board to handle validation that this move can actually happen
                 val vector = camera.unproject(Vector3(Gdx.input.x.toFloat(), Gdx.input.y.toFloat(), 0f))
                 val newPosition = getPiecePosition(vector.x, vector.y)
-                board.move(oldPosition, newPosition)
+                board.attemptMove(oldPosition, newPosition)
                 draggedActor = null
 
                 LibgdxLogger.debug("Dragged piece to $newPosition")

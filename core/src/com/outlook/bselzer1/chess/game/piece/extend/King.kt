@@ -21,7 +21,7 @@ import com.outlook.bselzer1.chess.sharedfunctions.extension.toExclusive
 class King(color: PlayerColor, position: Position, board: Board) : Piece<King>(PieceName.KING, color, position, board)
 {
     /**
-     * The collection of castling positions.
+     * The collection of currently available castling positions.
      */
     val castlingPositions = mutableSetOf<CastlingPosition>()
 
@@ -44,6 +44,7 @@ class King(color: PlayerColor, position: Position, board: Board) : Piece<King>(P
      */
     override fun getSpecialPositions(vararg flags: PositionFlag): MutableCollection<Position>
     {
+        castlingPositions.clear()
         return getCastlingPositions(*flags)
     }
 

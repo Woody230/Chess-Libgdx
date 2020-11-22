@@ -7,6 +7,7 @@ import com.outlook.bselzer1.chess.game.board.move.Position
 import com.outlook.bselzer1.chess.game.board.move.PositionFlag
 import com.outlook.bselzer1.chess.game.piece.promotion.Promotion
 import com.outlook.bselzer1.chess.sharedfunctions.extension.contains
+import com.outlook.bselzer1.chess.sharedfunctions.extension.mutableCopy
 import com.outlook.bselzer1.chess.sharedfunctions.extension.nextIntId
 import com.outlook.bselzer1.chess.sharedfunctions.implement.Copy
 
@@ -57,7 +58,7 @@ abstract class Piece<T : Piece<T>>(val name: PieceName, val color: PlayerColor, 
     /**
      * The possible movements.
      */
-    protected val movements: MutableCollection<Movement> = mutableListOf()
+    protected var movements: MutableCollection<Movement> = mutableListOf()
 
     override fun toString(): String
     {
@@ -89,6 +90,7 @@ abstract class Piece<T : Piece<T>>(val name: PieceName, val color: PlayerColor, 
         val piece = createCopy()
         piece.id = this.id
         piece.hasMoved = this.hasMoved
+        piece.movements = this.movements.mutableCopy()
         return piece
     }
 
