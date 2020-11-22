@@ -340,7 +340,7 @@ class SettingsScreen(private val game: GdxGame) : Screen
         sbVsync.setItems(*booleanAsUIString())
 
         val vsync = pref.getBoolean(KEY_VSYNC, DEFAULT_VSYNC)
-        sbVsync.selected = vsync.toUIString()
+        sbVsync.selected = vsync.toUiString()
         sbVsync.addListener(object : ChangeListener()
         {
             override fun changed(event: ChangeEvent, actor: Actor)

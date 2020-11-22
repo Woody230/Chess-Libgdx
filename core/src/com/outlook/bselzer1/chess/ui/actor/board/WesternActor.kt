@@ -4,15 +4,13 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.maps.tiled.TiledMap
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
-import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile
 import com.badlogic.gdx.math.Vector2
 import com.outlook.bselzer1.chess.game.board.extend.WesternBoard
 import com.outlook.bselzer1.chess.game.board.move.Position
 import com.outlook.bselzer1.chess.ui.sharedfunctions.GameColor
+import com.outlook.bselzer3.libgdxlogger.LibgdxLogger
 import kotlin.math.min
 
 /**
@@ -21,98 +19,109 @@ import kotlin.math.min
 class WesternActor(westernBoard: WesternBoard, camera: OrthographicCamera) : BoardActor(westernBoard, camera)
 {
     /**
-     * The tiled map.
+     * The width of the cell.
      */
-    private val tiledMap: TiledMap = TiledMap()
+    private var cellWidth: Int = 0
 
     /**
-     * The tiled map renderer.
+     * The height of the cell.
      */
-    private val renderer = OrthogonalTiledMapRenderer(tiledMap)
+    private var cellHeight: Int = 0
 
     /**
-     * The length of the cell.
+     * The sprite for the first colored cell.
      */
-    private var cellLength: Int = 0
+    private lateinit var sprite1: Sprite
+
+    /**
+     * The sprite for the second colored cell.
+     */
+    private lateinit var sprite2: Sprite
 
     init
     {
-        setLayers(camera.viewportWidth.toInt(), camera.viewportHeight.toInt())
+        //Create the length to fit based on the smaller side.
+        val minSide = min(camera.viewportWidth, camera.viewportHeight)
+        setSize(minSide, minSide)
     }
 
     override fun draw(batch: Batch, parentAlpha: Float)
     {
-        //Render the tiled map.
-        //Must end the batch and restart it when using a renderer. https://github.com/libgdx/libgdx/wiki/Scene2d#drawing
-        batch.end()
-        renderer.setView(camera)
-        renderer.render()
-        batch.begin()
+        //Alternate the cell colors.
+        (0 until board.size.columnCount).forEach { column ->
+            (0 until board.size.rowCount).forEach { row ->
+                val sprite = if (row % 2 == 0 && column % 2 == 0 || row % 2 == 1 && column % 2 == 1) sprite1 else sprite2
+                val vector = getAbsoluteUiPosition(Position(column, row))
+                sprite.setPosition(vector.x, vector.y)
+                sprite.draw(batch)
+            }
+        }
 
         //Render the pieces on top.
         super.draw(batch, parentAlpha)
     }
 
-    override fun getPieceActorUIPosition(position: Position): Vector2
+    override fun getPieceActorUiPosition(position: Position): Vector2
     {
-        return Vector2((cellLength * position.x).toFloat(), (cellLength * position.y).toFloat())
+        return getAbsoluteUiPosition(position)
     }
 
-    override fun dispose()
+    override fun getPiecePosition(x: Float, y: Float): Position
     {
-        tiledMap.dispose()
-        renderer.dispose()
+        val xPosition = ((x - this.x) / cellWidth).toInt()
+        val yPosition = ((y - this.y) / cellHeight).toInt()
+        return Position(xPosition, yPosition)
     }
 
     /**
-     * Set the [tiledMap] layers with scaling based on [width] and [height]
+     * Gets the absolute position within the bounds of the world.
      */
-    private fun setLayers(width: Int, height: Int)
+    private fun getAbsoluteUiPosition(position: Position): Vector2
     {
-        tiledMap.layers.removeAll { true }
+        //Add the position of this actor to get the absolute position.
+        val relativePosition = getRelativeUiPosition(position)
+        relativePosition.add(x, y)
+        return relativePosition
+    }
 
-        //Create the length to fit based on the smaller side.
-        val minSide = min(width, height)
-        cellLength = minSide / if (minSide == width) board.size.columnCount else board.size.rowCount
+    /**
+     * Get the relative position within the bounds of the actor.
+     */
+    private fun getRelativeUiPosition(position: Position): Vector2
+    {
+        return Vector2((cellWidth * position.x).toFloat(), (cellHeight * position.y).toFloat())
+    }
 
-        //Match the piece actor size to the new cell size.
-        pieceActors.forEach { actor -> actor.setSize(cellLength.toFloat(), cellLength.toFloat()) }
+    /**
+     * Set the sprites used in creating an alternating colored board.
+     */
+    private fun generateSprites()
+    {
+        //Match the piece actor size to the cell size.
+        pieceActors.forEach { actor -> actor.setSize(cellWidth.toFloat(), cellHeight.toFloat()) }
 
-        //Create a pixmap to alternate colors.
-        val pixmap = Pixmap(cellLength * 2, cellLength, Pixmap.Format.RGBA8888)
+        //Create a pixmap for the two distinctly colored cells.
+        val pixmap = Pixmap(cellWidth * 2, cellHeight, Pixmap.Format.RGBA8888)
         pixmap.setColor(GameColor.WESTERN_TILE_1.color)
-        pixmap.fillRectangle(0, 0, cellLength, cellLength)
+        pixmap.fillRectangle(0, 0, cellWidth, cellHeight)
         pixmap.setColor(GameColor.WESTERN_TILE_2.color)
-        pixmap.fillRectangle(cellLength, 0, cellLength, cellLength)
+        pixmap.fillRectangle(cellWidth, 0, cellWidth, cellHeight)
 
         val texture = Texture(pixmap)
-        val leftRegion = TextureRegion(texture, 0, 0, cellLength, cellLength)
-        val rightRegion = TextureRegion(texture, cellLength, 0, cellLength, cellLength)
-
-        //Create the tiles.
-        val layer = TiledMapTileLayer(board.size.columnCount, board.size.rowCount, cellLength, cellLength)
-        for (x in 0 until board.size.columnCount)
-        {
-            for (y in 0 until board.size.rowCount)
-            {
-                val cell = TiledMapTileLayer.Cell()
-                cell.tile = if ((x % 2 == 0 && y % 2 == 0) || (x % 2 != 0 && y % 2 != 0)) StaticTiledMapTile(leftRegion) else StaticTiledMapTile(rightRegion)
-                layer.setCell(x, y, cell)
-            }
-        }
-
-        tiledMap.layers.add(layer)
+        sprite1 = Sprite(TextureRegion(texture, 0, 0, cellWidth, cellHeight))
+        sprite2 = Sprite(TextureRegion(texture, cellWidth, 0, cellWidth, cellHeight))
+        pixmap.dispose()
     }
 
-    override fun setWidth(width: Float)
+    /**
+     * Setup the pieces on the board to the new size.
+     */
+    override fun sizeChanged()
     {
-        super.setWidth(width)
-        setLayers(width.toInt(), height.toInt())
-    }
+        cellWidth = (width / board.size.columnCount).toInt()
+        cellHeight = (height / board.size.rowCount).toInt()
+        LibgdxLogger.debug("Creating a board of size $width x $height with a cell size of $cellWidth x $cellHeight.")
 
-    override fun setHeight(height: Float)
-    {
-        super.setHeight(height)
-        setLayers(width.toInt(), height.toInt())
+        generateSprites()
     }
 }

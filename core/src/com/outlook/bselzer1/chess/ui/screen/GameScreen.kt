@@ -65,6 +65,7 @@ class GameScreen(game: GdxGame, boardName: BoardName) : Screen
 
         //Create after the viewport is applied to use default scaling.
         boardActor = BoardActor.createActor(board, camera)
+        boardActor.debug = SettingsScreen.isDebug()
     }
 
     override fun hide()
@@ -132,8 +133,19 @@ class GameScreen(game: GdxGame, boardName: BoardName) : Screen
 
         camera.zoom = MathUtils.clamp(camera.zoom, cameraGestureListener.minZoom, cameraGestureListener.maxZoom)
 
+        //Rotate
+        if (Gdx.input.isKeyPressed(Input.Keys.Q))
+        {
+            camera.rotate(-.5f, 0f, 0f, 1f)
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.E))
+        {
+            camera.rotate(.5f, 0f, 0f, 1f)
+        }
+
         //Move
-        if (Gdx.input.isTouched)
+        //Do not adjust the camera based on touch when the board actor is handling input.
+        if (!boardActor.isTouchFocusTarget && Gdx.input.isTouched)
         {
             camera.translate(-Gdx.input.deltaX * camera.zoom, Gdx.input.deltaY * camera.zoom)
         }
@@ -154,16 +166,6 @@ class GameScreen(game: GdxGame, boardName: BoardName) : Screen
         if (Gdx.input.isKeyPressed(Input.Keys.W))
         {
             camera.translate(0f, movement, 0f)
-        }
-
-        //Rotate
-        if (Gdx.input.isKeyPressed(Input.Keys.Q))
-        {
-            camera.rotate(-.5f, 0f, 0f, 1f)
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.E))
-        {
-            camera.rotate(.5f, 0f, 0f, 1f)
         }
     }
 }

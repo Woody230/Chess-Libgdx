@@ -13,7 +13,7 @@ private const val UI_FALSE = "Off"
 /**
  * @return the converted ui string representation
  */
-fun Boolean.toUIString(): String
+fun Boolean.toUiString(): String
 {
     return if (this) UI_TRUE else UI_FALSE
 }
