@@ -28,22 +28,22 @@ class GdxGame : Game()
     /**
      * The camera.
      */
-    var camera: OrthographicCamera = OrthographicCamera()
+    lateinit var camera: OrthographicCamera
 
     /**
      * The sprite batch.
      */
-    var batch: SpriteBatch? = null
+    lateinit var batch: SpriteBatch
 
     /**
      * The default atlas.
      */
-    var atlasDefault: TextureAtlas? = null
+    lateinit var atlasDefault: TextureAtlas
 
     /**
      * The default skin.
      */
-    var skinDefault: Skin? = null
+    lateinit var skinDefault: Skin
 
     override fun create()
     {
@@ -69,9 +69,9 @@ class GdxGame : Game()
     override fun dispose()
     {
         super.dispose()
-        batch!!.dispose()
-        skinDefault!!.dispose()
-        atlasDefault!!.dispose()
+        batch.dispose()
+        skinDefault.dispose()
+        atlasDefault.dispose()
         PieceActor.dispose()
     }
 }

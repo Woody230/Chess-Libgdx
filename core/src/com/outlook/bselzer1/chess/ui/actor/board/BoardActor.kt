@@ -1,6 +1,5 @@
 package com.outlook.bselzer1.chess.ui.actor.board
 
-import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
@@ -11,6 +10,7 @@ import com.outlook.bselzer1.chess.game.board.Board
 import com.outlook.bselzer1.chess.game.board.extend.WesternBoard
 import com.outlook.bselzer1.chess.game.board.move.Position
 import com.outlook.bselzer1.chess.game.board.move.PositionFlag
+import com.outlook.bselzer1.chess.sharedfunctions.extension.centerOnCursor
 import com.outlook.bselzer1.chess.sharedfunctions.extension.containsPoint
 import com.outlook.bselzer1.chess.sharedfunctions.extension.toDisplayableString
 import com.outlook.bselzer1.chess.sharedfunctions.extension.worldCursorPosition
@@ -21,9 +21,8 @@ import com.outlook.bselzer3.libgdxlogger.LibgdxLogger
 /**
  * The [Board] ui
  * @property board the associated [Board]
- * @property camera the camera to render with. The viewport must already be set.
  */
-abstract class BoardActor(protected val board: Board, protected val camera: OrthographicCamera) : Actor(), Disposable
+abstract class BoardActor(protected val board: Board) : Actor(), Disposable
 {
     init
     {
@@ -35,11 +34,11 @@ abstract class BoardActor(protected val board: Board, protected val camera: Orth
         /**
          * @return a new actor associated with the [board]
          */
-        fun createActor(board: Board, camera: OrthographicCamera): BoardActor
+        fun createActor(board: Board): BoardActor
         {
             return when (board)
             {
-                is WesternBoard -> WesternActor(board, camera)
+                is WesternBoard -> WesternActor(board)
                 else -> throw UnsupportedOperationException()
             }
         }
@@ -162,9 +161,7 @@ abstract class BoardActor(protected val board: Board, protected val camera: Orth
              */
             override fun drag(event: InputEvent?, x: Float, y: Float, pointer: Int)
             {
-                //Center actor on the cursor
-                val vector = worldCursorPosition()
-                draggedActor?.setPosition(vector.x - draggedActor!!.width / 2, vector.y - draggedActor!!.height / 2)
+                draggedActor?.centerOnCursor()
             }
 
             /**

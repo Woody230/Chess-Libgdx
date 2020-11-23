@@ -1,21 +1,16 @@
 package com.outlook.bselzer1.chess.ui.screen
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Screen
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
-import com.badlogic.gdx.utils.viewport.ScreenViewport
-import com.badlogic.gdx.utils.viewport.Viewport
 import com.outlook.bselzer1.chess.sharedfunctions.extension.*
-import com.outlook.bselzer1.chess.ui.GdxGame
 import com.outlook.bselzer1.chess.ui.sharedfunctions.DisplaySize
 import com.outlook.bselzer1.chess.ui.sharedfunctions.DisplayType
 import com.outlook.bselzer1.chess.ui.sharedfunctions.GameColor
@@ -27,7 +22,7 @@ import kotlin.math.roundToInt
 /**
  * The settings screen.
  */
-class SettingsScreen : Screen
+class SettingsScreen : GdxGameScreen(OrthographicCamera())
 {
     companion object
     {
@@ -165,33 +160,11 @@ class SettingsScreen : Screen
     }
 
     /**
-     * The game.
-     */
-    private val game: GdxGame = GdxGame.GAME
-
-    /**
-     * The camera.
-     */
-    private val camera: OrthographicCamera = game.camera
-
-    /**
-     * The viewport for the camera.
-     */
-    private val viewport: Viewport
-
-    /**
-     * The root of the screen.
-     */
-    private val stage: Stage
-
-    /**
      * Initializes the screen.
      */
     init
     {
         Gdx.graphics.applyContinuousRendering(false)
-        viewport = ScreenViewport(camera)
-        stage = Stage(viewport, game.batch)
     }
 
     /**
@@ -253,7 +226,7 @@ class SettingsScreen : Screen
      */
     private fun setupLayout()
     {
-        val skin: Skin = game.skinDefault!!
+        val skin: Skin = game.skinDefault
 
         val width: Float = buttonWidth(camera)
         val height: Float = buttonHeight(camera)
@@ -309,7 +282,7 @@ class SettingsScreen : Screen
                 setDisplay(true)
             }
         })
-        tblDisplay.add<SelectBox<Resolution>>(sbDisplaySize).padLeft(padLarge).padTop(padLarge).fillX()
+        tblDisplay.add(sbDisplaySize).padLeft(padLarge).padTop(padLarge).fillX()
         tblDisplay.row()
 
         val lblDisplayType = Label("Display Type:", lblStyle)

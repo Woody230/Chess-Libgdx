@@ -1,6 +1,5 @@
 package com.outlook.bselzer1.chess.ui.actor.board
 
-import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
@@ -9,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 import com.outlook.bselzer1.chess.game.board.extend.WesternBoard
 import com.outlook.bselzer1.chess.game.board.move.Position
+import com.outlook.bselzer1.chess.ui.GdxGame
 import com.outlook.bselzer1.chess.ui.sharedfunctions.GameColor
 import com.outlook.bselzer3.libgdxlogger.LibgdxLogger
 import kotlin.math.min
@@ -16,7 +16,7 @@ import kotlin.math.min
 /**
  * The [WesternBoard] ui
  */
-class WesternActor(westernBoard: WesternBoard, camera: OrthographicCamera) : BoardActor(westernBoard, camera)
+class WesternActor(westernBoard: WesternBoard) : BoardActor(westernBoard)
 {
     /**
      * The width of the cell.
@@ -46,7 +46,7 @@ class WesternActor(westernBoard: WesternBoard, camera: OrthographicCamera) : Boa
     init
     {
         //Create the length to fit based on the smaller side.
-        val minSide = min(camera.viewportWidth, camera.viewportHeight)
+        val minSide = min(GdxGame.GAME.camera.viewportWidth, GdxGame.GAME.camera.viewportHeight)
         setSize(minSide, minSide)
     }
 

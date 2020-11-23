@@ -2,49 +2,24 @@ package com.outlook.bselzer1.chess.ui.screen
 
 import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Screen
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
-import com.badlogic.gdx.utils.viewport.ScreenViewport
-import com.badlogic.gdx.utils.viewport.Viewport
 import com.outlook.bselzer1.chess.game.ai.Difficulty
 import com.outlook.bselzer1.chess.game.board.BoardName
 import com.outlook.bselzer1.chess.sharedfunctions.extension.*
-import com.outlook.bselzer1.chess.ui.GdxGame
 import com.outlook.bselzer1.chess.ui.sharedfunctions.GameColor
 
 /**
  * The main menu screen.
  */
-class MainMenuScreen : Screen
+class MainMenuScreen : GdxGameScreen(OrthographicCamera())
 {
-    /**
-     * The game.
-     */
-    private val game: GdxGame = GdxGame.GAME
-
-    /**
-     * The camera.
-     */
-    private val camera: OrthographicCamera = game.camera
-
-    /**
-     * The viewport for the camera.
-     */
-    private val viewport: Viewport
-
-    /**
-     * The root of the screen.
-     */
-    private val stage: Stage
-
     /**
      * Set the layout of the stage.
      */
@@ -110,7 +85,7 @@ class MainMenuScreen : Screen
 
         val skin = game.skinDefault
         val font: BitmapFont = generateFont(fontSize)
-        val style = skin!!.get(TextButtonStyle::class.java)
+        val style = skin.get(TextButtonStyle::class.java)
         style.font = font
 
         val tblRoot = Table()
@@ -203,7 +178,5 @@ class MainMenuScreen : Screen
     init
     {
         Gdx.graphics.applyContinuousRendering(false)
-        viewport = ScreenViewport(camera)
-        stage = Stage(viewport, game.batch)
     }
 }

@@ -3,23 +3,18 @@ package com.outlook.bselzer1.chess.ui.screen
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputMultiplexer
-import com.badlogic.gdx.Screen
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.math.MathUtils
-import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
-import com.badlogic.gdx.utils.viewport.ScreenViewport
-import com.badlogic.gdx.utils.viewport.Viewport
 import com.outlook.bselzer1.chess.game.board.Board
 import com.outlook.bselzer1.chess.game.board.BoardName
 import com.outlook.bselzer1.chess.game.piece.PlayerColor
 import com.outlook.bselzer1.chess.sharedfunctions.extension.*
-import com.outlook.bselzer1.chess.ui.GdxGame
 import com.outlook.bselzer1.chess.ui.actor.board.BoardActor
 import com.outlook.bselzer1.chess.ui.sharedfunctions.CameraGestureListener
 import com.outlook.bselzer1.chess.ui.sharedfunctions.GameColor
@@ -27,34 +22,14 @@ import com.outlook.bselzer1.chess.ui.sharedfunctions.GameColor
 /**
  * The game screen.
  */
-class GameScreen(boardName: BoardName) : Screen
+class GameScreen(boardName: BoardName) : GdxGameScreen(OrthographicCamera())
 {
     //TODO center camera on the board
-
-    /**
-     * The game.
-     */
-    private val game: GdxGame = GdxGame.GAME
-
-    /**
-     * The camera.
-     */
-    private val camera: OrthographicCamera = game.camera
 
     /**
      * The camera gesture listener.
      */
     private val cameraGestureListener: CameraGestureListener = CameraGestureListener(camera)
-
-    /**
-     * The viewport for the camera.
-     */
-    private val viewport: Viewport
-
-    /**
-     * The stage.
-     */
-    private val stage: Stage
 
     /**
      * The game board.
@@ -73,12 +48,11 @@ class GameScreen(boardName: BoardName) : Screen
     init
     {
         Gdx.graphics.applyContinuousRendering(true)
-        viewport = ScreenViewport(camera)
-        stage = Stage(viewport, game.batch)
 
         //Create after the viewport is applied to use default scaling.
-        boardActor = BoardActor.createActor(board, camera)
+        boardActor = BoardActor.createActor(board)
         boardActor.debug = SettingsScreen.isDebug()
+        boardActor.centerOnCamera()
     }
 
     override fun hide()
@@ -135,7 +109,7 @@ class GameScreen(boardName: BoardName) : Screen
             //Do not allow pieces to be moved.
             stage.actors.forEach { actor -> actor.apply { touchable = Touchable.disabled } }
 
-            val skin = game.skinDefault!!
+            val skin = game.skinDefault
             val font = generateFont(buttonFontSize(camera))
 
             val btnStyle = skin.get(TextButton.TextButtonStyle::class.java)
@@ -154,8 +128,7 @@ class GameScreen(boardName: BoardName) : Screen
 
                 override fun draw(batch: Batch?, parentAlpha: Float)
                 {
-                    //Center dialog on screen.
-                    setPosition(camera.position.x - (width / 2), camera.position.y - (height / 2))
+                    centerOnCamera()
                     super.draw(batch, parentAlpha)
                 }
 
