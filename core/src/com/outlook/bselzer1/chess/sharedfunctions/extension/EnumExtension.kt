@@ -18,5 +18,5 @@ fun <T : Enum<T>> Enum<T>.toDisplayableString(): String
         builder.append(segment).append(" ")
     }
 
-    return builder.toString()
+    return builder.toString().dropLast(1)
 }

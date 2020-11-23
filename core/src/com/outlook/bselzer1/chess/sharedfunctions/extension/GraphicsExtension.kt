@@ -12,6 +12,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter
 import com.badlogic.gdx.math.MathUtils
+import com.badlogic.gdx.math.Vector3
+import com.outlook.bselzer1.chess.ui.GdxGame
 import com.outlook.bselzer1.chess.ui.sharedfunctions.GameColor
 import org.lwjgl.glfw.GLFW
 
@@ -119,6 +121,14 @@ fun buttonFontSize(camera: Camera): Int
 {
     val height = buttonHeight(camera)
     return MathUtils.floor(height / 2)
+}
+
+/**
+ * The position of the cursor within the world through the lens of a camera.
+ */
+fun worldCursorPosition(): Vector3
+{
+    return GdxGame.GAME.camera.unproject(Vector3(Gdx.input.x.toFloat(), Gdx.input.y.toFloat(), 0f))
 }
 
 /**

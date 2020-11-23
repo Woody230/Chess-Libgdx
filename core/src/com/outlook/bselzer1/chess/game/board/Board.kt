@@ -32,6 +32,17 @@ abstract class Board(val name: BoardName, val size: BoardSize, val topColor: Pla
     private val moveHistory: MutableCollection<Move> = mutableListOf()
 
     /**
+     * The turn color.
+     */
+    var turnColor: PlayerColor = topColor
+        private set
+
+    /**
+     * The function to call upon victory.
+     */
+    var resolution: ((PlayerColor) -> Unit)? = null
+
+    /**
      * Initializes the pieces on the board.
      */
     abstract fun initializePieces()
@@ -48,23 +59,23 @@ abstract class Board(val name: BoardName, val size: BoardSize, val topColor: Pla
     /**
      * Validate that a move is able to be made and then perform it if it is valid.
      */
-    fun attemptMove(fromPosition: Position, toPosition: Position)
+    fun attemptMove(fromPosition: Position, toPosition: Position): Boolean
     {
         val fromPiece = getPieceAt(fromPosition)!!
-        if (!fromPiece.getPositions(PositionFlag.VALIDATE).contains(toPosition))
+        if (fromPiece.color != turnColor || !fromPiece.getPositions(PositionFlag.VALIDATE).contains(toPosition))
         {
             LibgdxLogger.debug("Attempted to move from $fromPosition to $toPosition but the position is not valid.")
-            return
+            return false
         }
 
         move(fromPosition, toPosition)
+        return true
     }
 
-    //TODO private
     /**
      * Move a piece at the position [fromPosition] to the position [toPosition].
      */
-    fun move(fromPosition: Position, toPosition: Position)
+    private fun move(fromPosition: Position, toPosition: Position)
     {
         //Must get actual piece, not a copy (which would occur using getPieceAt)
         val fromPiece = pieces.firstOrNull { piece -> piece.position == fromPosition }
@@ -83,7 +94,7 @@ abstract class Board(val name: BoardName, val size: BoardSize, val topColor: Pla
                 move(oldRookPosition, castlingPosition.newRookPosition)
             }
         }
-        else if(fromPiece.name == PieceName.PAWN)
+        else if (fromPiece.name == PieceName.PAWN)
         {
             val pawn = fromPiece as Pawn
             if (pawn.getEnPassantPosition() == toPosition)
@@ -99,7 +110,22 @@ abstract class Board(val name: BoardName, val size: BoardSize, val topColor: Pla
         fromPiece.position = toPosition
         moveHistory.add(Move(fromPosition, toPosition, fromPiece, toPiece))
 
-        //TODO determine victory abstract method
+        resolveMove()
+    }
+
+    /**
+     * Resolve a successful move.
+     */
+    private fun resolveMove()
+    {
+        val nextColor = if (turnColor == topColor) bottomColor else topColor
+        if (isCheckmated(nextColor))
+        {
+            resolution?.invoke(turnColor)
+            return
+        }
+
+        turnColor = nextColor
     }
 
     /**
@@ -181,5 +207,18 @@ abstract class Board(val name: BoardName, val size: BoardSize, val topColor: Pla
 
         pieces.remove(piece)
         pieces.add(type.promoteFrom(piece))
+    }
+
+    /**
+     * The player color to start with.
+     */
+    fun startWithPlayer(color: PlayerColor)
+    {
+        if (moveHistory.isNotEmpty())
+        {
+            throw IllegalStateException("Trying to modify the turn color when pieces have already moved.")
+        }
+
+        turnColor = color
     }
 }

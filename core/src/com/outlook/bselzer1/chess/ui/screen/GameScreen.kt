@@ -5,32 +5,41 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.Touchable
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog
+import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.utils.viewport.ScreenViewport
 import com.badlogic.gdx.utils.viewport.Viewport
 import com.outlook.bselzer1.chess.game.board.Board
 import com.outlook.bselzer1.chess.game.board.BoardName
-import com.outlook.bselzer1.chess.sharedfunctions.extension.applyContinuousRendering
-import com.outlook.bselzer1.chess.sharedfunctions.extension.renderBackgroundColor
+import com.outlook.bselzer1.chess.game.piece.PlayerColor
+import com.outlook.bselzer1.chess.sharedfunctions.extension.*
 import com.outlook.bselzer1.chess.ui.GdxGame
 import com.outlook.bselzer1.chess.ui.actor.board.BoardActor
 import com.outlook.bselzer1.chess.ui.sharedfunctions.CameraGestureListener
 import com.outlook.bselzer1.chess.ui.sharedfunctions.GameColor
 
-
 /**
  * The game screen.
  */
-class GameScreen(game: GdxGame, boardName: BoardName) : Screen
+class GameScreen(boardName: BoardName) : Screen
 {
     //TODO center camera on the board
 
     /**
+     * The game.
+     */
+    private val game: GdxGame = GdxGame.GAME
+
+    /**
      * The camera.
      */
-    private val camera: OrthographicCamera = OrthographicCamera()
+    private val camera: OrthographicCamera = game.camera
 
     /**
      * The camera gesture listener.
@@ -50,7 +59,11 @@ class GameScreen(game: GdxGame, boardName: BoardName) : Screen
     /**
      * The game board.
      */
-    private val board: Board = boardName.createBoard().apply { initializePieces() }
+    private val board: Board = boardName.createBoard().apply {
+        initializePieces()
+        startWithPlayer(topColor)
+        resolution = resolution()
+    }
 
     /**
      * The game board actor.
@@ -114,6 +127,49 @@ class GameScreen(game: GdxGame, boardName: BoardName) : Screen
     }
 
     /**
+     * Display the victor in a dialog.
+     */
+    private fun resolution(): (PlayerColor) -> Unit
+    {
+        return { victor ->
+            //Do not allow pieces to be moved.
+            stage.actors.forEach { actor -> actor.apply { touchable = Touchable.disabled } }
+
+            val skin = game.skinDefault!!
+            val font = generateFont(buttonFontSize(camera))
+
+            val btnStyle = skin.get(TextButton.TextButtonStyle::class.java)
+            btnStyle.font = font
+
+            val lblStyle = skin.get(Label.LabelStyle::class.java)
+            lblStyle.font = font
+
+            object : Dialog("Game Ended", skin)
+            {
+                init
+                {
+                    isMovable = false
+                    isModal = false
+                }
+
+                override fun draw(batch: Batch?, parentAlpha: Float)
+                {
+                    //Center dialog on screen.
+                    setPosition(camera.position.x - (width / 2), camera.position.y - (height / 2))
+                    super.draw(batch, parentAlpha)
+                }
+
+                override fun result(`object`: Any?)
+                {
+                    game.screen = MainMenuScreen()
+                }
+            }.text("${victor.toDisplayableString()} wins!")
+                    .button("Back", null, btnStyle)
+                    .show(stage)
+        }
+    }
+
+    /**
      * Handle player input.
      */
     private fun handleInput()
@@ -144,8 +200,9 @@ class GameScreen(game: GdxGame, boardName: BoardName) : Screen
         }
 
         //Move
-        //Do not adjust the camera based on touch when the board actor is handling input.
-        if (!boardActor.isTouchFocusTarget && Gdx.input.isTouched)
+        //Do not adjust the camera based on touch when over the board.
+        val cursorPosition = worldCursorPosition()
+        if (!boardActor.containsPoint(cursorPosition.x, cursorPosition.y) && Gdx.input.isTouched)
         {
             camera.translate(-Gdx.input.deltaX * camera.zoom, Gdx.input.deltaY * camera.zoom)
         }

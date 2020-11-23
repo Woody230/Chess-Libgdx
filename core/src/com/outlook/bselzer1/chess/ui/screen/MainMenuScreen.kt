@@ -22,14 +22,18 @@ import com.outlook.bselzer1.chess.ui.sharedfunctions.GameColor
 
 /**
  * The main menu screen.
- * @param game the game
  */
-class MainMenuScreen(private val game: GdxGame) : Screen
+class MainMenuScreen : Screen
 {
+    /**
+     * The game.
+     */
+    private val game: GdxGame = GdxGame.GAME
+
     /**
      * The camera.
      */
-    private val camera: OrthographicCamera = OrthographicCamera()
+    private val camera: OrthographicCamera = game.camera
 
     /**
      * The viewport for the camera.
@@ -136,7 +140,7 @@ class MainMenuScreen(private val game: GdxGame) : Screen
                         {
                             //TODO set difficulty
                             //TODO board selection
-                            game.screen = GameScreen(game, BoardName.WESTERN)
+                            game.screen = GameScreen(BoardName.WESTERN)
                         }
                     })
                     tblRootDialog.add(btn).minSize(width, height).pad(pad)
@@ -168,7 +172,7 @@ class MainMenuScreen(private val game: GdxGame) : Screen
             {
                 override fun changed(event: ChangeEvent, actor: Actor)
                 {
-                    game.screen = SettingsScreen(game)
+                    game.screen = SettingsScreen()
                 }
             })
             tblRoot.add(btnSettings)

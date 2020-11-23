@@ -27,9 +27,8 @@ import kotlin.math.roundToInt
 /**
  * The settings screen.
  */
-class SettingsScreen(private val game: GdxGame) : Screen
+class SettingsScreen : Screen
 {
-
     companion object
     {
         /**
@@ -166,9 +165,14 @@ class SettingsScreen(private val game: GdxGame) : Screen
     }
 
     /**
+     * The game.
+     */
+    private val game: GdxGame = GdxGame.GAME
+
+    /**
      * The camera.
      */
-    private val camera: OrthographicCamera = OrthographicCamera()
+    private val camera: OrthographicCamera = game.camera
 
     /**
      * The viewport for the camera.
@@ -330,7 +334,7 @@ class SettingsScreen(private val game: GdxGame) : Screen
                 setDisplay(true)
             }
         })
-        tblDisplay.add<SelectBox<DisplayType>>(sbDisplayType).padLeft(padLarge).padTop(padMedium).fillX()
+        tblDisplay.add(sbDisplayType).padLeft(padLarge).padTop(padMedium).fillX()
         tblDisplay.row()
 
         val lblVsync = Label("VSync:", lblStyle)
@@ -362,7 +366,7 @@ class SettingsScreen(private val game: GdxGame) : Screen
         {
             override fun changed(event: ChangeEvent, actor: Actor)
             {
-                game.screen = MainMenuScreen(game)
+                game.screen = MainMenuScreen()
             }
         })
 

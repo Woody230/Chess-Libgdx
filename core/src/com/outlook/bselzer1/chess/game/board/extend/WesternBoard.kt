@@ -59,11 +59,13 @@ class WesternBoard(topColor: PlayerColor = PlayerColor.WHITE, bottomColor: Playe
     }
 
     /**
-     * @return whether or not the [King] has a valid move
+     * @return whether or not there is a valid move left
      */
     override fun isCheckmated(color: PlayerColor): Boolean
     {
-        val king = getPieces().first { piece -> piece.name == PieceName.KING && piece.color == color }
-        return !king.getPositions(PositionFlag.VALIDATE).any()
+        //Validate flag handles king left in check detection
+        return getPieces().filter { piece -> piece.color == color }
+                .flatMap { piece -> piece.getPositions(PositionFlag.VALIDATE) }
+                .isEmpty()
     }
 }

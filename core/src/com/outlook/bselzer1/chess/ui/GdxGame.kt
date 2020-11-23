@@ -4,6 +4,7 @@ import com.badlogic.gdx.Application
 import com.badlogic.gdx.Game
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Screen
+import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
@@ -16,6 +17,19 @@ import com.outlook.bselzer1.chess.ui.screen.SettingsScreen
  */
 class GdxGame : Game()
 {
+    companion object
+    {
+        /**
+         * This object.
+         */
+        lateinit var GAME: GdxGame
+    }
+
+    /**
+     * The camera.
+     */
+    var camera: OrthographicCamera = OrthographicCamera()
+
     /**
      * The sprite batch.
      */
@@ -33,6 +47,8 @@ class GdxGame : Game()
 
     override fun create()
     {
+        GAME = this
+
         Gdx.app.logLevel = if (SettingsScreen.isDebug()) Application.LOG_DEBUG else Application.LOG_NONE
         batch = SpriteBatch()
         atlasDefault = TextureAtlas("default/uiskin.atlas")
@@ -41,7 +57,7 @@ class GdxGame : Game()
         //Gdx.input.setCatchBackKey(true); //TODO catching back button
 
         SettingsScreen.setDisplay(true) //Must be before the screen is created so that the world size is the same as the width/height.
-        setScreen(MainMenuScreen(this))
+        setScreen(MainMenuScreen())
     }
 
     override fun setScreen(screen: Screen?)

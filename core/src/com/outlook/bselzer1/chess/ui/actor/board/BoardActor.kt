@@ -1,10 +1,8 @@
 package com.outlook.bselzer1.chess.ui.actor.board
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener
@@ -14,6 +12,9 @@ import com.outlook.bselzer1.chess.game.board.extend.WesternBoard
 import com.outlook.bselzer1.chess.game.board.move.Position
 import com.outlook.bselzer1.chess.game.board.move.PositionFlag
 import com.outlook.bselzer1.chess.sharedfunctions.extension.containsPoint
+import com.outlook.bselzer1.chess.sharedfunctions.extension.toDisplayableString
+import com.outlook.bselzer1.chess.sharedfunctions.extension.worldCursorPosition
+import com.outlook.bselzer1.chess.ui.actor.InvalidEventDialog
 import com.outlook.bselzer1.chess.ui.actor.PieceActor
 import com.outlook.bselzer3.libgdxlogger.LibgdxLogger
 
@@ -59,6 +60,11 @@ abstract class BoardActor(protected val board: Board, protected val camera: Orth
      */
     protected lateinit var draggedValidPositions: Collection<Position>
 
+    /**
+     * The dialog for showing invalid events.
+     */
+    private val invalidEventDialog: InvalidEventDialog = InvalidEventDialog()
+
     override fun draw(batch: Batch, parentAlpha: Float)
     {
         super.draw(batch, parentAlpha)
@@ -99,6 +105,11 @@ abstract class BoardActor(protected val board: Board, protected val camera: Orth
         pieceActors.forEach { actor -> actor.debug = enabled }
     }
 
+    override fun isTouchFocusTarget(): Boolean
+    {
+        return super.isTouchFocusTarget() || pieceActors.any { actor -> actor.isTouchFocusTarget }
+    }
+
     /**
      * Add input listeners to this actor.
      */
@@ -111,9 +122,39 @@ abstract class BoardActor(protected val board: Board, protected val camera: Orth
              */
             override fun dragStart(event: InputEvent?, x: Float, y: Float, pointer: Int)
             {
-                val vector = camera.unproject(Vector3(Gdx.input.x.toFloat(), Gdx.input.y.toFloat(), 0f))
-                draggedActor = pieceActors.firstOrNull { actor -> actor.containsPoint(vector.x, vector.y) }
-                draggedValidPositions = draggedActor?.piece?.getPositions(PositionFlag.VALIDATE) ?: emptyList()
+                val vector = worldCursorPosition()
+                val actor = pieceActors.firstOrNull { actor -> actor.containsPoint(vector.x, vector.y) }
+                val piece = actor?.piece
+
+                //Handle no piece selected or wrong colored piece selected.
+                if (piece?.color != board.turnColor)
+                {
+                    draggedActor = null
+                    draggedValidPositions = emptyList()
+
+                    //Only show a dialog if a wrong colored piece was selected, not simply empty space.
+                    if (piece != null)
+                    {
+                        invalidEventDialog.setTitle("${board.turnColor.toDisplayableString()}'s turn")
+                                .setMessage("It is ${board.turnColor.toDisplayableString()}'s turn.")
+                                .show(stage)
+                    }
+
+                    return
+                }
+
+                //Handle no valid moves.
+                draggedValidPositions = piece.getPositions(PositionFlag.VALIDATE)
+                if (draggedValidPositions.isEmpty())
+                {
+                    draggedActor = null
+                    invalidEventDialog.setTitle("No valid moves.")
+                            .setMessage("This piece does not have a valid move.")
+                            .show(stage)
+                    return
+                }
+
+                draggedActor = actor
             }
 
             /**
@@ -122,7 +163,7 @@ abstract class BoardActor(protected val board: Board, protected val camera: Orth
             override fun drag(event: InputEvent?, x: Float, y: Float, pointer: Int)
             {
                 //Center actor on the cursor
-                val vector = camera.unproject(Vector3(Gdx.input.x.toFloat(), Gdx.input.y.toFloat(), 0f))
+                val vector = worldCursorPosition()
                 draggedActor?.setPosition(vector.x - draggedActor!!.width / 2, vector.y - draggedActor!!.height / 2)
             }
 
@@ -144,7 +185,9 @@ abstract class BoardActor(protected val board: Board, protected val camera: Orth
                     return
                 }
 
-                val vector = camera.unproject(Vector3(Gdx.input.x.toFloat(), Gdx.input.y.toFloat(), 0f))
+                //TODO piece promotion with dialog
+
+                val vector = worldCursorPosition()
                 val newPosition = getPiecePosition(vector.x, vector.y)
                 board.attemptMove(oldPosition, newPosition)
                 draggedActor = null
