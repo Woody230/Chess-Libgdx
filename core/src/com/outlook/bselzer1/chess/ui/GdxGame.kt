@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.outlook.bselzer1.chess.ui.actor.PieceActor
 import com.outlook.bselzer1.chess.ui.screen.MainMenuScreen
 import com.outlook.bselzer1.chess.ui.screen.SettingsScreen
+import ktx.async.KtxAsync
 
 /**
  * The game.
@@ -23,6 +24,11 @@ class GdxGame : Game()
          * This object.
          */
         lateinit var GAME: GdxGame
+
+        init
+        {
+            KtxAsync.initiate()
+        }
     }
 
     /**

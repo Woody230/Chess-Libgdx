@@ -26,6 +26,8 @@ class GameScreen(boardName: BoardName) : GdxGameScreen(OrthographicCamera())
 {
     //TODO center camera on the board
 
+    //TODO non-consistent font (ex: invalid event dialog text will be larger in the next game)
+
     /**
      * The camera gesture listener.
      */

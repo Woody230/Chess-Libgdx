@@ -11,6 +11,8 @@ import com.outlook.bselzer1.chess.game.piece.extend.Pawn
 import com.outlook.bselzer1.chess.sharedfunctions.extension.addNoNull
 import com.outlook.bselzer1.chess.sharedfunctions.extension.copy
 import com.outlook.bselzer1.chess.sharedfunctions.extension.toDisplayableString
+import com.outlook.bselzer1.chess.sharedfunctions.implement.GetValue
+import com.outlook.bselzer3.libgdxlogger.LibgdxLogger
 
 /**
  * A chess board.
@@ -59,7 +61,7 @@ abstract class Board(val name: BoardName, val size: BoardSize, val topColor: Pla
     /**
      * Validate that a move is able to be made.
      */
-    fun isValidMove(fromPosition: Position, toPosition: Position): Boolean
+    private fun isValidMove(fromPosition: Position, toPosition: Position): Boolean
     {
         val fromPiece = getPieceAt(fromPosition)!!
         return fromPiece.color == turnColor && fromPiece.getPositions(PositionFlag.VALIDATE).contains(toPosition)
@@ -68,32 +70,43 @@ abstract class Board(val name: BoardName, val size: BoardSize, val topColor: Pla
     /**
      * Validate that a move is able to be made and then perform it if it is valid.
      */
-    fun move(fromPosition: Position, toPosition: Position, successor: PieceName?): Boolean
+    suspend fun move(fromPosition: Position, toPosition: Position, getSuccessor: GetValue<PieceName>? = null): Boolean
     {
         if (!isValidMove(fromPosition, toPosition))
         {
+            LibgdxLogger.debug("Attempted to make an invalid move from $fromPosition to $toPosition.")
             return false
         }
 
         val fromPiece = pieces.firstOrNull { piece -> piece.position == fromPosition }
                 ?: throw KotlinNullPointerException("Unable to retrieve the piece at $fromPosition.")
 
-        //Validation succession.
-        if (successor != null && (fromPiece.promotion?.isEligible(fromPosition, toPosition) != true || !fromPiece.promotion.successors.contains(successor)))
+        //No promotion required so simply perform the move.
+        if (getSuccessor == null || fromPiece.promotion?.isEligible(fromPosition, toPosition) != true)
+        {
+            performMove(fromPosition, toPosition)
+            return true
+        }
+
+        getSuccessor.before()
+        val successor = getSuccessor.getValue()
+
+        //Validate succession.
+        if (!fromPiece.promotion.successors.contains(successor))
         {
             throw IllegalStateException("Successor specified: ${successor.toDisplayableString()} but piece should not be promoted.")
         }
 
+        //Function used to promote before the move is officially concluded.
         performMove(fromPosition, toPosition)
         {
-            //If there is succession, perform the promotion.
-            if (successor != null)
-            {
-                pieces.remove(fromPiece)
-                pieces.add(successor.promoteFrom(fromPiece))
-            }
+            //Perform the promotion.
+            pieces.remove(fromPiece)
+            pieces.add(successor.promoteFrom(fromPiece))
         }
 
+        //Resolve promotion
+        getSuccessor.after(successor)
         return true
     }
 

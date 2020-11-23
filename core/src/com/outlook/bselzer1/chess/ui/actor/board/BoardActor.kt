@@ -11,14 +11,19 @@ import com.outlook.bselzer1.chess.game.board.Board
 import com.outlook.bselzer1.chess.game.board.extend.WesternBoard
 import com.outlook.bselzer1.chess.game.board.move.Position
 import com.outlook.bselzer1.chess.game.board.move.PositionFlag
+import com.outlook.bselzer1.chess.game.piece.PieceName
 import com.outlook.bselzer1.chess.sharedfunctions.extension.centerOnCursor
 import com.outlook.bselzer1.chess.sharedfunctions.extension.containsPoint
 import com.outlook.bselzer1.chess.sharedfunctions.extension.toDisplayableString
 import com.outlook.bselzer1.chess.sharedfunctions.extension.worldCursorPosition
+import com.outlook.bselzer1.chess.sharedfunctions.implement.GetValue
 import com.outlook.bselzer1.chess.ui.actor.PieceActor
 import com.outlook.bselzer1.chess.ui.actor.dialog.InvalidEventDialog
 import com.outlook.bselzer1.chess.ui.actor.dialog.PromotePieceDialog
-import com.outlook.bselzer3.libgdxlogger.LibgdxLogger
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import ktx.async.KtxAsync
 
 /**
  * The [Board] ui
@@ -184,26 +189,29 @@ abstract class BoardActor(protected val board: Board) : Actor(), Disposable
                 val oldPosition = piece.position
                 val newPosition = getPiecePosition(vector.x, vector.y)
 
-                if (!board.isValidMove(oldPosition, newPosition))
-                {
-                    LibgdxLogger.debug("Attempted to make an invalid move from $oldPosition to $newPosition.")
-                    return
-                }
+                //When there is promotion, need to await the user's response.
+                KtxAsync.launch {
+                    board.move(oldPosition, newPosition, object : GetValue<PieceName>
+                    {
+                        override fun before()
+                        {
+                            //Disable board movements until after the move is resolved.
+                            touchable = Touchable.disabled
+                        }
 
-                //If promotion is not needed, proceed with the move and be done.
-                if (piece.promotion?.isEligible(oldPosition, newPosition) != true)
-                {
-                    board.move(oldPosition, newPosition, null)
-                    return
-                }
+                        override suspend fun getValue(): PieceName
+                        {
+                            val dialog = PromotePieceDialog(piece)
+                            dialog.show(stage)
+                            return withContext(Dispatchers.IO) { dialog.awaitResult() }
+                        }
 
-                //Disable board movements until the user selects the successor.
-                //TODO the actor should not have to care about validating that a move is valid or promotion is available, just passing what to do (before promotion, getting successor, after promotion)
-                touchable = Touchable.disabled
-                PromotePieceDialog(piece) { successor ->
-                    board.move(oldPosition, newPosition, successor)
-                    touchable = Touchable.enabled
-                }.show(stage)
+                        override fun after(result: PieceName)
+                        {
+                            touchable = Touchable.enabled
+                        }
+                    })
+                }
             }
         })
     }

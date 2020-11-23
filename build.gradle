@@ -1,5 +1,6 @@
 buildscript {
-    ext.kotlinVersion = '1.4.10'
+    ext.kotlinVersion = '1.4.20'
+    ext.coroutinesVersion = '1.4.0'
 
     repositories {
         mavenLocal()
@@ -23,12 +24,13 @@ allprojects {
     version = '1.0'
     ext {
         appName = "Chess"
-        gdxVersion = '1.9.10'
+        gdxVersion = '1.9.11'
         roboVMVersion = '2.3.8'
         box2DLightsVersion = '1.4'
         ashleyVersion = '1.7.0'
         aiVersion = '1.8.0'
         lwjgl3Version = '3.2.3'
+        ktxVersion = '1.9.11-b2'
     }
 
     repositories {
@@ -104,6 +106,9 @@ project(":core") {
     dependencies {
         testImplementation 'org.junit.jupiter:junit-jupiter:5.6.2'
         testImplementation 'org.amshove.kluent:kluent:1.61'
+
+        api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
+        api "io.github.libktx:ktx-async:$ktxVersion"
 
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
