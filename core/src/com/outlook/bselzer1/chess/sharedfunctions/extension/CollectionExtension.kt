@@ -22,11 +22,7 @@ fun <T> MutableCollection<T>.addVarargs(vararg items: T): MutableCollection<T>
  */
 fun <T> MutableCollection<T>.addNoNull(element: T?): Boolean
 {
-    if (element == null)
-    {
-        return false
-    }
-
+    element ?: return false
     return this.add(element)
 }
 

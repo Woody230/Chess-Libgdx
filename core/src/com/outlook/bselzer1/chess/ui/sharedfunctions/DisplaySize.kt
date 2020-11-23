@@ -44,10 +44,10 @@ enum class DisplaySize(width: Int, height: Int)
         /**
          * All of the resolutions available to the device.
          */
-        var DEVICE_RESOLUTIONS: Array<Resolution>? = null
+        var DEVICE_RESOLUTIONS: Array<Resolution> = Array()
             get()
             {
-                if (field != null)
+                if (!field.isEmpty)
                 {
                     return field
                 }
@@ -61,16 +61,16 @@ enum class DisplaySize(width: Int, height: Int)
                 {
                     values().map { displaySize -> displaySize.resolution }
                             .filter { displaySize -> displaySize.fits(resolutionDisplay) }
-                            .forEach { displaySize -> field!!.add(displaySize) }
+                            .forEach { displaySize -> field.add(displaySize) }
                 }
 
                 val currentResolution = Resolution.CURRENT_RESOLUTION
-                if (!field!!.contains(currentResolution, false))
+                if (!field.contains(currentResolution, false))
                 {
-                    field!!.add(currentResolution)
+                    field.add(currentResolution)
                 }
 
-                field!!.sort()
+                field.sort()
                 return field
             }
     }

@@ -298,7 +298,7 @@ class SettingsScreen : GdxGameScreen(OrthographicCamera())
                 val sb = actor as SelectBox<*>
 
                 val displayType: DisplayType? = DisplayType.getDisplayType(sb.selected.toString())
-                if (displayType == null || displayType === DisplayType.CURRENT_DISPLAY_TYPE)
+                if (displayType == null || displayType == DisplayType.CURRENT_DISPLAY_TYPE)
                 {
                     return
                 }

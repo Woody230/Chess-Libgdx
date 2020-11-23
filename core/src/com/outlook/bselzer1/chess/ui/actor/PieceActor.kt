@@ -18,16 +18,13 @@ class PieceActor(piece: Piece<*>) : Image(), Disposable
         set(value)
         {
             field = value
-            if (value == null)
-            {
-                return
-            }
+            value ?: return
 
             //Use the cache.
             var texture = TEXTURES.firstOrNull { texture -> texture.name == value.name && texture.color == value.color }
             if (texture == null)
             {
-                texture = PieceTexture(piece!!.name, piece!!.color)
+                texture = PieceTexture(value.name, value.color)
                 TEXTURES.add(texture)
             }
 
@@ -61,11 +58,7 @@ class PieceActor(piece: Piece<*>) : Image(), Disposable
 
     override fun draw(batch: Batch, parentAlpha: Float)
     {
-        if (piece == null)
-        {
-            return
-        }
-
+        piece ?: return
         super.draw(batch, parentAlpha)
     }
 

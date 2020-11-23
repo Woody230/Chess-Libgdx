@@ -18,7 +18,13 @@ class PromotePieceDialog(piece: Piece<*>) : AwaitResultDialog<PieceName>("Promot
         isModal = false
 
         text("Select the piece to promote to:")
-        piece.promotion!!.successors.forEach { successor -> button(successor.toDisplayableString(), successor) }
+
+        if (piece.promotion == null)
+        {
+            throw IllegalStateException("Trying to create a piece promotion dialog for a piece that does not support promotion.")
+        }
+
+        piece.promotion.successors.forEach { successor -> button(successor.toDisplayableString(), successor) }
     }
 
     override fun draw(batch: Batch?, parentAlpha: Float)

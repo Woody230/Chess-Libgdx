@@ -63,7 +63,9 @@ abstract class Board(val name: BoardName, val size: BoardSize, val topColor: Pla
      */
     private fun isValidMove(fromPosition: Position, toPosition: Position): Boolean
     {
-        val fromPiece = getPieceAt(fromPosition)!!
+        val fromPiece = getPieceAt(fromPosition)
+                ?: throw KotlinNullPointerException("Unable to retrieve the piece at $fromPosition")
+
         return fromPiece.color == turnColor && fromPiece.getPositions(PositionFlag.VALIDATE).contains(toPosition)
     }
 

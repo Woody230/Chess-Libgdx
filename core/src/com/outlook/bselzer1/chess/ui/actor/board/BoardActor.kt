@@ -180,10 +180,7 @@ abstract class BoardActor(protected val board: Board) : Actor(), Disposable
                 draggedActor = null
 
                 //Piece was not dragged so nothing to do.
-                if (piece == null)
-                {
-                    return
-                }
+                piece ?: return
 
                 val vector = worldCursorPosition()
                 val oldPosition = piece.position
