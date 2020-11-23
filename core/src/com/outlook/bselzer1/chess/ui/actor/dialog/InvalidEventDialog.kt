@@ -1,4 +1,4 @@
-package com.outlook.bselzer1.chess.ui.actor
+package com.outlook.bselzer1.chess.ui.actor.dialog
 
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.Action

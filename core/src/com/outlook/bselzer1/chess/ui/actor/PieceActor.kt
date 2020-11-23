@@ -56,7 +56,7 @@ class PieceActor(piece: Piece<*>) : Image(), Disposable
      */
     fun getAssociatedId(): Int?
     {
-        return piece?.getId()
+        return piece?.id
     }
 
     override fun draw(batch: Batch, parentAlpha: Float)

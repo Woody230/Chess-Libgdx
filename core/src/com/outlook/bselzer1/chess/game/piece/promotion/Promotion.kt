@@ -11,25 +11,12 @@ import com.outlook.bselzer1.chess.sharedfunctions.extension.contains
 data class Promotion(val zone: Shape2D, val conditions: Collection<PromotionCondition>, val successors: Collection<PieceName>)
 {
     /**
-     * Whether or not the piece is eligible for promotion.
+     * Whether or not the piece should be able to promote.
      */
-    private var isEligible = false
-
-    /**
-     * @return whether or not the piece is eligible for promotion.
-     */
-    fun isEligible(): Boolean
-    {
-        return isEligible
-    }
-
-    /**
-     * Sets whether or not the piece should be able to promote.
-     */
-    fun setEligible(oldPosition: Position, newPosition: Position)
+    fun isEligible(oldPosition: Position, newPosition: Position): Boolean
     {
         val startInZone = conditions.contains(PromotionCondition.START_IN_ZONE) && zone.contains(oldPosition)
         val endInZone = conditions.contains(PromotionCondition.END_IN_ZONE) && zone.contains(newPosition)
-        isEligible = startInZone || endInZone
+        return startInZone || endInZone
     }
 }

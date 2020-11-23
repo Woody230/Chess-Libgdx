@@ -10,7 +10,7 @@ import com.outlook.bselzer1.chess.game.piece.extend.King
 import com.outlook.bselzer1.chess.game.piece.extend.Pawn
 import com.outlook.bselzer1.chess.sharedfunctions.extension.addNoNull
 import com.outlook.bselzer1.chess.sharedfunctions.extension.copy
-import com.outlook.bselzer3.libgdxlogger.LibgdxLogger
+import com.outlook.bselzer1.chess.sharedfunctions.extension.toDisplayableString
 
 /**
  * A chess board.
@@ -23,7 +23,7 @@ abstract class Board(val name: BoardName, val size: BoardSize, val topColor: Pla
      */
     private val pieces: MutableCollection<Piece<*>> = sortedSetOf(Comparator { a, b ->
         //Comparator needs to handle nulls to avoid exception on trying to remove a null element.
-        compareValues(a?.getId(), b?.getId())
+        compareValues(a?.id, b?.id)
     })
 
     /**
@@ -57,25 +57,50 @@ abstract class Board(val name: BoardName, val size: BoardSize, val topColor: Pla
     }
 
     /**
-     * Validate that a move is able to be made and then perform it if it is valid.
+     * Validate that a move is able to be made.
      */
-    fun attemptMove(fromPosition: Position, toPosition: Position): Boolean
+    fun isValidMove(fromPosition: Position, toPosition: Position): Boolean
     {
         val fromPiece = getPieceAt(fromPosition)!!
-        if (fromPiece.color != turnColor || !fromPiece.getPositions(PositionFlag.VALIDATE).contains(toPosition))
+        return fromPiece.color == turnColor && fromPiece.getPositions(PositionFlag.VALIDATE).contains(toPosition)
+    }
+
+    /**
+     * Validate that a move is able to be made and then perform it if it is valid.
+     */
+    fun move(fromPosition: Position, toPosition: Position, successor: PieceName?): Boolean
+    {
+        if (!isValidMove(fromPosition, toPosition))
         {
-            LibgdxLogger.debug("Attempted to move from $fromPosition to $toPosition but the position is not valid.")
             return false
         }
 
-        move(fromPosition, toPosition)
+        val fromPiece = pieces.firstOrNull { piece -> piece.position == fromPosition }
+                ?: throw KotlinNullPointerException("Unable to retrieve the piece at $fromPosition.")
+
+        //Validation succession.
+        if (successor != null && (fromPiece.promotion?.isEligible(fromPosition, toPosition) != true || !fromPiece.promotion.successors.contains(successor)))
+        {
+            throw IllegalStateException("Successor specified: ${successor.toDisplayableString()} but piece should not be promoted.")
+        }
+
+        performMove(fromPosition, toPosition)
+        {
+            //If there is succession, perform the promotion.
+            if (successor != null)
+            {
+                pieces.remove(fromPiece)
+                pieces.add(successor.promoteFrom(fromPiece))
+            }
+        }
+
         return true
     }
 
     /**
      * Move a piece at the position [fromPosition] to the position [toPosition].
      */
-    private fun move(fromPosition: Position, toPosition: Position)
+    private fun performMove(fromPosition: Position, toPosition: Position, resolution: (() -> Unit)? = null)
     {
         //Must get actual piece, not a copy (which would occur using getPieceAt)
         val fromPiece = pieces.firstOrNull { piece -> piece.position == fromPosition }
@@ -91,7 +116,7 @@ abstract class Board(val name: BoardName, val size: BoardSize, val topColor: Pla
             if (castlingPosition != null)
             {
                 val oldRookPosition = pieces.first { piece -> piece == castlingPosition.rook }.position
-                move(oldRookPosition, castlingPosition.newRookPosition)
+                performMove(oldRookPosition, castlingPosition.newRookPosition)
             }
         }
         else if (fromPiece.name == PieceName.PAWN)
@@ -110,6 +135,7 @@ abstract class Board(val name: BoardName, val size: BoardSize, val topColor: Pla
         fromPiece.position = toPosition
         moveHistory.add(Move(fromPosition, toPosition, fromPiece, toPiece))
 
+        resolution?.invoke()
         resolveMove()
     }
 
@@ -193,20 +219,6 @@ abstract class Board(val name: BoardName, val size: BoardSize, val topColor: Pla
     fun getPieces(): Collection<Piece<*>>
     {
         return pieces.copy()
-    }
-
-    /**
-     * Replaces [piece] with a new piece of [type].
-     */
-    fun promotePiece(piece: Piece<*>, type: PieceName)
-    {
-        if (piece.promotion == null || !piece.promotion.isEligible() || !piece.promotion.successors.contains(type))
-        {
-            throw UnsupportedOperationException("Unable to promote $piece into $type.")
-        }
-
-        pieces.remove(piece)
-        pieces.add(type.promoteFrom(piece))
     }
 
     /**

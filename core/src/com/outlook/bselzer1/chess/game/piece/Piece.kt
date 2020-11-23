@@ -40,7 +40,6 @@ abstract class Piece<T : Piece<T>>(val name: PieceName, val color: PlayerColor, 
                 return
             }
 
-            promotion?.setEligible(field, value)
             field = value
             hasMoved = true
         }
@@ -48,7 +47,8 @@ abstract class Piece<T : Piece<T>>(val name: PieceName, val color: PlayerColor, 
     /**
      * The identifier.
      */
-    private var id: Int = nextIntId()
+    var id: Int = nextIntId()
+        internal set
 
     /**
      * Whether or not this piece has moved already.
@@ -89,6 +89,7 @@ abstract class Piece<T : Piece<T>>(val name: PieceName, val color: PlayerColor, 
     {
         val piece = createCopy()
         piece.id = this.id
+        piece.position = this.position.copy()
         piece.hasMoved = this.hasMoved
         piece.movements = this.movements.mutableCopy()
         return piece
@@ -105,14 +106,6 @@ abstract class Piece<T : Piece<T>>(val name: PieceName, val color: PlayerColor, 
     fun hasMoved(): Boolean
     {
         return hasMoved
-    }
-
-    /**
-     * @return the identifier
-     */
-    fun getId(): Int
-    {
-        return id
     }
 
     /**

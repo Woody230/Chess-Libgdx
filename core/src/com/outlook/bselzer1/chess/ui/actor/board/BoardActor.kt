@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener
 import com.badlogic.gdx.utils.Disposable
 import com.outlook.bselzer1.chess.game.board.Board
@@ -14,8 +15,9 @@ import com.outlook.bselzer1.chess.sharedfunctions.extension.centerOnCursor
 import com.outlook.bselzer1.chess.sharedfunctions.extension.containsPoint
 import com.outlook.bselzer1.chess.sharedfunctions.extension.toDisplayableString
 import com.outlook.bselzer1.chess.sharedfunctions.extension.worldCursorPosition
-import com.outlook.bselzer1.chess.ui.actor.InvalidEventDialog
 import com.outlook.bselzer1.chess.ui.actor.PieceActor
+import com.outlook.bselzer1.chess.ui.actor.dialog.InvalidEventDialog
+import com.outlook.bselzer1.chess.ui.actor.dialog.PromotePieceDialog
 import com.outlook.bselzer3.libgdxlogger.LibgdxLogger
 
 /**
@@ -71,7 +73,7 @@ abstract class BoardActor(protected val board: Board) : Actor(), Disposable
         pieceActors.filter { actor -> actor != draggedActor }.forEach { actor ->
             //In case of promotion or being captured, attempt to retrieve the piece based on the id of the currently stored piece.
             val id = actor.getAssociatedId()
-            actor.piece = if (id == null) null else board.getPieces().firstOrNull { piece -> piece.getId() == id }
+            actor.piece = if (id == null) null else board.getPieces().firstOrNull { piece -> piece.id == id }
 
             val position = if (actor.piece == null) Vector2(0f, 0f) else getPieceActorUiPosition(actor.piece!!.position)
             actor.setPosition(position.x, position.y)
@@ -169,27 +171,39 @@ abstract class BoardActor(protected val board: Board) : Actor(), Disposable
              */
             override fun dragStop(event: InputEvent?, x: Float, y: Float, pointer: Int)
             {
-                //Piece was not dragged so nothing to do.
-                if (draggedActor == null)
-                {
-                    return
-                }
-
-                val oldPosition = draggedActor!!.piece?.position
-                if (oldPosition == null)
-                {
-                    LibgdxLogger.error("Unable to get the position for actor with piece ${draggedActor!!.piece}")
-                    return
-                }
-
-                //TODO piece promotion with dialog
-
-                val vector = worldCursorPosition()
-                val newPosition = getPiecePosition(vector.x, vector.y)
-                board.attemptMove(oldPosition, newPosition)
+                val piece = draggedActor?.piece
                 draggedActor = null
 
-                LibgdxLogger.debug("Dragged piece to $newPosition")
+                //Piece was not dragged so nothing to do.
+                if (piece == null)
+                {
+                    return
+                }
+
+                val vector = worldCursorPosition()
+                val oldPosition = piece.position
+                val newPosition = getPiecePosition(vector.x, vector.y)
+
+                if (!board.isValidMove(oldPosition, newPosition))
+                {
+                    LibgdxLogger.debug("Attempted to make an invalid move from $oldPosition to $newPosition.")
+                    return
+                }
+
+                //If promotion is not needed, proceed with the move and be done.
+                if (piece.promotion?.isEligible(oldPosition, newPosition) != true)
+                {
+                    board.move(oldPosition, newPosition, null)
+                    return
+                }
+
+                //Disable board movements until the user selects the successor.
+                //TODO the actor should not have to care about validating that a move is valid or promotion is available, just passing what to do (before promotion, getting successor, after promotion)
+                touchable = Touchable.disabled
+                PromotePieceDialog(piece) { successor ->
+                    board.move(oldPosition, newPosition, successor)
+                    touchable = Touchable.enabled
+                }.show(stage)
             }
         })
     }

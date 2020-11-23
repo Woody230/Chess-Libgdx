@@ -40,6 +40,9 @@ enum class PieceName(val assetLocation: String)
             ROOK -> Rook(piece.color, DUMMY_POSITION, piece.board)
         }
 
+        //Retain the id to be able to track the promoted piece.
+        promotedPiece.id = piece.id
+
         //Set the actual position in order to apply the setter.
         promotedPiece.position = piece.position
         return promotedPiece

@@ -70,7 +70,9 @@ class Pawn(color: PlayerColor, position: Position, board: Board) : Piece<Pawn>(P
         fun createPromotion(color: PlayerColor, board: Board): Promotion
         {
             val promotionRow = if (color == board.topColor) 0 else board.size.rowCount - 1
-            return Promotion(Rectangle(0f, promotionRow.toFloat(), (board.size.columnCount - 1).toFloat(), 1f),
+
+            //Contains is inclusive so use a height of 0 for 1 row
+            return Promotion(Rectangle(0f, promotionRow.toFloat(), (board.size.columnCount - 1).toFloat(), 0f),
                     listOf(PromotionCondition.END_IN_ZONE),
                     listOf(PieceName.BISHOP, PieceName.KNIGHT, PieceName.ROOK, PieceName.QUEEN)
             )
