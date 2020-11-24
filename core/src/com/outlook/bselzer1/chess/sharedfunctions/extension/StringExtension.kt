@@ -30,7 +30,7 @@ fun String.uiToBoolean(): Boolean
 /**
  * @return true and false as ui string representations
  */
-fun booleanAsUIString(): Array<String>
+fun booleanAsUiString(): Array<String>
 {
     return arrayOf(UI_TRUE, UI_FALSE)
 }

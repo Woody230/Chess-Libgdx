@@ -17,9 +17,10 @@ import com.outlook.bselzer1.chess.sharedfunctions.extension.containsPoint
 import com.outlook.bselzer1.chess.sharedfunctions.extension.toDisplayableString
 import com.outlook.bselzer1.chess.sharedfunctions.extension.worldCursorPosition
 import com.outlook.bselzer1.chess.sharedfunctions.implement.GetValue
+import com.outlook.bselzer1.chess.ui.GdxGame
 import com.outlook.bselzer1.chess.ui.actor.PieceActor
-import com.outlook.bselzer1.chess.ui.actor.dialog.InvalidEventDialog
 import com.outlook.bselzer1.chess.ui.actor.dialog.PromotePieceDialog
+import com.outlook.bselzer1.chess.ui.actor.dialog.TimedDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -69,7 +70,24 @@ abstract class BoardActor(protected val board: Board) : Actor(), Disposable
     /**
      * The dialog for showing invalid events.
      */
-    private val invalidEventDialog: InvalidEventDialog = InvalidEventDialog()
+    private val invalidEventDialog: TimedDialog = object : TimedDialog()
+    {
+        override fun draw(batch: Batch?, parentAlpha: Float)
+        {
+            //Set the position before drawing.
+            val camera = GdxGame.GAME.camera
+            val vector = camera.position
+
+            //Center the dialog horizontally.
+            //Don't put the dialog over the current player's pieces by putting it at the top if it is the bottom player's turn, otherwise at the bottom.
+            val y = if (board.turnColor == board.topColor) vector.y - camera.viewportHeight / 2 + .1f * camera.viewportHeight
+                else vector.y + camera.viewportHeight / 2 - .1f * camera.viewportHeight
+            setPosition(vector.x - width / 2, y)
+
+            //Draw the dialog
+            super.draw(batch, parentAlpha)
+        }
+    }
 
     override fun draw(batch: Batch, parentAlpha: Float)
     {

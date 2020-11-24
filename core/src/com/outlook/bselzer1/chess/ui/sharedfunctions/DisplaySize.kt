@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.Array
 /**
  * The display size.
  */
+@Suppress("unused", "EnumEntryName")
 enum class DisplaySize(width: Int, height: Int)
 {
     R_640_480(640, 480),

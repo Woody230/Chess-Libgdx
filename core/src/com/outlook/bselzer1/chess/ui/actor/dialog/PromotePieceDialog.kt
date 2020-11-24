@@ -5,12 +5,11 @@ import com.outlook.bselzer1.chess.game.piece.Piece
 import com.outlook.bselzer1.chess.game.piece.PieceName
 import com.outlook.bselzer1.chess.sharedfunctions.extension.centerOnCamera
 import com.outlook.bselzer1.chess.sharedfunctions.extension.toDisplayableString
-import com.outlook.bselzer1.chess.ui.GdxGame
 
 /**
  * The standard dialog for selecting the piece to promote to.
  */
-class PromotePieceDialog(piece: Piece<*>) : AwaitResultDialog<PieceName>("Promote Piece", GdxGame.GAME.skinDefault)
+class PromotePieceDialog(piece: Piece<*>) : AwaitResultDialog<PieceName>("Promote Piece")
 {
     init
     {

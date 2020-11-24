@@ -6,13 +6,12 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog
 import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.outlook.bselzer1.chess.ui.GdxGame
 import kotlin.properties.Delegates
 
 /**
- * The standard dialog for displaying invalid event messages for at least [duration] seconds.
+ * The dialog for displaying messages for at least [duration] seconds.
  */
-class InvalidEventDialog(title: String = "", message: String = "", private val duration: Long = 2) : Dialog(title, GdxGame.GAME.skinDefault)
+open class TimedDialog(title: String = "", message: String = "", private val duration: Long = 2) : GdxGameDialog(title)
 {
     init
     {
@@ -30,7 +29,7 @@ class InvalidEventDialog(title: String = "", message: String = "", private val d
     /**
      * Sets the title.
      */
-    fun setTitle(title: String): InvalidEventDialog
+    fun setTitle(title: String): TimedDialog
     {
         titleLabel.setText(title)
         return this
@@ -39,7 +38,7 @@ class InvalidEventDialog(title: String = "", message: String = "", private val d
     /**
      * Sets the message.
      */
-    fun setMessage(message: String): InvalidEventDialog
+    fun setMessage(message: String): TimedDialog
     {
         (contentTable.getChild(0) as Label).setText(message)
         return this
@@ -58,11 +57,6 @@ class InvalidEventDialog(title: String = "", message: String = "", private val d
 
     override fun draw(batch: Batch?, parentAlpha: Float)
     {
-        //Put the dialog near the top of the screen, centered horizontally
-        val camera = GdxGame.GAME.camera
-        val vector = camera.position
-        setPosition(vector.x - width / 2, vector.y + camera.viewportHeight / 2 - .1f * camera.viewportHeight)
-
         super.draw(batch, parentAlpha)
 
         val elapsedSeconds = (System.currentTimeMillis() - startTime) / 1000

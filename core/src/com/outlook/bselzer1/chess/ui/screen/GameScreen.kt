@@ -9,8 +9,6 @@ import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog
-import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.outlook.bselzer1.chess.game.board.Board
 import com.outlook.bselzer1.chess.game.board.BoardName
 import com.outlook.bselzer1.chess.game.piece.PlayerColor
@@ -24,8 +22,6 @@ import com.outlook.bselzer1.chess.ui.sharedfunctions.GameColor
  */
 class GameScreen(boardName: BoardName) : GdxGameScreen(OrthographicCamera())
 {
-    //TODO center camera on the board
-
     //TODO non-consistent font (ex: invalid event dialog text will be larger in the next game)
 
     /**
@@ -111,16 +107,7 @@ class GameScreen(boardName: BoardName) : GdxGameScreen(OrthographicCamera())
             //Do not allow pieces to be moved.
             stage.actors.forEach { actor -> actor.apply { touchable = Touchable.disabled } }
 
-            val skin = game.skinDefault
-            val font = generateFont(buttonFontSize(camera))
-
-            val btnStyle = skin.get(TextButton.TextButtonStyle::class.java)
-            btnStyle.font = font
-
-            val lblStyle = skin.get(Label.LabelStyle::class.java)
-            lblStyle.font = font
-
-            object : Dialog("Game Ended", skin)
+            object : Dialog("Game Ended", game.skinDefault)
             {
                 init
                 {
@@ -138,8 +125,8 @@ class GameScreen(boardName: BoardName) : GdxGameScreen(OrthographicCamera())
                 {
                     game.screen = MainMenuScreen()
                 }
-            }.text("${victor.toDisplayableString()} wins!")
-                    .button("Back", null, btnStyle)
+            }.text("${victor.toDisplayableString()} wins!", defaultLabelStyle())
+                    .button("Back", null, defaultTextButtonStyle())
                     .show(stage)
         }
     }

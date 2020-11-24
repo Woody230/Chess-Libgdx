@@ -5,10 +5,11 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.ui.*
+import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox
+import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.outlook.bselzer1.chess.sharedfunctions.extension.*
 import com.outlook.bselzer1.chess.ui.sharedfunctions.DisplaySize
@@ -226,124 +227,146 @@ class SettingsScreen : GdxGameScreen(OrthographicCamera())
      */
     private fun setupLayout()
     {
-        val skin: Skin = game.skinDefault
-
         val width: Float = buttonWidth(camera)
         val height: Float = buttonHeight(camera)
         val padLarge: Float = buttonPad(camera)
         val padMedium = padLarge / 2
         val fontSize: Int = buttonFontSize(camera)
 
-        val btnFont: BitmapFont = generateFont(fontSize)
-        val btnStyle = skin.get(TextButtonStyle::class.java)
-        btnStyle.font = btnFont
+        val btnStyle = defaultTextButtonStyle().apply {
+            font = generateFont(fontSize)
+        }
 
         val lblFont: BitmapFont = generateFont((fontSize / 1.5).roundToInt())
-        val lblStyle = skin.get(LabelStyle::class.java)
-        lblStyle.font = lblFont
+        val lblStyle = defaultLabelStyle().apply {
+            font = lblFont
+        }
 
-        val sbStyle = skin.get(SelectBoxStyle::class.java)
-        sbStyle.font = lblFont
-        sbStyle.listStyle.font = lblFont
+        val sbStyle = defaultSelectBoxStyle().apply {
+            font = lblFont
+            listStyle.font = lblFont
+        }
 
-        val tblRoot = Table()
-        tblRoot.debug = isDebug()
-        tblRoot.setFillParent(true)
-        tblRoot.top()
-        tblRoot.pad(padLarge)
+        /**
+         * Create the display size select box for selecting the game difficulty.
+         */
+        fun createDisplaySizeSelection(): SelectBox<Resolution> = SelectBox<Resolution>(sbStyle).apply {
+            items = DisplaySize.DEVICE_RESOLUTIONS
+            selected = Resolution.CURRENT_RESOLUTION
 
-        val tblDisplay = Table()
-        tblDisplay.debug = isDebug()
-
-        val lblDisplay = Label("Display", LabelStyle(btnStyle.font, Color.WHITE))
-        tblRoot.add(lblDisplay)
-        tblRoot.row()
-
-        val lblDisplaySize = Label("Resolution:", lblStyle)
-        tblDisplay.add(lblDisplaySize).padTop(padLarge)
-
-        val sbDisplaySize: SelectBox<Resolution> = SelectBox(sbStyle)
-        sbDisplaySize.items = DisplaySize.DEVICE_RESOLUTIONS
-        sbDisplaySize.selected = Resolution.CURRENT_RESOLUTION
-        sbDisplaySize.addListener(object : ChangeListener()
-        {
-            override fun changed(event: ChangeEvent, actor: Actor)
+            addListener(object : ChangeListener()
             {
-                val sb = actor as SelectBox<*>
-
-                val resolution = Resolution(sb.selected.toString())
-                val currentResolution: Resolution = Resolution.CURRENT_RESOLUTION
-                if (resolution.compareTo(currentResolution) == 0)
+                override fun changed(event: ChangeEvent, actor: Actor)
                 {
-                    return
+                    val sb = actor as SelectBox<*>
+
+                    val resolution = Resolution(sb.selected.toString())
+                    val currentResolution: Resolution = Resolution.CURRENT_RESOLUTION
+                    if (resolution.compareTo(currentResolution) == 0)
+                    {
+                        //Don't set the display again if the resolution has not changed.
+                        return
+                    }
+
+                    pref.putInteger(KEY_WIDTH, resolution.width).putInteger(KEY_HEIGHT, resolution.height).flush()
+                    setDisplay(true)
                 }
+            })
+        }
 
-                pref.putInteger(KEY_WIDTH, resolution.width).putInteger(KEY_HEIGHT, resolution.height).flush()
-                setDisplay(true)
-            }
-        })
-        tblDisplay.add(sbDisplaySize).padLeft(padLarge).padTop(padLarge).fillX()
-        tblDisplay.row()
+        /**
+         * Create the display type select box for selecting how the application window should be displayed.
+         */
+        fun createDisplayTypeSelection(): SelectBox<DisplayType> = SelectBox<DisplayType>(sbStyle).apply {
+            items = DisplayType.DEVICE_DISPLAY_TYPES
+            selected = DisplayType.CURRENT_DISPLAY_TYPE
 
-        val lblDisplayType = Label("Display Type:", lblStyle)
-        tblDisplay.add(lblDisplayType).padTop(padMedium)
-
-        val sbDisplayType: SelectBox<DisplayType> = SelectBox(sbStyle)
-        sbDisplayType.items = DisplayType.DEVICE_DISPLAY_TYPES
-        sbDisplayType.selected = DisplayType.CURRENT_DISPLAY_TYPE
-        sbDisplayType.addListener(object : ChangeListener()
-        {
-            override fun changed(event: ChangeEvent, actor: Actor)
+            addListener(object : ChangeListener()
             {
-                val sb = actor as SelectBox<*>
-
-                val displayType: DisplayType? = DisplayType.getDisplayType(sb.selected.toString())
-                if (displayType == null || displayType == DisplayType.CURRENT_DISPLAY_TYPE)
+                override fun changed(event: ChangeEvent, actor: Actor)
                 {
-                    return
+                    val sb = actor as SelectBox<*>
+
+                    val displayType: DisplayType? = DisplayType.getDisplayType(sb.selected.toString())
+                    if (displayType == null || displayType == DisplayType.CURRENT_DISPLAY_TYPE)
+                    {
+                        return
+                    }
+
+                    pref.putString(KEY_DISPLAY_TYPE, displayType.toString()).flush()
+                    setDisplay(true)
                 }
+            })
+        }
 
-                pref.putString(KEY_DISPLAY_TYPE, displayType.toString()).flush()
-                setDisplay(true)
-            }
-        })
-        tblDisplay.add(sbDisplayType).padLeft(padLarge).padTop(padMedium).fillX()
-        tblDisplay.row()
-
-        val lblVsync = Label("VSync:", lblStyle)
-        tblDisplay.add(lblVsync).padTop(padMedium)
-
-        val sbVsync = SelectBox<String>(sbStyle)
-        sbVsync.setItems(*booleanAsUIString())
-
-        val vsync = pref.getBoolean(KEY_VSYNC, DEFAULT_VSYNC)
-        sbVsync.selected = vsync.toUiString()
-        sbVsync.addListener(object : ChangeListener()
-        {
-            override fun changed(event: ChangeEvent, actor: Actor)
+        /**
+         * Create the select box for selecting how VSync is enabled.
+         */
+        fun createVSyncSelection(): SelectBox<String> = SelectBox<String>(sbStyle).apply {
+            setItems(*booleanAsUiString())
+            selected = pref.getBoolean(KEY_VSYNC, DEFAULT_VSYNC).toUiString()
+            isDisabled = !Gdx.graphics.supportsDisplayModeChange()
+            addListener(object : ChangeListener()
             {
-                val sb = actor as SelectBox<*>
-                pref.putBoolean(KEY_VSYNC, sb.selected.toString().uiToBoolean()).flush()
-                setDisplay(false)
-            }
-        })
-        sbVsync.isDisabled = !Gdx.graphics.supportsDisplayModeChange()
+                override fun changed(event: ChangeEvent, actor: Actor)
+                {
+                    val sb = actor as SelectBox<*>
+                    pref.putBoolean(KEY_VSYNC, sb.selected.toString().uiToBoolean()).flush()
+                    setDisplay(false)
+                }
+            })
+        }
 
-        tblDisplay.add(sbVsync).padLeft(padLarge).padTop(padMedium).fillX()
-        tblDisplay.row()
-        tblRoot.add(tblDisplay).top().expand()
-        tblRoot.row()
-
-        val btnBack = TextButton("Back", btnStyle)
-        btnBack.addListener(object : ChangeListener()
-        {
-            override fun changed(event: ChangeEvent, actor: Actor)
+        /**
+         * Create the back button for returning to the main screen.
+         */
+        fun createBackButton(): TextButton = TextButton("Back", btnStyle).apply {
+            addListener(object : ChangeListener()
             {
-                game.screen = MainMenuScreen()
-            }
-        })
+                override fun changed(event: ChangeEvent, actor: Actor)
+                {
+                    game.screen = MainMenuScreen()
+                }
+            })
+        }
 
-        tblRoot.add(btnBack).minWidth(width).minHeight(height).bottom()
+        //Table for all of the settings
+        val tblDisplay = Table().apply {
+            //Resolution
+            add(Label("Resolution:", lblStyle)).padTop(padLarge)
+            add(createDisplaySizeSelection()).padLeft(padLarge).padTop(padLarge).fillX()
+            row()
+
+            //Display type
+            add(Label("Display Type:", lblStyle)).padTop(padMedium)
+            add(createDisplayTypeSelection()).padLeft(padLarge).padTop(padMedium).fillX()
+            row()
+
+            //VSync
+            add(Label("VSync:", lblStyle)).padTop(padMedium)
+            add(createVSyncSelection()).padLeft(padLarge).padTop(padMedium).fillX()
+            row()
+        }
+
+        val tblRoot = Table().apply {
+            setFillParent(true)
+            top()
+            pad(padLarge)
+
+            //Title
+            add(Label("Display", LabelStyle(btnStyle.font, Color.WHITE)))
+            row()
+
+            //Settings
+            add(tblDisplay).top().expand()
+            row()
+
+            //Back button
+            add(createBackButton()).minWidth(width).minHeight(height).bottom()
+
+            if (isDebug()) debugAll()
+        }
+
         stage.addActor(tblRoot)
     }
 }

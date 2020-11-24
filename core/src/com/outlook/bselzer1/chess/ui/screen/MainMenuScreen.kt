@@ -1,18 +1,16 @@
 package com.outlook.bselzer1.chess.ui.screen
 
-import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.outlook.bselzer1.chess.game.ai.Difficulty
 import com.outlook.bselzer1.chess.game.board.BoardName
 import com.outlook.bselzer1.chess.sharedfunctions.extension.*
+import com.outlook.bselzer1.chess.ui.actor.dialog.GdxGameDialog
 import com.outlook.bselzer1.chess.ui.sharedfunctions.GameColor
 
 /**
@@ -20,6 +18,14 @@ import com.outlook.bselzer1.chess.ui.sharedfunctions.GameColor
  */
 class MainMenuScreen : GdxGameScreen(OrthographicCamera())
 {
+    /**
+     * Initializes the screen.
+     */
+    init
+    {
+        Gdx.graphics.applyContinuousRendering(false)
+    }
+
     /**
      * Set the layout of the stage.
      */
@@ -37,8 +43,11 @@ class MainMenuScreen : GdxGameScreen(OrthographicCamera())
     override fun render(delta: Float)
     {
         Gdx.gl20.renderBackgroundColor(GameColor.DEFAULT_BACKGROUND)
-        stage.act()
-        stage.draw()
+
+        stage.apply {
+            act()
+            draw()
+        }
     }
 
     /**
@@ -83,100 +92,119 @@ class MainMenuScreen : GdxGameScreen(OrthographicCamera())
         val pad: Float = buttonPad(camera)
         val fontSize: Int = buttonFontSize(camera)
 
-        val skin = game.skinDefault
-        val font: BitmapFont = generateFont(fontSize)
-        val style = skin.get(TextButtonStyle::class.java)
-        style.font = font
+        val style = defaultTextButtonStyle().apply {
+            font = generateFont(fontSize)
+        }
 
-        val tblRoot = Table()
-        tblRoot.debug = SettingsScreen.isDebug()
-        tblRoot.setFillParent(true)
-        tblRoot.columnDefaults(0).minSize(width, height).padTop(pad).padBottom(pad)
+        val tblRoot = Table().apply {
+            debug = SettingsScreen.isDebug()
+            setFillParent(true)
+            columnDefaults(0).minSize(width, height).padTop(pad).padBottom(pad)
+        }
 
-        val btnPlay = TextButton("Play", style)
-        btnPlay.addListener(object : ChangeListener()
+        /**
+         * Create the play button for starting a game.
+         */
+        fun createPlayButton(): TextButton
         {
-            override fun changed(event: ChangeEvent, actor: Actor)
-            {
-                val dialog = Dialog("AI Difficulty", skin)
-                dialog.isMovable = false
-
-                val tblRootDialog = Table()
-                tblRootDialog.debug = SettingsScreen.isDebug()
-
-                var btn: TextButton
-                val difficulties: Array<Difficulty> = Difficulty.values()
-                for (difficulty in difficulties)
+            /**
+             * Create the difficulty button for selecting the associated difficulty enum.
+             */
+            fun createDifficultyButton(difficulty: Difficulty): TextButton = TextButton(difficulty.toString(), style).apply {
+                addListener(object : ChangeListener()
                 {
-                    btn = TextButton(difficulty.toString(), style)
-                    btn.addListener(object : ChangeListener()
+                    override fun changed(event: ChangeEvent, actor: Actor)
                     {
-                        override fun changed(event: ChangeEvent, actor: Actor)
-                        {
-                            //TODO set difficulty
-                            //TODO board selection
-                            game.screen = GameScreen(BoardName.WESTERN)
-                        }
-                    })
-                    tblRootDialog.add(btn).minSize(width, height).pad(pad)
-                }
-                tblRootDialog.row()
-                tblRootDialog.add()
+                        //TODO set difficulty
+                        //TODO board selection
+                        game.screen = GameScreen(BoardName.WESTERN)
+                    }
+                })
+            }
 
-                btn = TextButton("Cancel", style)
-                btn.addListener(object : ChangeListener()
+            /**
+             * Create the cancel button for cancelling the difficulty selection.
+             */
+            fun createCancelButton(dialog: Dialog): TextButton = TextButton("Cancel", style).apply {
+                addListener(object : ChangeListener()
                 {
                     override fun changed(event: ChangeEvent, actor: Actor)
                     {
                         dialog.hide()
                     }
                 })
-                tblRootDialog.add(btn).minSize(width, height).pad(pad)
-                dialog.add(tblRootDialog)
-
-                dialog.show(stage)
             }
-        })
-        tblRoot.add(btnPlay)
-        tblRoot.row()
 
-        if (Gdx.graphics.supportsDisplayModeChange())
-        {
-            val btnSettings = TextButton("Settings", style)
-            btnSettings.addListener(object : ChangeListener()
+            return TextButton("Play", style).apply {
+                addListener(object : ChangeListener()
+                {
+                    override fun changed(event: ChangeEvent, actor: Actor)
+                    {
+                        val dialog = GdxGameDialog("AI Difficulty").apply {
+                            isMovable = false
+                        }
+
+                        //Add difficulty buttons on first row then center the cancel button on the next row.
+                        val tblRootDialog = Table().apply {
+                            debug = SettingsScreen.isDebug()
+                            Difficulty.values().forEach { difficulty ->
+                                add(createDifficultyButton(difficulty)).minSize(width, height).pad(pad)
+                            }
+                            row()
+                            add()
+                            add(createCancelButton(dialog)).minSize(width, height).pad(pad)
+                        }
+
+                        dialog.add(tblRootDialog)
+                        dialog.show(stage)
+                    }
+                })
+            }
+        }
+
+        /**
+         * Create the settings button for going to the settings screen.
+         */
+        fun createSettingsButton(): TextButton = TextButton("Settings", style).apply {
+            addListener(object : ChangeListener()
             {
                 override fun changed(event: ChangeEvent, actor: Actor)
                 {
                     game.screen = SettingsScreen()
                 }
             })
-            tblRoot.add(btnSettings)
-            tblRoot.row()
         }
 
-        //Exiting is against iOS guidelines.
-        if (Gdx.app.type != Application.ApplicationType.iOS)
-        {
-            val btnExit = TextButton("Exit", style)
-            btnExit.addListener(object : ChangeListener()
+        /**
+         * Create the exit button for closing the application.
+         */
+        fun createExitButton(): TextButton = TextButton("Exit", style).apply {
+            addListener(object : ChangeListener()
             {
                 override fun changed(event: ChangeEvent, actor: Actor)
                 {
                     Gdx.app.exit()
                 }
             })
-            tblRoot.add(btnExit)
-            tblRoot.row()
+        }
+
+        tblRoot.apply {
+            //Play
+            add(createPlayButton())
+            row()
+
+            //Settings
+            if (Gdx.graphics.supportsDisplayModeChange())
+            {
+                add(createSettingsButton())
+                row()
+            }
+
+            //Exit
+            add(createExitButton())
+            row()
         }
 
         stage.addActor(tblRoot)
-    }
-
-    /**
-     * Initializes the screen.
-     */
-    init
-    {
-        Gdx.graphics.applyContinuousRendering(false)
     }
 }

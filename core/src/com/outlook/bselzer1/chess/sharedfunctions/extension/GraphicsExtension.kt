@@ -1,6 +1,5 @@
 package com.outlook.bselzer1.chess.sharedfunctions.extension
 
-import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Graphics
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics
@@ -8,9 +7,6 @@ import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Pixmap
-import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector3
 import com.outlook.bselzer1.chess.ui.GdxGame
@@ -49,41 +45,6 @@ fun Graphics.applyContinuousRendering(continuous: Boolean)
 {
     this.isContinuousRendering = continuous
     this.requestRendering()
-}
-
-/**
- * If the application is WebGL generate a BitmapFont.
- * Otherwise, generates a FreeTypeFont (not compatible with WebGL).
- *
- * @param size size of the font in pixels
- * @return a font
- */
-fun generateFont(size: Int): BitmapFont
-{
-    val font: BitmapFont
-    if (Gdx.app.type == Application.ApplicationType.WebGL)
-    {
-        font = BitmapFont(Gdx.files.internal("default/default.fnt"))
-        return font
-    }
-
-    val generator = FreeTypeFontGenerator(Gdx.files.internal("font/arial.ttf"))
-    val parameter = FreeTypeFontParameter()
-    parameter.size = size
-
-    /* For when you are using FitViewport instead of ScreenViewport.
-        parameter.minFilter = Texture.TextureFilter.MipMapLinearLinear;
-        parameter.magFilter = Texture.TextureFilter.Linear;
-        parameter.genMipMaps = true;
-    */
-
-    font = generator.generateFont(parameter)
-    /* For when you are using FitViewport instead of ScreenViewport.
-        font.setUseIntegerPositions(false);
-     */
-
-    generator.dispose()
-    return font
 }
 
 /**

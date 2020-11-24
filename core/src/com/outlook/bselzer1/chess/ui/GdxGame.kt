@@ -40,16 +40,20 @@ class GdxGame : Game()
      * The sprite batch.
      */
     lateinit var batch: SpriteBatch
+        private set
 
     /**
      * The default atlas.
      */
     lateinit var atlasDefault: TextureAtlas
+        private set
+
 
     /**
      * The default skin.
      */
     lateinit var skinDefault: Skin
+        private set
 
     override fun create()
     {
