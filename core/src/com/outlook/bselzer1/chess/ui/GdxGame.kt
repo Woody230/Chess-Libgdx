@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.outlook.bselzer1.chess.ui.actor.PieceActor
+import com.outlook.bselzer1.chess.ui.actor.piece.PieceActor
 import com.outlook.bselzer1.chess.ui.screen.MainMenuScreen
 import com.outlook.bselzer1.chess.ui.screen.SettingsScreen
 import ktx.async.KtxAsync
@@ -47,7 +47,6 @@ class GdxGame : Game()
      */
     lateinit var atlasDefault: TextureAtlas
         private set
-
 
     /**
      * The default skin.

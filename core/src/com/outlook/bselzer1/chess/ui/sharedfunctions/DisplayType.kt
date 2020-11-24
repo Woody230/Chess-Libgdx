@@ -59,6 +59,7 @@ enum class DisplayType
             {
                 return if (Gdx.graphics.isFullscreen) BORDERLESS_FULLSCREEN else WINDOWED
 
+                //TODO borderless fullscreen
                 /*
                 if(Gdx.graphics.isFullscreen())
                 {

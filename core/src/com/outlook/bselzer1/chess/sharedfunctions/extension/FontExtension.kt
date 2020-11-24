@@ -2,6 +2,7 @@ package com.outlook.bselzer1.chess.sharedfunctions.extension
 
 import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 
@@ -28,6 +29,8 @@ fun generateFont(size: Int): BitmapFont
 
     val generator = FreeTypeFontGenerator(Gdx.files.internal("font/arial.ttf"))
     val parameter = FreeTypeFontGenerator.FreeTypeFontParameter()
+    parameter.minFilter = Texture.TextureFilter.Linear
+    parameter.magFilter = Texture.TextureFilter.Linear
     parameter.size = size
 
     font = generator.generateFont(parameter)

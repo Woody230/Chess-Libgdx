@@ -87,10 +87,10 @@ class MainMenuScreen : GdxGameScreen(OrthographicCamera())
      */
     private fun setupLayout()
     {
-        val width: Float = buttonWidth(camera)
-        val height: Float = buttonHeight(camera)
-        val pad: Float = buttonPad(camera)
-        val fontSize: Int = buttonFontSize(camera)
+        val width: Float = buttonWidth()
+        val height: Float = buttonHeight()
+        val pad: Float = buttonPad()
+        val fontSize: Int = buttonFontSize()
 
         val style = defaultTextButtonStyle().apply {
             font = generateFont(fontSize)

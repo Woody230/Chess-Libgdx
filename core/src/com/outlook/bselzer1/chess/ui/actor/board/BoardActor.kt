@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener
-import com.badlogic.gdx.utils.Disposable
 import com.outlook.bselzer1.chess.game.board.Board
 import com.outlook.bselzer1.chess.game.board.extend.WesternBoard
 import com.outlook.bselzer1.chess.game.board.move.Position
@@ -18,9 +17,9 @@ import com.outlook.bselzer1.chess.sharedfunctions.extension.toDisplayableString
 import com.outlook.bselzer1.chess.sharedfunctions.extension.worldCursorPosition
 import com.outlook.bselzer1.chess.sharedfunctions.implement.GetValue
 import com.outlook.bselzer1.chess.ui.GdxGame
-import com.outlook.bselzer1.chess.ui.actor.PieceActor
 import com.outlook.bselzer1.chess.ui.actor.dialog.PromotePieceDialog
 import com.outlook.bselzer1.chess.ui.actor.dialog.TimedDialog
+import com.outlook.bselzer1.chess.ui.actor.piece.PieceActor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -81,7 +80,7 @@ abstract class BoardActor(protected val board: Board) : Actor()
             //Center the dialog horizontally.
             //Don't put the dialog over the current player's pieces by putting it at the top if it is the bottom player's turn, otherwise at the bottom.
             val y = if (board.turnColor == board.topColor) vector.y - camera.viewportHeight / 2 + .1f * camera.viewportHeight
-                else vector.y + camera.viewportHeight / 2 - .1f * camera.viewportHeight
+            else vector.y + camera.viewportHeight / 2 - .1f * camera.viewportHeight
             setPosition(vector.x - width / 2, y)
 
             //Draw the dialog

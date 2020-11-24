@@ -16,7 +16,7 @@ class PromotePieceDialog(piece: Piece<*>) : AwaitResultDialog<PieceName>("Promot
         isMovable = false
         isModal = false
 
-        text("Select the piece to promote to:")
+        text("Select the piece to promote to.")
 
         if (piece.promotion == null)
         {

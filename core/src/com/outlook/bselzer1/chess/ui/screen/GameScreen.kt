@@ -8,12 +8,12 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.scenes.scene2d.Touchable
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog
 import com.outlook.bselzer1.chess.game.board.Board
 import com.outlook.bselzer1.chess.game.board.BoardName
 import com.outlook.bselzer1.chess.game.piece.PlayerColor
 import com.outlook.bselzer1.chess.sharedfunctions.extension.*
 import com.outlook.bselzer1.chess.ui.actor.board.BoardActor
+import com.outlook.bselzer1.chess.ui.actor.dialog.GdxGameDialog
 import com.outlook.bselzer1.chess.ui.sharedfunctions.CameraGestureListener
 import com.outlook.bselzer1.chess.ui.sharedfunctions.GameColor
 
@@ -22,8 +22,6 @@ import com.outlook.bselzer1.chess.ui.sharedfunctions.GameColor
  */
 class GameScreen(boardName: BoardName) : GdxGameScreen(OrthographicCamera())
 {
-    //TODO non-consistent font (ex: invalid event dialog text will be larger in the next game)
-
     /**
      * The camera gesture listener.
      */
@@ -109,7 +107,7 @@ class GameScreen(boardName: BoardName) : GdxGameScreen(OrthographicCamera())
             //Do not allow pieces to be moved.
             stage.actors.forEach { actor -> actor.apply { touchable = Touchable.disabled } }
 
-            object : Dialog("Game Ended", game.skinDefault)
+            object : GdxGameDialog("Game Ended", game.skinDefault)
             {
                 init
                 {
@@ -127,8 +125,8 @@ class GameScreen(boardName: BoardName) : GdxGameScreen(OrthographicCamera())
                 {
                     game.screen = MainMenuScreen()
                 }
-            }.text("${victor.toDisplayableString()} wins!", defaultLabelStyle())
-                    .button("Back", null, defaultTextButtonStyle())
+            }.text("${victor.toDisplayableString()} wins!")
+                    .button("Back")
                     .show(stage)
         }
     }

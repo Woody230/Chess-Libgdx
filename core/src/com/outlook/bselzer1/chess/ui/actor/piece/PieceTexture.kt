@@ -1,4 +1,4 @@
-package com.outlook.bselzer1.chess.ui.actor
+package com.outlook.bselzer1.chess.ui.actor.piece
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Pixmap

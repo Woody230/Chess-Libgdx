@@ -227,11 +227,11 @@ class SettingsScreen : GdxGameScreen(OrthographicCamera())
      */
     private fun setupLayout()
     {
-        val width: Float = buttonWidth(camera)
-        val height: Float = buttonHeight(camera)
-        val padLarge: Float = buttonPad(camera)
+        val width: Float = buttonWidth()
+        val height: Float = buttonHeight()
+        val padLarge: Float = buttonPad()
         val padMedium = padLarge / 2
-        val fontSize: Int = buttonFontSize(camera)
+        val fontSize: Int = buttonFontSize()
 
         val btnStyle = defaultTextButtonStyle().apply {
             font = generateFont(fontSize)

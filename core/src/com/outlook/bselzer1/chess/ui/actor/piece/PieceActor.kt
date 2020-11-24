@@ -1,9 +1,8 @@
-package com.outlook.bselzer1.chess.ui.actor
+package com.outlook.bselzer1.chess.ui.actor.piece
 
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
-import com.badlogic.gdx.utils.Disposable
 import com.outlook.bselzer1.chess.game.piece.Piece
 
 /**
