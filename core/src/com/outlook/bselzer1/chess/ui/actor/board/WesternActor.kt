@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 import com.outlook.bselzer1.chess.game.board.extend.WesternBoard
 import com.outlook.bselzer1.chess.game.board.move.Position
-import com.outlook.bselzer1.chess.ui.GdxGame
+import com.outlook.bselzer1.chess.ui.gdx.GdxCompanion
 import com.outlook.bselzer1.chess.ui.sharedfunctions.GameColor
 import com.outlook.bselzer3.libgdxlogger.LibgdxLogger
 import kotlin.math.min
@@ -46,7 +46,7 @@ class WesternActor(westernBoard: WesternBoard) : BoardActor(westernBoard)
     init
     {
         //Create the length to fit based on the smaller side.
-        val minSide = min(GdxGame.GAME.camera.viewportWidth, GdxGame.GAME.camera.viewportHeight)
+        val minSide = min(GdxCompanion.CAMERA.viewportWidth, GdxCompanion.CAMERA.viewportHeight)
         setSize(minSide, minSide)
     }
 

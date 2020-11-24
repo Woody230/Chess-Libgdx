@@ -1,16 +1,15 @@
 package com.outlook.bselzer1.chess.ui.actor.dialog
 
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.outlook.bselzer1.chess.sharedfunctions.extension.getLabelStyle
 import com.outlook.bselzer1.chess.sharedfunctions.extension.getTextButtonStyle
 import com.outlook.bselzer1.chess.sharedfunctions.extension.getWindowStyle
-import com.outlook.bselzer1.chess.ui.GdxGame
+import com.outlook.bselzer1.chess.ui.gdx.GdxCompanion
 
 /**
  * Dialog to keep styles from overwriting each other when using the default skin.
  */
-open class GdxGameDialog(title: String, skin: Skin = GdxGame.GAME.skinDefault) : Dialog(title, skin)
+open class GdxGameDialog(title: String) : Dialog(title, GdxCompanion.SKIN)
 {
     init
     {

@@ -3,7 +3,6 @@ package com.outlook.bselzer1.chess.ui.screen
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputMultiplexer
-import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.math.MathUtils
@@ -14,18 +13,19 @@ import com.outlook.bselzer1.chess.game.piece.PlayerColor
 import com.outlook.bselzer1.chess.sharedfunctions.extension.*
 import com.outlook.bselzer1.chess.ui.actor.board.BoardActor
 import com.outlook.bselzer1.chess.ui.actor.dialog.GdxGameDialog
+import com.outlook.bselzer1.chess.ui.gdx.GdxCompanion
+import com.outlook.bselzer1.chess.ui.gdx.GdxScreen
 import com.outlook.bselzer1.chess.ui.sharedfunctions.CameraGestureListener
-import com.outlook.bselzer1.chess.ui.sharedfunctions.GameColor
 
 /**
  * The game screen.
  */
-class GameScreen(boardName: BoardName) : GdxGameScreen(OrthographicCamera())
+class GameScreen(boardName: BoardName) : GdxScreen()
 {
     /**
      * The camera gesture listener.
      */
-    private val cameraGestureListener: CameraGestureListener = CameraGestureListener(camera)
+    private val cameraGestureListener: CameraGestureListener = CameraGestureListener()
 
     /**
      * The game board.
@@ -50,52 +50,31 @@ class GameScreen(boardName: BoardName) : GdxGameScreen(OrthographicCamera())
             debug = SettingsScreen.isDebug()
         }
 
-        camera.centerOn(boardActor)
-    }
-
-    override fun hide()
-    {
-
     }
 
     override fun show()
     {
+        super.show()
+
         val input = InputMultiplexer()
-        input.addProcessor(stage)
-        input.addProcessor(GestureDetector(CameraGestureListener(camera)))
+        input.addProcessor(GdxCompanion.STAGE)
+        input.addProcessor(GestureDetector(cameraGestureListener))
         Gdx.input.inputProcessor = input
 
-        stage.addActor(boardActor)
+        GdxCompanion.STAGE.addActor(boardActor)
+        GdxCompanion.CAMERA.centerOn(boardActor)
     }
 
     override fun render(delta: Float)
     {
+        super.render(delta)
         handleInput()
-
-        Gdx.gl.renderBackgroundColor(GameColor.DEFAULT_BACKGROUND)
-
-        stage.act()
-        stage.draw()
-    }
-
-    override fun pause()
-    {
-
-    }
-
-    override fun resume()
-    {
-
     }
 
     override fun resize(width: Int, height: Int)
     {
-        viewport.update(width, height, false)
-        camera.centerOn(boardActor)
-    }
-
-    override fun dispose()
-    {
+        super.resize(width, height)
+        GdxCompanion.CAMERA.centerOn(boardActor)
     }
 
     /**
@@ -105,9 +84,9 @@ class GameScreen(boardName: BoardName) : GdxGameScreen(OrthographicCamera())
     {
         return { victor ->
             //Do not allow pieces to be moved.
-            stage.actors.forEach { actor -> actor.apply { touchable = Touchable.disabled } }
+            GdxCompanion.STAGE.actors.forEach { actor -> actor.apply { touchable = Touchable.disabled } }
 
-            object : GdxGameDialog("Game Ended", game.skinDefault)
+            object : GdxGameDialog("Game Ended")
             {
                 init
                 {
@@ -123,11 +102,11 @@ class GameScreen(boardName: BoardName) : GdxGameScreen(OrthographicCamera())
 
                 override fun result(`object`: Any?)
                 {
-                    game.screen = MainMenuScreen()
+                    GdxCompanion.GAME.screen = MainMenuScreen()
                 }
             }.text("${victor.toDisplayableString()} wins!")
                     .button("Back")
-                    .show(stage)
+                    .show(GdxCompanion.STAGE)
         }
     }
 
@@ -138,6 +117,8 @@ class GameScreen(boardName: BoardName) : GdxGameScreen(OrthographicCamera())
     {
         //TODO key bindings
         //TODO sensitivity
+
+        val camera = GdxCompanion.CAMERA
 
         //Zoom
         if (Gdx.input.isKeyPressed(Input.Keys.NUM_1))

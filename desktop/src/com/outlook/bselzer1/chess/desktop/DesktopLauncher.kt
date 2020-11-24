@@ -2,7 +2,7 @@ package com.outlook.bselzer1.chess.desktop
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration
-import com.outlook.bselzer1.chess.ui.GdxGame
+import com.outlook.bselzer1.chess.ui.gdx.GdxGame
 
 object DesktopLauncher
 {

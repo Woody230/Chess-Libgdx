@@ -16,10 +16,10 @@ import com.outlook.bselzer1.chess.sharedfunctions.extension.containsPoint
 import com.outlook.bselzer1.chess.sharedfunctions.extension.toDisplayableString
 import com.outlook.bselzer1.chess.sharedfunctions.extension.worldCursorPosition
 import com.outlook.bselzer1.chess.sharedfunctions.implement.GetValue
-import com.outlook.bselzer1.chess.ui.GdxGame
 import com.outlook.bselzer1.chess.ui.actor.dialog.PromotePieceDialog
 import com.outlook.bselzer1.chess.ui.actor.dialog.TimedDialog
 import com.outlook.bselzer1.chess.ui.actor.piece.PieceActor
+import com.outlook.bselzer1.chess.ui.gdx.GdxCompanion
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -74,7 +74,7 @@ abstract class BoardActor(protected val board: Board) : Actor()
         override fun draw(batch: Batch?, parentAlpha: Float)
         {
             //Set the position before drawing.
-            val camera = GdxGame.GAME.camera
+            val camera = GdxCompanion.CAMERA
             val vector = camera.position
 
             //Center the dialog horizontally.

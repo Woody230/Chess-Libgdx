@@ -1,7 +1,6 @@
 package com.outlook.bselzer1.chess.ui.screen
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog
 import com.badlogic.gdx.scenes.scene2d.ui.Table
@@ -11,12 +10,13 @@ import com.outlook.bselzer1.chess.game.ai.Difficulty
 import com.outlook.bselzer1.chess.game.board.BoardName
 import com.outlook.bselzer1.chess.sharedfunctions.extension.*
 import com.outlook.bselzer1.chess.ui.actor.dialog.GdxGameDialog
-import com.outlook.bselzer1.chess.ui.sharedfunctions.GameColor
+import com.outlook.bselzer1.chess.ui.gdx.GdxCompanion
+import com.outlook.bselzer1.chess.ui.gdx.GdxScreen
 
 /**
  * The main menu screen.
  */
-class MainMenuScreen : GdxGameScreen(OrthographicCamera())
+class MainMenuScreen : GdxScreen()
 {
     /**
      * Initializes the screen.
@@ -31,59 +31,21 @@ class MainMenuScreen : GdxGameScreen(OrthographicCamera())
      */
     override fun show()
     {
-        Gdx.input.inputProcessor = stage
+        super.show()
         setupLayout()
     }
 
-    /**
-     * Render the background and stage.
-     *
-     * @param delta the time in seconds since the last render.
-     */
-    override fun render(delta: Float)
-    {
-        Gdx.gl20.renderBackgroundColor(GameColor.DEFAULT_BACKGROUND)
-
-        stage.apply {
-            act()
-            draw()
-        }
-    }
-
-    /**
-     * Resize the viewport and recreate the layout of the stage.
-     *
-     * @param width  the new width
-     * @param height the new height
-     */
     override fun resize(width: Int, height: Int)
     {
-        viewport.update(width, height, true)
-        stage.clear()
+        super.resize(width, height)
+        GdxCompanion.STAGE.clear()
         setupLayout()
-    }
-
-    override fun pause()
-    {
-    }
-
-    override fun resume()
-    {
-    }
-
-    override fun hide()
-    {
-    }
-
-    override fun dispose()
-    {
-        stage.dispose()
     }
 
     /**
      * Add the play button.
      * Add the settings button if applicable.
-     * Add the exit button if applicable.
+     * Add the exit button.
      */
     private fun setupLayout()
     {
@@ -117,7 +79,7 @@ class MainMenuScreen : GdxGameScreen(OrthographicCamera())
                     {
                         //TODO set difficulty
                         //TODO board selection
-                        game.screen = GameScreen(BoardName.WESTERN)
+                        GdxCompanion.GAME.screen = GameScreen(BoardName.WESTERN)
                     }
                 })
             }
@@ -170,7 +132,7 @@ class MainMenuScreen : GdxGameScreen(OrthographicCamera())
             {
                 override fun changed(event: ChangeEvent, actor: Actor)
                 {
-                    game.screen = SettingsScreen()
+                    GdxCompanion.GAME.screen = SettingsScreen()
                 }
             })
         }
@@ -205,6 +167,6 @@ class MainMenuScreen : GdxGameScreen(OrthographicCamera())
             row()
         }
 
-        stage.addActor(tblRoot)
+        GdxCompanion.STAGE.addActor(tblRoot)
     }
 }

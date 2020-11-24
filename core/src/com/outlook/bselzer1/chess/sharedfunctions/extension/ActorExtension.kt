@@ -1,7 +1,7 @@
 package com.outlook.bselzer1.chess.sharedfunctions.extension
 
 import com.badlogic.gdx.scenes.scene2d.Actor
-import com.outlook.bselzer1.chess.ui.GdxGame
+import com.outlook.bselzer1.chess.ui.gdx.GdxCompanion
 
 /**
  * A point is within the plane of the actor.
@@ -25,7 +25,7 @@ fun Actor.centerOnCursor()
  */
 fun Actor.centerOnCamera()
 {
-    val vector = GdxGame.GAME.camera.position
+    val vector = GdxCompanion.CAMERA.position
     centerOn(vector.x, vector.y)
 }
 

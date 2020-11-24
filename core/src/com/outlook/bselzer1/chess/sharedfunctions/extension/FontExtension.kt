@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
  */
 const val DEFAULT_FONT_SIZE = 17
 
+//TODO cache same size fonts
 /**
  * If the application is WebGL generate a BitmapFont.
  * Otherwise, generates a FreeTypeFont (not compatible with WebGL).

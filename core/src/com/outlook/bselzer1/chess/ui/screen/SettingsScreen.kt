@@ -2,8 +2,6 @@ package com.outlook.bselzer1.chess.ui.screen
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
@@ -12,18 +10,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.outlook.bselzer1.chess.sharedfunctions.extension.*
+import com.outlook.bselzer1.chess.ui.gdx.GdxCompanion
+import com.outlook.bselzer1.chess.ui.gdx.GdxScreen
 import com.outlook.bselzer1.chess.ui.sharedfunctions.DisplaySize
 import com.outlook.bselzer1.chess.ui.sharedfunctions.DisplayType
-import com.outlook.bselzer1.chess.ui.sharedfunctions.GameColor
 import com.outlook.bselzer1.chess.ui.sharedfunctions.Resolution
-import kotlin.math.roundToInt
 
 //TODO add frame rate???
 
 /**
  * The settings screen.
  */
-class SettingsScreen : GdxGameScreen(OrthographicCamera())
+class SettingsScreen : GdxScreen()
 {
     companion object
     {
@@ -173,20 +171,8 @@ class SettingsScreen : GdxGameScreen(OrthographicCamera())
      */
     override fun show()
     {
-        Gdx.input.inputProcessor = stage
+        super.show()
         setupLayout()
-    }
-
-    /**
-     * Render the background and stage.
-     *
-     * @param delta the time in seconds since the last render.
-     */
-    override fun render(delta: Float)
-    {
-        Gdx.gl20.renderBackgroundColor(GameColor.DEFAULT_BACKGROUND)
-        stage.act()
-        stage.draw()
     }
 
     /**
@@ -197,26 +183,9 @@ class SettingsScreen : GdxGameScreen(OrthographicCamera())
      */
     override fun resize(width: Int, height: Int)
     {
-        viewport.update(width, height, true)
-        stage.clear()
+        super.resize(width, height)
+        GdxCompanion.STAGE.clear()
         setupLayout()
-    }
-
-    override fun pause()
-    {
-    }
-
-    override fun resume()
-    {
-    }
-
-    override fun hide()
-    {
-    }
-
-    override fun dispose()
-    {
-        stage.dispose()
     }
 
     /**
@@ -231,26 +200,11 @@ class SettingsScreen : GdxGameScreen(OrthographicCamera())
         val height: Float = buttonHeight()
         val padLarge: Float = buttonPad()
         val padMedium = padLarge / 2
-        val fontSize: Int = buttonFontSize()
-
-        val btnStyle = defaultTextButtonStyle().apply {
-            font = generateFont(fontSize)
-        }
-
-        val lblFont: BitmapFont = generateFont((fontSize / 1.5).roundToInt())
-        val lblStyle = defaultLabelStyle().apply {
-            font = lblFont
-        }
-
-        val sbStyle = defaultSelectBoxStyle().apply {
-            font = lblFont
-            listStyle.font = lblFont
-        }
 
         /**
          * Create the display size select box for selecting the game difficulty.
          */
-        fun createDisplaySizeSelection(): SelectBox<Resolution> = SelectBox<Resolution>(sbStyle).apply {
+        fun createDisplaySizeSelection(): SelectBox<Resolution> = SelectBox<Resolution>(defaultSelectBoxStyle()).apply {
             items = DisplaySize.DEVICE_RESOLUTIONS
             selected = Resolution.CURRENT_RESOLUTION
 
@@ -277,7 +231,7 @@ class SettingsScreen : GdxGameScreen(OrthographicCamera())
         /**
          * Create the display type select box for selecting how the application window should be displayed.
          */
-        fun createDisplayTypeSelection(): SelectBox<DisplayType> = SelectBox<DisplayType>(sbStyle).apply {
+        fun createDisplayTypeSelection(): SelectBox<DisplayType> = SelectBox<DisplayType>(defaultSelectBoxStyle()).apply {
             items = DisplayType.DEVICE_DISPLAY_TYPES
             selected = DisplayType.CURRENT_DISPLAY_TYPE
 
@@ -302,7 +256,7 @@ class SettingsScreen : GdxGameScreen(OrthographicCamera())
         /**
          * Create the select box for selecting how VSync is enabled.
          */
-        fun createVSyncSelection(): SelectBox<String> = SelectBox<String>(sbStyle).apply {
+        fun createVSyncSelection(): SelectBox<String> = SelectBox<String>(defaultSelectBoxStyle()).apply {
             setItems(*booleanAsUiString())
             selected = pref.getBoolean(KEY_VSYNC, DEFAULT_VSYNC).toUiString()
             isDisabled = !Gdx.graphics.supportsDisplayModeChange()
@@ -320,12 +274,12 @@ class SettingsScreen : GdxGameScreen(OrthographicCamera())
         /**
          * Create the back button for returning to the main screen.
          */
-        fun createBackButton(): TextButton = TextButton("Back", btnStyle).apply {
+        fun createBackButton(): TextButton = TextButton("Back", defaultTextButtonStyle()).apply {
             addListener(object : ChangeListener()
             {
                 override fun changed(event: ChangeEvent, actor: Actor)
                 {
-                    game.screen = MainMenuScreen()
+                    GdxCompanion.GAME.screen = MainMenuScreen()
                 }
             })
         }
@@ -333,17 +287,17 @@ class SettingsScreen : GdxGameScreen(OrthographicCamera())
         //Table for all of the settings
         val tblDisplay = Table().apply {
             //Resolution
-            add(Label("Resolution:", lblStyle)).padTop(padLarge)
+            add(Label("Resolution:", defaultLabelStyle())).padTop(padLarge)
             add(createDisplaySizeSelection()).padLeft(padLarge).padTop(padLarge).fillX()
             row()
 
             //Display type
-            add(Label("Display Type:", lblStyle)).padTop(padMedium)
+            add(Label("Display Type:", defaultLabelStyle())).padTop(padMedium)
             add(createDisplayTypeSelection()).padLeft(padLarge).padTop(padMedium).fillX()
             row()
 
             //VSync
-            add(Label("VSync:", lblStyle)).padTop(padMedium)
+            add(Label("VSync:", defaultLabelStyle())).padTop(padMedium)
             add(createVSyncSelection()).padLeft(padLarge).padTop(padMedium).fillX()
             row()
         }
@@ -354,7 +308,7 @@ class SettingsScreen : GdxGameScreen(OrthographicCamera())
             pad(padLarge)
 
             //Title
-            add(Label("Display", LabelStyle(btnStyle.font, Color.WHITE)))
+            add(Label("Display", LabelStyle(defaultTextButtonStyle().font, Color.WHITE)))
             row()
 
             //Settings
@@ -367,6 +321,6 @@ class SettingsScreen : GdxGameScreen(OrthographicCamera())
             if (isDebug()) debugAll()
         }
 
-        stage.addActor(tblRoot)
+        GdxCompanion.STAGE.addActor(tblRoot)
     }
 }

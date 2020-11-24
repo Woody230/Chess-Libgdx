@@ -1,14 +1,14 @@
 package com.outlook.bselzer1.chess.ui.sharedfunctions
 
-import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.input.GestureDetector.GestureListener
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
+import com.outlook.bselzer1.chess.ui.gdx.GdxCompanion
 
 /**
  * Gesture listener used to move the camera.
  */
-class CameraGestureListener(private val camera: OrthographicCamera) : GestureListener
+class CameraGestureListener : GestureListener
 {
     /**
      * The minimum zoom.
@@ -71,8 +71,9 @@ class CameraGestureListener(private val camera: OrthographicCamera) : GestureLis
             return false
         }
 
+        val camera = GdxCompanion.CAMERA
         camera.zoom += if (delta < 0) -zoomAmount else zoomAmount
-        camera.zoom = MathUtils.clamp(camera.zoom, minZoom, maxZoom)
+        camera.zoom = MathUtils.clamp(GdxCompanion.CAMERA.zoom, minZoom, maxZoom)
         camera.update()
         previousDelta = delta
         return true

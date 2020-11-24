@@ -3,14 +3,15 @@ package com.outlook.bselzer1.chess.sharedfunctions.extension
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector3
-import com.outlook.bselzer1.chess.ui.GdxGame
+import com.outlook.bselzer1.chess.ui.gdx.GdxCompanion
+import kotlin.math.roundToInt
 
 /**
  * The position of the cursor within the world through the lens of a camera.
  */
 fun worldCursorPosition(): Vector3
 {
-    return GdxGame.GAME.camera.unproject(Vector3(Gdx.input.x.toFloat(), Gdx.input.y.toFloat(), 0f))
+    return GdxCompanion.CAMERA.unproject(Vector3(Gdx.input.x.toFloat(), Gdx.input.y.toFloat(), 0f))
 }
 
 /**
@@ -18,7 +19,7 @@ fun worldCursorPosition(): Vector3
  */
 fun buttonWidth(): Float
 {
-    return GdxGame.GAME.camera.viewportWidth / 7
+    return GdxCompanion.CAMERA.viewportWidth / 7
 }
 
 /**
@@ -26,7 +27,7 @@ fun buttonWidth(): Float
  */
 fun buttonHeight(): Float
 {
-    return GdxGame.GAME.camera.viewportHeight / 10
+    return GdxCompanion.CAMERA.viewportHeight / 10
 }
 
 /**
@@ -34,7 +35,7 @@ fun buttonHeight(): Float
  */
 fun buttonPad(): Float
 {
-    return GdxGame.GAME.camera.viewportHeight / 25
+    return GdxCompanion.CAMERA.viewportHeight / 25
 }
 
 /**
@@ -44,4 +45,12 @@ fun buttonFontSize(): Int
 {
     val height = buttonHeight()
     return MathUtils.floor(height / 2)
+}
+
+/**
+ * @return the label font size
+ */
+fun labelFontSize(): Int
+{
+    return (buttonFontSize() / 1.5).roundToInt()
 }
