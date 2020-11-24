@@ -9,7 +9,7 @@ import com.outlook.bselzer1.chess.game.piece.Piece
 /**
  * The [Piece] ui
  */
-class PieceActor(piece: Piece<*>) : Image(), Disposable
+class PieceActor(piece: Piece<*>) : Image()
 {
     /**
      * The associated [Piece]
@@ -60,10 +60,5 @@ class PieceActor(piece: Piece<*>) : Image(), Disposable
     {
         piece ?: return
         super.draw(batch, parentAlpha)
-    }
-
-    override fun dispose()
-    {
-
     }
 }

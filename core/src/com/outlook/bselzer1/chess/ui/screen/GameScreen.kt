@@ -48,9 +48,11 @@ class GameScreen(boardName: BoardName) : GdxGameScreen(OrthographicCamera())
         Gdx.graphics.applyContinuousRendering(true)
 
         //Create after the viewport is applied to use default scaling.
-        boardActor = BoardActor.createActor(board)
-        boardActor.debug = SettingsScreen.isDebug()
-        boardActor.centerOnCamera()
+        boardActor = BoardActor.createActor(board).apply {
+            debug = SettingsScreen.isDebug()
+        }
+
+        camera.centerOn(boardActor)
     }
 
     override fun hide()
@@ -90,12 +92,12 @@ class GameScreen(boardName: BoardName) : GdxGameScreen(OrthographicCamera())
 
     override fun resize(width: Int, height: Int)
     {
-        viewport.update(width, height, true)
+        viewport.update(width, height, false)
+        camera.centerOn(boardActor)
     }
 
     override fun dispose()
     {
-        boardActor.dispose()
     }
 
     /**
@@ -185,6 +187,12 @@ class GameScreen(boardName: BoardName) : GdxGameScreen(OrthographicCamera())
         if (Gdx.input.isKeyPressed(Input.Keys.W))
         {
             camera.translate(0f, movement, 0f)
+        }
+
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.MIDDLE))
+        {
+            //Reset camera position
+            camera.centerOn(boardActor)
         }
     }
 }

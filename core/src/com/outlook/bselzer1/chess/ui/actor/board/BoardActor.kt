@@ -30,7 +30,7 @@ import ktx.async.KtxAsync
  * The [Board] ui
  * @property board the associated [Board]
  */
-abstract class BoardActor(protected val board: Board) : Actor(), Disposable
+abstract class BoardActor(protected val board: Board) : Actor()
 {
     init
     {
@@ -117,11 +117,6 @@ abstract class BoardActor(protected val board: Board) : Actor(), Disposable
      * Get the board position of the piece based on a graphical position in the world.
      */
     abstract fun getPiecePosition(x: Float, y: Float): Position
-
-    override fun dispose()
-    {
-        pieceActors.forEach { actor -> actor.dispose() }
-    }
 
     override fun setDebug(enabled: Boolean)
     {
