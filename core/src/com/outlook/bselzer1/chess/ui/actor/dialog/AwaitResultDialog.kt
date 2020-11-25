@@ -1,11 +1,12 @@
 package com.outlook.bselzer1.chess.ui.actor.dialog
 
+import com.outlook.bselzer1.chess.ui.gdx.actor.GdxDialog
 import kotlinx.coroutines.delay
 
 /**
  * Dialog for waiting for the result of a user's input.
  */
-open class AwaitResultDialog<Result>(title: String) : GdxGameDialog(title)
+open class AwaitResultDialog<Result>(title: String) : GdxDialog(title)
 {
     /**
      * The result to wait for.

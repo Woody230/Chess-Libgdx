@@ -1,7 +1,10 @@
 package com.outlook.bselzer1.chess.sharedfunctions.extension
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Graphics
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics
+import com.badlogic.gdx.math.Vector3
+import com.outlook.bselzer1.chess.ui.gdx.GdxCompanion
 import org.lwjgl.glfw.GLFW
 
 /**
@@ -41,4 +44,12 @@ fun Graphics.isUndecorated(): Boolean
 
     val window = this.window.windowHandle
     return GLFW.glfwGetWindowAttrib(window, GLFW.GLFW_DECORATED) == GLFW.GLFW_FALSE
+}
+
+/**
+ * The position of the cursor within the world through the lens of a camera.
+ */
+fun worldCursorPosition(): Vector3
+{
+    return GdxCompanion.CAMERA.unproject(Vector3(Gdx.input.x.toFloat(), Gdx.input.y.toFloat(), 0f))
 }

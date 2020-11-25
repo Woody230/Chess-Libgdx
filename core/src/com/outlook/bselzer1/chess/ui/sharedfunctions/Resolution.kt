@@ -1,6 +1,6 @@
 package com.outlook.bselzer1.chess.ui.sharedfunctions
 
-import com.outlook.bselzer1.chess.ui.screen.SettingsScreen
+import com.outlook.bselzer1.chess.ui.screen.settings.SettingsScreen
 
 /**
  * The resolution.

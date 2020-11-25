@@ -1,20 +1,16 @@
-package com.outlook.bselzer1.chess.ui.screen
+package com.outlook.bselzer1.chess.ui.screen.settings
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
+import com.badlogic.gdx.utils.Align
 import com.outlook.bselzer1.chess.sharedfunctions.extension.*
 import com.outlook.bselzer1.chess.ui.gdx.GdxCompanion
 import com.outlook.bselzer1.chess.ui.gdx.GdxScreen
-import com.outlook.bselzer1.chess.ui.sharedfunctions.DisplaySize
+import com.outlook.bselzer1.chess.ui.gdx.actor.GdxLabel
+import com.outlook.bselzer1.chess.ui.gdx.actor.GdxTable
 import com.outlook.bselzer1.chess.ui.sharedfunctions.DisplayType
-import com.outlook.bselzer1.chess.ui.sharedfunctions.Resolution
+import com.outlook.bselzer1.chess.ui.sharedfunctions.UiDirection
 
 //TODO add frame rate???
 
@@ -47,39 +43,34 @@ class SettingsScreen : GdxScreen()
         /**
          * The default setting for whether or not VSync is enabled.
          */
-        private const val DEFAULT_VSYNC = true
-
-        /**
-         * The preference name for this screen.
-         */
-        private const val PREF_NAME = "SETTINGS"
+        internal const val DEFAULT_VSYNC = true
 
         /**
          * The preference key for storing the screen width.
          */
-        private const val KEY_WIDTH = "WIDTH"
+        internal const val KEY_WIDTH = "WIDTH"
 
         /**
          * The preference key for storing the screen height.
          */
-        private const val KEY_HEIGHT = "HEIGHT"
+        internal const val KEY_HEIGHT = "HEIGHT"
 
         /**
          * The preference key for storing the screen's display type.
          * Always fullscreen for Android.
          */
-        private const val KEY_DISPLAY_TYPE = "DISPLAY_TYPE"
+        internal const val KEY_DISPLAY_TYPE = "DISPLAY_TYPE"
 
         /**
          * The preference key for storing whether or not VSync should be enabled.
          * Always on for Android.
          */
-        private const val KEY_VSYNC = "VERTICAL_SYNCHRONIZATION"
+        internal const val KEY_VSYNC = "VERTICAL_SYNCHRONIZATION"
 
         /**
          * The preference.
          */
-        private val pref = Gdx.app.getPreferences(PREF_NAME)
+        internal val pref = Gdx.app.getPreferences("SETTINGS")
 
         /**
          * Sets the display of the window using the width and height stored in preferences.
@@ -196,119 +187,51 @@ class SettingsScreen : GdxScreen()
      */
     private fun setupLayout()
     {
-        val width: Float = buttonWidth()
-        val height: Float = buttonHeight()
-        val padLarge: Float = buttonPad()
-        val padMedium = padLarge / 2
-
-        /**
-         * Create the display size select box for selecting the game difficulty.
-         */
-        fun createDisplaySizeSelection(): SelectBox<Resolution> = SelectBox<Resolution>(defaultSelectBoxStyle()).apply {
-            items = DisplaySize.DEVICE_RESOLUTIONS
-            selected = Resolution.CURRENT_RESOLUTION
-
-            addListener(object : ChangeListener()
-            {
-                override fun changed(event: ChangeEvent, actor: Actor)
-                {
-                    val sb = actor as SelectBox<*>
-
-                    val resolution = Resolution(sb.selected.toString())
-                    val currentResolution: Resolution = Resolution.CURRENT_RESOLUTION
-                    if (resolution.compareTo(currentResolution) == 0)
-                    {
-                        //Don't set the display again if the resolution has not changed.
-                        return
-                    }
-
-                    pref.putInteger(KEY_WIDTH, resolution.width).putInteger(KEY_HEIGHT, resolution.height).flush()
-                    setDisplay(true)
-                }
-            })
-        }
-
-        /**
-         * Create the display type select box for selecting how the application window should be displayed.
-         */
-        fun createDisplayTypeSelection(): SelectBox<DisplayType> = SelectBox<DisplayType>(defaultSelectBoxStyle()).apply {
-            items = DisplayType.DEVICE_DISPLAY_TYPES
-            selected = DisplayType.CURRENT_DISPLAY_TYPE
-
-            addListener(object : ChangeListener()
-            {
-                override fun changed(event: ChangeEvent, actor: Actor)
-                {
-                    val sb = actor as SelectBox<*>
-
-                    val displayType: DisplayType? = DisplayType.getDisplayType(sb.selected.toString())
-                    if (displayType == null || displayType == DisplayType.CURRENT_DISPLAY_TYPE)
-                    {
-                        return
-                    }
-
-                    pref.putString(KEY_DISPLAY_TYPE, displayType.toString()).flush()
-                    setDisplay(true)
-                }
-            })
-        }
-
-        /**
-         * Create the select box for selecting how VSync is enabled.
-         */
-        fun createVSyncSelection(): SelectBox<String> = SelectBox<String>(defaultSelectBoxStyle()).apply {
-            setItems(*booleanAsUiString())
-            selected = pref.getBoolean(KEY_VSYNC, DEFAULT_VSYNC).toUiString()
-            isDisabled = !Gdx.graphics.supportsDisplayModeChange()
-            addListener(object : ChangeListener()
-            {
-                override fun changed(event: ChangeEvent, actor: Actor)
-                {
-                    val sb = actor as SelectBox<*>
-                    pref.putBoolean(KEY_VSYNC, sb.selected.toString().uiToBoolean()).flush()
-                    setDisplay(false)
-                }
-            })
-        }
-
-        /**
-         * Create the back button for returning to the main screen.
-         */
-        fun createBackButton(): TextButton = TextButton("Back", defaultTextButtonStyle()).apply {
-            addListener(object : ChangeListener()
-            {
-                override fun changed(event: ChangeEvent, actor: Actor)
-                {
-                    GdxCompanion.GAME.screen = MainMenuScreen()
-                }
-            })
-        }
-
         //Table for all of the settings
-        val tblDisplay = Table().apply {
+        val tblDisplay = Table().apply table@{
             //Resolution
-            add(Label("Resolution:", defaultLabelStyle())).padTop(padLarge)
-            add(createDisplaySizeSelection()).padLeft(padLarge).padTop(padLarge).fillX()
+            GdxLabel("Resolution:").apply {
+                addTo(this@table).standardPad(UiDirection.TOP).fillX()
+                setAlignment(Align.right)
+            }
+            DisplaySizeSelection().apply {
+                addTo(this@table).standardPad(UiDirection.TOP, UiDirection.LEFT).fillX()
+            }
             row()
 
             //Display type
-            add(Label("Display Type:", defaultLabelStyle())).padTop(padMedium)
-            add(createDisplayTypeSelection()).padLeft(padLarge).padTop(padMedium).fillX()
+            GdxLabel("Display Type:").apply {
+                addTo(this@table).smallPad(UiDirection.TOP).fillX()
+                setAlignment(Align.right)
+            }
+            DisplayTypeSelection().apply {
+                addTo(this@table).standardPad(UiDirection.LEFT).smallPad(UiDirection.TOP).fillX()
+            }
             row()
 
             //VSync
-            add(Label("VSync:", defaultLabelStyle())).padTop(padMedium)
-            add(createVSyncSelection()).padLeft(padLarge).padTop(padMedium).fillX()
+            GdxLabel("VSync:").apply {
+                addTo(this@table).smallPad(UiDirection.TOP).fillX()
+                setAlignment(Align.right)
+            }
+            VSyncSelection().apply {
+                addTo(this@table).standardPad(UiDirection.LEFT).smallPad(UiDirection.TOP).fillX()
+            }
             row()
         }
 
-        val tblRoot = Table().apply {
+        val tblRoot = GdxTable().apply table@{
             setFillParent(true)
             top()
-            pad(padLarge)
+            standardPad()
 
             //Title
-            add(Label("Display", LabelStyle(defaultTextButtonStyle().font, Color.WHITE)))
+            GdxLabel("Display").apply {
+                style = defaultLabelStyle().apply {
+                    fontColor = Color.WHITE
+                }
+                addTo(this@table)
+            }
             row()
 
             //Settings
@@ -316,7 +239,9 @@ class SettingsScreen : GdxScreen()
             row()
 
             //Back button
-            add(createBackButton()).minWidth(width).minHeight(height).bottom()
+            BackButton().apply {
+                addTo(this@table).standardMinSize().bottom()
+            }
 
             if (isDebug()) debugAll()
         }

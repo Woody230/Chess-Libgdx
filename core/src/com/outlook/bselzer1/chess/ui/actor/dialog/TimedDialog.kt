@@ -6,19 +6,19 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog
 import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.outlook.bselzer1.chess.ui.gdx.actor.GdxDialog
 import kotlin.properties.Delegates
 
 /**
  * The dialog for displaying messages for at least [duration] seconds.
  */
-open class TimedDialog(title: String = "", message: String = "", private val duration: Long = 2) : GdxGameDialog(title)
+open class TimedDialog(title: String = "", message: String = "", private val duration: Long = 2) : GdxDialog(title)
 {
     init
     {
         text(message)
         touchable = Touchable.disabled
         isMovable = false
-        isModal = false
     }
 
     /**
@@ -42,11 +42,6 @@ open class TimedDialog(title: String = "", message: String = "", private val dur
     {
         (contentTable.getChild(0) as Label).setText(message)
         return this
-    }
-
-    override fun show(stage: Stage?): Dialog
-    {
-        return show(stage, null)
     }
 
     override fun show(stage: Stage?, action: Action?): Dialog

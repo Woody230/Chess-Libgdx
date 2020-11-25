@@ -14,7 +14,6 @@ class PromotePieceDialog(piece: Piece<*>) : AwaitResultDialog<PieceName>("Promot
     init
     {
         isMovable = false
-        isModal = false
 
         text("Select the piece to promote to.")
 

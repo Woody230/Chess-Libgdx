@@ -2,8 +2,8 @@ package com.outlook.bselzer1.chess.ui.gdx
 
 import com.badlogic.gdx.Game
 import com.badlogic.gdx.Screen
-import com.outlook.bselzer1.chess.ui.screen.MainMenuScreen
-import com.outlook.bselzer1.chess.ui.screen.SettingsScreen
+import com.outlook.bselzer1.chess.ui.screen.main.MainMenuScreen
+import com.outlook.bselzer1.chess.ui.screen.settings.SettingsScreen
 
 /**
  * The game.

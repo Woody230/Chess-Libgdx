@@ -77,11 +77,8 @@ abstract class BoardActor(protected val board: Board) : Actor()
             val camera = GdxCompanion.CAMERA
             val vector = camera.position
 
-            //Center the dialog horizontally.
-            //Don't put the dialog over the current player's pieces by putting it at the top if it is the bottom player's turn, otherwise at the bottom.
-            val y = if (board.turnColor == board.topColor) vector.y - camera.viewportHeight / 2 + .1f * camera.viewportHeight
-            else vector.y + camera.viewportHeight / 2 - .1f * camera.viewportHeight
-            setPosition(vector.x - width / 2, y)
+            //Put dialog near the top left corner of the screen.
+            setPosition(vector.x - camera.viewportWidth / 2, vector.y + camera.viewportHeight / 2)
 
             //Draw the dialog
             super.draw(batch, parentAlpha)

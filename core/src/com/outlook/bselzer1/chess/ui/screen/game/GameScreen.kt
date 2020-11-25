@@ -1,20 +1,21 @@
-package com.outlook.bselzer1.chess.ui.screen
+package com.outlook.bselzer1.chess.ui.screen.game
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputMultiplexer
-import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.outlook.bselzer1.chess.game.board.Board
 import com.outlook.bselzer1.chess.game.board.BoardName
-import com.outlook.bselzer1.chess.game.piece.PlayerColor
-import com.outlook.bselzer1.chess.sharedfunctions.extension.*
+import com.outlook.bselzer1.chess.sharedfunctions.extension.applyContinuousRendering
+import com.outlook.bselzer1.chess.sharedfunctions.extension.centerOn
+import com.outlook.bselzer1.chess.sharedfunctions.extension.containsPoint
+import com.outlook.bselzer1.chess.sharedfunctions.extension.worldCursorPosition
 import com.outlook.bselzer1.chess.ui.actor.board.BoardActor
-import com.outlook.bselzer1.chess.ui.actor.dialog.GdxGameDialog
 import com.outlook.bselzer1.chess.ui.gdx.GdxCompanion
 import com.outlook.bselzer1.chess.ui.gdx.GdxScreen
+import com.outlook.bselzer1.chess.ui.screen.settings.SettingsScreen
 import com.outlook.bselzer1.chess.ui.sharedfunctions.CameraGestureListener
 
 /**
@@ -28,18 +29,22 @@ class GameScreen(boardName: BoardName) : GdxScreen()
     private val cameraGestureListener: CameraGestureListener = CameraGestureListener()
 
     /**
+     * The game board actor.
+     */
+    private val boardActor: BoardActor
+
+    /**
      * The game board.
      */
     private val board: Board = boardName.createBoard().apply {
         initializePieces()
         startWithPlayer(topColor)
-        resolution = resolution()
+        resolution = { victor ->
+            //Do not allow pieces to be moved.
+            GdxCompanion.STAGE.actors.forEach { actor -> actor.apply { touchable = Touchable.disabled } }
+            VictoryDialog(victor).show()
+        }
     }
-
-    /**
-     * The game board actor.
-     */
-    private val boardActor: BoardActor
 
     init
     {
@@ -75,39 +80,6 @@ class GameScreen(boardName: BoardName) : GdxScreen()
     {
         super.resize(width, height)
         GdxCompanion.CAMERA.centerOn(boardActor)
-    }
-
-    /**
-     * Display the victor in a dialog.
-     */
-    private fun resolution(): (PlayerColor) -> Unit
-    {
-        return { victor ->
-            //Do not allow pieces to be moved.
-            GdxCompanion.STAGE.actors.forEach { actor -> actor.apply { touchable = Touchable.disabled } }
-
-            object : GdxGameDialog("Game Ended")
-            {
-                init
-                {
-                    isMovable = false
-                    isModal = false
-                }
-
-                override fun draw(batch: Batch?, parentAlpha: Float)
-                {
-                    centerOnCamera()
-                    super.draw(batch, parentAlpha)
-                }
-
-                override fun result(`object`: Any?)
-                {
-                    GdxCompanion.GAME.screen = MainMenuScreen()
-                }
-            }.text("${victor.toDisplayableString()} wins!")
-                    .button("Back")
-                    .show(GdxCompanion.STAGE)
-        }
     }
 
     /**

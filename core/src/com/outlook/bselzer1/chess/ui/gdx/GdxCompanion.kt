@@ -15,7 +15,7 @@ import com.outlook.bselzer1.chess.sharedfunctions.extension.buttonFontSize
 import com.outlook.bselzer1.chess.sharedfunctions.extension.generateFont
 import com.outlook.bselzer1.chess.sharedfunctions.extension.labelFontSize
 import com.outlook.bselzer1.chess.ui.actor.piece.PieceActor
-import com.outlook.bselzer1.chess.ui.screen.SettingsScreen
+import com.outlook.bselzer1.chess.ui.screen.settings.SettingsScreen
 import ktx.async.KtxAsync
 
 /**
@@ -65,7 +65,7 @@ object GdxCompanion
     /**
      * The root for the current screen.
      */
-    lateinit var STAGE: Stage
+    var STAGE: Stage = Stage(VIEWPORT, BATCH)
         private set
 
     /**
@@ -76,6 +76,8 @@ object GdxCompanion
         CAMERA = OrthographicCamera()
         VIEWPORT = viewport
         VIEWPORT.camera = CAMERA
+
+        STAGE.dispose()
         STAGE = Stage(VIEWPORT, BATCH)
         setupSkin()
     }
@@ -97,6 +99,12 @@ object GdxCompanion
      */
     internal fun setupSkin()
     {
+        //TODO better measure to determine not to setup
+        if (labelFontSize() <= 0)
+        {
+            return
+        }
+
         SKIN.get(Label.LabelStyle::class.java).apply {
             font = generateFont(labelFontSize())
         }
