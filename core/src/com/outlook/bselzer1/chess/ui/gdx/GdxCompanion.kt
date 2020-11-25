@@ -13,7 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.utils.Disposable
 import com.badlogic.gdx.utils.viewport.Viewport
 import com.outlook.bselzer1.chess.sharedfunctions.extension.generateStandardFont
-import com.outlook.bselzer1.chess.sharedfunctions.gdx.GdxFontCompanion
 import com.outlook.bselzer1.chess.ui.actor.piece.PieceActor
 import com.outlook.bselzer1.chess.ui.gdx.actor.GdxLabel
 import com.outlook.bselzer1.chess.ui.gdx.actor.GdxSelectBox

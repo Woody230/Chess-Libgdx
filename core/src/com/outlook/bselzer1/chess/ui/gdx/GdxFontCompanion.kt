@@ -1,4 +1,4 @@
-package com.outlook.bselzer1.chess.sharedfunctions.gdx
+package com.outlook.bselzer1.chess.ui.gdx
 
 import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx

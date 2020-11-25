@@ -1,7 +1,7 @@
 package com.outlook.bselzer1.chess.sharedfunctions.extension
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.outlook.bselzer1.chess.sharedfunctions.gdx.GdxFontCompanion
+import com.outlook.bselzer1.chess.ui.gdx.GdxFontCompanion
 import com.outlook.bselzer1.chess.ui.sharedfunctions.UiStandard
 
 /**

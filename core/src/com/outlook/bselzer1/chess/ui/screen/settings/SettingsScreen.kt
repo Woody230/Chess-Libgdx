@@ -227,7 +227,7 @@ class SettingsScreen : GdxScreen()
 
             //Title
             GdxLabel("Display").apply {
-                style = defaultLabelStyle().apply {
+                style = GdxCompanion.SKIN.getLabelStyle().apply {
                     fontColor = Color.WHITE
                 }
                 addTo(this@table)

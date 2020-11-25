@@ -2,7 +2,6 @@ package com.outlook.bselzer1.chess.sharedfunctions.extension
 
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.ui.List
-import com.outlook.bselzer1.chess.ui.gdx.GdxCompanion
 
 /**
  * Get a copy of the label style.
@@ -49,36 +48,4 @@ fun Skin.getWindowStyle(): Window.WindowStyle
     return Window.WindowStyle(style).apply {
         this.titleFont = style.titleFont.copy()
     }
-}
-
-/**
- * Get the default label style.
- */
-fun defaultLabelStyle(): Label.LabelStyle
-{
-    return GdxCompanion.SKIN.getLabelStyle()
-}
-
-/**
- * Get the default text button style.
- */
-fun defaultTextButtonStyle(): TextButton.TextButtonStyle
-{
-    return GdxCompanion.SKIN.getTextButtonStyle()
-}
-
-/**
- * Get the default select box style.
- */
-fun defaultSelectBoxStyle(): SelectBox.SelectBoxStyle
-{
-    return GdxCompanion.SKIN.getSelectBoxStyle()
-}
-
-/**
- * Get the default window style.
- */
-fun defaultWindowStyle(): Window.WindowStyle
-{
-    return GdxCompanion.SKIN.getWindowStyle()
 }
