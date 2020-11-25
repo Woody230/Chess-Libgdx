@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
+import com.outlook.bselzer1.chess.ui.sharedfunctions.UiStandard
 
 /**
  * The default font size (from default.fnt file)
@@ -22,7 +23,9 @@ const val DEFAULT_FONT_SIZE = 17
 fun generateFont(size: Int): BitmapFont
 {
     val font: BitmapFont
-    if (Gdx.app.type == Application.ApplicationType.WebGL)
+
+    //Cannot generate a free type font for WebGL or for a non-positive size.
+    if (Gdx.app.type == Application.ApplicationType.WebGL || size <= 0)
     {
         font = BitmapFont(Gdx.files.internal("default/default.fnt"))
         return font
@@ -54,4 +57,12 @@ fun BitmapFont.copy(): BitmapFont
     val size = this.data.name.split('-').lastOrNull()?.toIntOrNull()
             ?: return generateFont(DEFAULT_FONT_SIZE)
     return generateFont(size)
+}
+
+/**
+ * Generate a standard font.
+ */
+fun UiStandard.generateStandardFont(): BitmapFont
+{
+    return generateFont(this.getStandardFontSize())
 }

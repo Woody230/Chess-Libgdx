@@ -1,6 +1,7 @@
 package com.outlook.bselzer1.chess.ui.gdx.actor
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.outlook.bselzer1.chess.ui.sharedfunctions.UiStandard
 
 /**
  * Standard table.
@@ -12,14 +13,14 @@ open class GdxTable : Table(), IGdxActor<GdxTable>
         init()
     }
 
-    override fun getStandardWidth(): Float
+    companion object
     {
-        return width
+        val UI_STANDARD = UiStandard()
     }
 
-    override fun getStandardHeight(): Float
+    override fun getUiStandard(): UiStandard
     {
-        return height
+        return UI_STANDARD
     }
 
     /**
@@ -27,7 +28,7 @@ open class GdxTable : Table(), IGdxActor<GdxTable>
      */
     fun standardPad(): GdxTable
     {
-        pad(getStandardPadding())
+        pad(UI_STANDARD.getStandardPadding())
         return this
     }
 }

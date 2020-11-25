@@ -11,10 +11,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.utils.viewport.Viewport
-import com.outlook.bselzer1.chess.sharedfunctions.extension.buttonFontSize
-import com.outlook.bselzer1.chess.sharedfunctions.extension.generateFont
-import com.outlook.bselzer1.chess.sharedfunctions.extension.labelFontSize
+import com.outlook.bselzer1.chess.sharedfunctions.extension.generateStandardFont
 import com.outlook.bselzer1.chess.ui.actor.piece.PieceActor
+import com.outlook.bselzer1.chess.ui.gdx.actor.GdxLabel
+import com.outlook.bselzer1.chess.ui.gdx.actor.GdxSelectBox
+import com.outlook.bselzer1.chess.ui.gdx.actor.GdxTextButton
 import com.outlook.bselzer1.chess.ui.screen.settings.SettingsScreen
 import ktx.async.KtxAsync
 
@@ -99,21 +100,15 @@ object GdxCompanion
      */
     internal fun setupSkin()
     {
-        //TODO better measure to determine not to setup
-        if (labelFontSize() <= 0)
-        {
-            return
-        }
-
         SKIN.get(Label.LabelStyle::class.java).apply {
-            font = generateFont(labelFontSize())
+            font = GdxLabel.UI_STANDARD.generateStandardFont()
         }
         SKIN.get(TextButton.TextButtonStyle::class.java).apply {
-            font = generateFont(buttonFontSize())
+            font = GdxTextButton.UI_STANDARD.generateStandardFont()
         }
         SKIN.get(SelectBox.SelectBoxStyle::class.java).apply {
-            font = generateFont(labelFontSize())
-            listStyle.font = generateFont(labelFontSize())
+            font = GdxSelectBox.UI_STANDARD.generateStandardFont()
+            listStyle.font = GdxSelectBox.UI_STANDARD.generateStandardFont()
         }
     }
 }

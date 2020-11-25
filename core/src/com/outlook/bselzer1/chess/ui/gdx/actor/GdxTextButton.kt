@@ -2,6 +2,8 @@ package com.outlook.bselzer1.chess.ui.gdx.actor
 
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.outlook.bselzer1.chess.ui.gdx.GdxCompanion
+import com.outlook.bselzer1.chess.ui.sharedfunctions.UiStandard
+import kotlin.math.roundToInt
 
 /**
  * Standard text button.
@@ -13,13 +15,18 @@ open class GdxTextButton(message: String) : TextButton(message, GdxCompanion.SKI
         init()
     }
 
-    override fun getStandardWidth(): Float
+    companion object
     {
-        return GdxCompanion.CAMERA.viewportWidth / 7
+        val UI_STANDARD = object : UiStandard()
+        {
+            override fun getStandardWidth(): Float = GdxCompanion.CAMERA.viewportWidth / 7
+            override fun getStandardHeight(): Float = GdxCompanion.CAMERA.viewportHeight / 10
+            override fun getStandardFontSize(): Int = (getStandardHeight() / 2).roundToInt()
+        }
     }
 
-    override fun getStandardHeight(): Float
+    override fun getUiStandard(): UiStandard
     {
-        return GdxCompanion.CAMERA.viewportHeight / 10
+        return UI_STANDARD
     }
 }

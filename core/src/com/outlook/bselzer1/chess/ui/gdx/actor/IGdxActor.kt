@@ -3,9 +3,9 @@ package com.outlook.bselzer1.chess.ui.gdx.actor
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Cell
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.outlook.bselzer1.chess.ui.gdx.GdxCompanion
 import com.outlook.bselzer1.chess.ui.sharedfunctions.UiDirection
 import com.outlook.bselzer1.chess.ui.sharedfunctions.UiDirection.*
+import com.outlook.bselzer1.chess.ui.sharedfunctions.UiStandard
 
 /**
  * Interface for standardizing existing actors.
@@ -13,38 +13,18 @@ import com.outlook.bselzer1.chess.ui.sharedfunctions.UiDirection.*
 interface IGdxActor<A : Actor>
 {
     /**
+     * Gets the ui standard.
+     */
+    fun getUiStandard(): UiStandard
+
+    /**
      * Initialization.
      */
     fun A.init()
     {
-        width = getStandardWidth()
-        height = getStandardHeight()
-    }
-
-    /**
-     * Get the standard width.
-     */
-    fun getStandardWidth(): Float
-
-    /**
-     * Get the standard height.
-     */
-    fun getStandardHeight(): Float
-
-    /**
-     * Get the standard padding.
-     */
-    fun getStandardPadding(): Float
-    {
-        return GdxCompanion.CAMERA.viewportHeight / 25
-    }
-
-    /**
-     * Get the small padding.
-     */
-    fun getSmallPadding(): Float
-    {
-        return getStandardPadding() / 2
+        val uiStandard = getUiStandard()
+        width = uiStandard.getStandardWidth()
+        height = uiStandard.getStandardHeight()
     }
 
     /**
@@ -65,7 +45,8 @@ interface IGdxActor<A : Actor>
      */
     fun Cell<A>.standardMinSize(): Cell<A>
     {
-        return minSize(getStandardWidth(), getStandardHeight())
+        val uiStandard = getUiStandard()
+        return minSize(uiStandard.getStandardWidth(), uiStandard.getStandardHeight())
     }
 
     /**
@@ -73,7 +54,7 @@ interface IGdxActor<A : Actor>
      */
     fun Cell<A>.standardPad(): Cell<A>
     {
-        return pad(getStandardPadding())
+        return pad(getUiStandard().getStandardPadding())
     }
 
     /**
@@ -81,7 +62,7 @@ interface IGdxActor<A : Actor>
      */
     fun Cell<A>.standardPad(vararg directions: UiDirection): Cell<A>
     {
-        return pad(getStandardPadding(), *directions)
+        return pad(getUiStandard().getStandardPadding(), *directions)
     }
 
     /**
@@ -89,7 +70,7 @@ interface IGdxActor<A : Actor>
      */
     fun Cell<A>.smallPad(vararg directions: UiDirection): Cell<A>
     {
-        return pad(getSmallPadding(), *directions)
+        return pad(getUiStandard().getSmallPadding(), *directions)
     }
 
     /**
