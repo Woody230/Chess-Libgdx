@@ -10,8 +10,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
+import com.badlogic.gdx.utils.Disposable
 import com.badlogic.gdx.utils.viewport.Viewport
 import com.outlook.bselzer1.chess.sharedfunctions.extension.generateStandardFont
+import com.outlook.bselzer1.chess.sharedfunctions.gdx.GdxFontCompanion
 import com.outlook.bselzer1.chess.ui.actor.piece.PieceActor
 import com.outlook.bselzer1.chess.ui.gdx.actor.GdxLabel
 import com.outlook.bselzer1.chess.ui.gdx.actor.GdxSelectBox
@@ -22,7 +24,7 @@ import ktx.async.KtxAsync
 /**
  * Gdx game companion used for storing commonly used ui related elements in order to avoid passing them throughout the codebase.
  */
-object GdxCompanion
+object GdxCompanion : Disposable
 {
     init
     {
@@ -86,13 +88,14 @@ object GdxCompanion
     /**
      * Dispose of common resources.
      */
-    fun dispose()
+    override fun dispose()
     {
         BATCH.dispose()
         SKIN.dispose()
         ATLAS.dispose()
         STAGE.dispose()
         PieceActor.dispose()
+        GdxFontCompanion.dispose()
     }
 
     /**

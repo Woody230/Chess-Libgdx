@@ -33,9 +33,9 @@ fun Skin.getSelectBoxStyle(): SelectBox.SelectBoxStyle
 {
     val style = this.get(SelectBox.SelectBoxStyle::class.java)
     return SelectBox.SelectBoxStyle(style).apply {
-        this.font = generateFont(DEFAULT_FONT_SIZE)
+        this.font = style.font.copy()
         this.listStyle = List.ListStyle(style.listStyle).apply {
-            this.font = style.font.copy()
+            this.font = style.listStyle.font.copy()
         }
     }
 }
