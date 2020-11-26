@@ -7,14 +7,20 @@ import kotlin.math.roundToInt
 /**
  * Standard label.
  */
-open class GdxLabel(message: String) : Label(message, GdxCompanion.SKIN.labelStyle)
+open class GdxLabel(message: String) : Label(message, GdxCompanion.SKIN.labelStyle), IGdxActor<Label.LabelStyle>
 {
     companion object
     {
+        val LARGE_FONT_SIZE: Int
+            get()
+            {
+                return (GdxCompanion.CAMERA.viewportHeight / 18).roundToInt()
+            }
+
         val STANDARD_FONT_SIZE: Int
             get()
             {
-                return (GdxCompanion.CAMERA.viewportHeight / 36).roundToInt()
+                return (GdxCompanion.CAMERA.viewportHeight / 28).roundToInt()
             }
     }
 }

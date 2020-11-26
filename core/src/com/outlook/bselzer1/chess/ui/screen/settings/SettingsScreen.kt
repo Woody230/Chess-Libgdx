@@ -4,9 +4,11 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.utils.Align
 import com.outlook.bselzer1.chess.sharedfunctions.extension.*
 import com.outlook.bselzer1.chess.ui.gdx.GdxCompanion
+import com.outlook.bselzer1.chess.ui.gdx.GdxFontCompanion.generateFont
 import com.outlook.bselzer1.chess.ui.gdx.GdxScreen
 import com.outlook.bselzer1.chess.ui.gdx.actor.GdxLabel
 import com.outlook.bselzer1.chess.ui.gdx.actor.GdxTable
+import com.outlook.bselzer1.chess.ui.gdx.actor.applyStyle
 import com.outlook.bselzer1.chess.ui.sharedfunctions.DisplayType
 import com.outlook.bselzer1.chess.ui.sharedfunctions.UiDirection
 
@@ -22,7 +24,7 @@ class SettingsScreen : GdxScreen()
         /**
          * Whether or not the application is in debug mode.
          */
-        private const val IS_DEBUG = true
+        private const val IS_DEBUG = false
 
         /**
          * Method used to avoid lint warnings.
@@ -224,7 +226,9 @@ class SettingsScreen : GdxScreen()
             standardPad()
 
             //Title
-            GdxLabel("Display").apply {
+            GdxLabel("Display").applyStyle {
+                font = GdxLabel.LARGE_FONT_SIZE.generateFont()
+            }.apply {
                 addTo(this@table)
             }
             row()

@@ -164,7 +164,7 @@ abstract class BoardActor(protected val board: Board) : Actor()
                 {
                     draggedActor = null
                     invalidEventDialog.setTitle("No valid moves.")
-                            .setMessage("This piece does not have a valid move.")
+                            .setMessage("${piece.name.toDisplayableString()} has no valid moves.")
                             .show(stage)
                     return
                 }

@@ -10,7 +10,7 @@ import kotlin.math.roundToInt
 /**
  * Standard text button.
  */
-open class GdxTextButton(message: String) : TextButton(message, GdxCompanion.SKIN.textButtonStyle)
+open class GdxTextButton(message: String) : TextButton(message, GdxCompanion.SKIN.textButtonStyle), IGdxActor<TextButton.TextButtonStyle>
 {
     companion object
     {
@@ -18,6 +18,12 @@ open class GdxTextButton(message: String) : TextButton(message, GdxCompanion.SKI
             get()
             {
                 return (GdxCompanion.CAMERA.viewportHeight / 20).roundToInt()
+            }
+
+        val SMALL_FONT_SIZE: Int
+            get()
+            {
+                return (GdxCompanion.CAMERA.viewportHeight / 26).roundToInt()
             }
     }
 
@@ -42,5 +48,10 @@ open class GdxTextButton(message: String) : TextButton(message, GdxCompanion.SKI
             EXACT -> 0f
             EXPANDED -> GdxCompanion.CAMERA.viewportHeight * 0.05f
         }
+    }
+
+    override fun setStyle(style: TextButtonStyle)
+    {
+        setStyle(style as ButtonStyle)
     }
 }

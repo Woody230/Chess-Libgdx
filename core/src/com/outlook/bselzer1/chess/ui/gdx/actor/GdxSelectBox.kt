@@ -7,7 +7,7 @@ import kotlin.math.roundToInt
 /**
  * Standard select box.
  */
-open class GdxSelectBox<Value> : SelectBox<Value>(GdxCompanion.SKIN.selectBoxStyle)
+open class GdxSelectBox<Value> : SelectBox<Value>(GdxCompanion.SKIN.selectBoxStyle), IGdxActor<SelectBox.SelectBoxStyle>
 {
     companion object
     {

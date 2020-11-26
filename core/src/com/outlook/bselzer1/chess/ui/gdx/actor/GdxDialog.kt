@@ -1,12 +1,14 @@
 package com.outlook.bselzer1.chess.ui.gdx.actor
 
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog
+import com.badlogic.gdx.scenes.scene2d.ui.Window
 import com.outlook.bselzer1.chess.ui.gdx.GdxCompanion
+import com.outlook.bselzer1.chess.ui.gdx.GdxFontCompanion.generateFont
 import com.outlook.bselzer1.chess.ui.sharedfunctions.BackgroundAppearance
 
 //TODO resizable title
 
-open class GdxDialog(title: String) : Dialog(title, GdxCompanion.SKIN.windowStyle)
+open class GdxDialog(title: String) : Dialog(title, GdxCompanion.SKIN.windowStyle), IGdxActor<Window.WindowStyle>
 {
     /**
      * Show the dialog using the companion stage.
@@ -17,14 +19,16 @@ open class GdxDialog(title: String) : Dialog(title, GdxCompanion.SKIN.windowStyl
         return this
     }
 
-    override fun text(text: String?): Dialog
+    final override fun text(text: String?): Dialog
     {
         return super.text(GdxLabel(text ?: ""))
     }
 
-    override fun button(text: String?, `object`: Any?): Dialog
+    final override fun button(text: String?, `object`: Any?): Dialog
     {
-        val button = GdxTextButton(text ?: "").apply {
+        val button = GdxTextButton(text ?: "").applyStyle {
+            font = GdxTextButton.SMALL_FONT_SIZE.generateFont()
+        }.apply {
             appearance = BackgroundAppearance.EXACT
         }
 

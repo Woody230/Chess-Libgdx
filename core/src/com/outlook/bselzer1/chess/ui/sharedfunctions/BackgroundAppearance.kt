@@ -5,6 +5,13 @@ package com.outlook.bselzer1.chess.ui.sharedfunctions
  */
 enum class BackgroundAppearance
 {
+    /**
+     * The minimum size to cover the text.
+     */
     EXACT,
+
+    /**
+     * Add padding to the minimum size.
+     */
     EXPANDED
 }
