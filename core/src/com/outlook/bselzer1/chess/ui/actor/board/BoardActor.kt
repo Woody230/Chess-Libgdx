@@ -105,6 +105,11 @@ abstract class BoardActor(protected val board: Board) : Actor()
     }
 
     /**
+     * Resize based on a new application width and height.
+     */
+    abstract fun resize(width: Int, height: Int)
+
+    /**
      * Get the graphical position of the piece actor based on its board [position].
      */
     abstract fun getPieceActorUiPosition(position: Position): Vector2

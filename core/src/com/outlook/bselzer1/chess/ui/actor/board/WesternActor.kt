@@ -45,9 +45,7 @@ class WesternActor(westernBoard: WesternBoard) : BoardActor(westernBoard)
 
     init
     {
-        //Create the length to fit based on the smaller side.
-        val minSide = min(GdxCompanion.CAMERA.viewportWidth, GdxCompanion.CAMERA.viewportHeight)
-        setSize(minSide, minSide)
+        resize(GdxCompanion.CAMERA.viewportWidth.toInt(), GdxCompanion.CAMERA.viewportHeight.toInt())
     }
 
     override fun draw(batch: Batch, parentAlpha: Float)
@@ -72,6 +70,16 @@ class WesternActor(westernBoard: WesternBoard) : BoardActor(westernBoard)
 
         //Render the pieces on top.
         super.draw(batch, parentAlpha)
+    }
+
+    /**
+     * Make sure that the board fits within the window.
+     */
+    override fun resize(width: Int, height: Int)
+    {
+        //Create the length to fit based on the smaller side.
+        val minSide = min(width, height).toFloat()
+        setSize(minSide, minSide)
     }
 
     override fun getPieceActorUiPosition(position: Position): Vector2

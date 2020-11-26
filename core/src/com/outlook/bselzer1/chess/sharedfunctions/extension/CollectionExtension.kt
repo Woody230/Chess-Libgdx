@@ -43,3 +43,8 @@ fun <T : Copy<T>> Collection<T>.mutableCopy(): MutableCollection<T>
     this.forEach { element -> collection.add(element.copy()) }
     return collection
 }
+
+fun <T> Iterable<T>.merge(it: Iterable<T>): Iterable<T>
+{
+    return this.zip(it) { item1, item2 -> listOf(item1, item2) }.flatten()
+}

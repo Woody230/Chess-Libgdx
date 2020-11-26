@@ -6,18 +6,14 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.utils.Disposable
-import kotlin.math.roundToInt
+import com.badlogic.gdx.utils.GdxRuntimeException
+import com.outlook.bselzer3.libgdxlogger.LibgdxLogger
 
 /**
  * The companion for creating fonts.
  */
 object GdxFontCompanion : Disposable
 {
-    /**
-     * The default font size (from default.fnt file)
-     */
-    private const val DEFAULT_FONT_SIZE = 17
-
     /**
      * The default font location.
      */
@@ -27,6 +23,11 @@ object GdxFontCompanion : Disposable
      * The main font location.
      */
     private const val FONT_LOCATION = "font/arial.ttf"
+
+    /**
+     * The default font.
+     */
+    private val DEFAULT_FONT = BitmapFont(Gdx.files.internal(DEFAULT_FONT_LOCATION))
 
     /**
      * The free type font generator.
@@ -53,12 +54,12 @@ object GdxFontCompanion : Disposable
      * @param size size of the font in pixels
      * @return a font
      */
-    fun generateFont(size: Int = DEFAULT_FONT_SIZE): BitmapFont
+    fun generateFont(size: Int): BitmapFont
     {
         //Cannot generate a free type font for WebGL or for a non-positive size.
-        if (Gdx.app.type == Application.ApplicationType.WebGL || size <= 0)
+        if (Gdx.app.type == Application.ApplicationType.WebGL)
         {
-            return BitmapFont(Gdx.files.internal(DEFAULT_FONT_LOCATION))
+            return DEFAULT_FONT
         }
 
         var font = FONTS[size]
@@ -72,7 +73,16 @@ object GdxFontCompanion : Disposable
         parameter.magFilter = Texture.TextureFilter.Linear
         parameter.size = size
 
-        font = GENERATOR.generateFont(parameter)
+        try
+        {
+            font = GENERATOR.generateFont(parameter)
+        }
+        catch (e: GdxRuntimeException)
+        {
+            LibgdxLogger.error("Unable to create a font with size $size: $e")
+            return DEFAULT_FONT
+        }
+
         FONTS[size] = font
         return font
     }
@@ -82,6 +92,6 @@ object GdxFontCompanion : Disposable
      */
     fun Number.generateFont(): BitmapFont
     {
-        return generateFont(this.toDouble().roundToInt())
+        return generateFont(this.toInt())
     }
 }

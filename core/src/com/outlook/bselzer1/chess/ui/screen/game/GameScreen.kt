@@ -78,6 +78,7 @@ class GameScreen(boardName: BoardName) : GdxScreen()
     override fun resize(width: Int, height: Int)
     {
         super.resize(width, height)
+        boardActor.resize(width, height)
         GdxCompanion.CAMERA.centerOn(boardActor)
     }
 
