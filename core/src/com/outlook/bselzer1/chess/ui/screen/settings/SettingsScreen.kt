@@ -1,8 +1,6 @@
 package com.outlook.bselzer1.chess.ui.screen.settings
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import com.outlook.bselzer1.chess.sharedfunctions.extension.*
 import com.outlook.bselzer1.chess.ui.gdx.GdxCompanion
@@ -188,7 +186,7 @@ class SettingsScreen : GdxScreen()
     private fun setupLayout()
     {
         //Table for all of the settings
-        val tblDisplay = Table().apply table@{
+        val tblDisplay = GdxTable().apply table@{
             //Resolution
             GdxLabel("Resolution:").apply {
                 addTo(this@table).standardPad(UiDirection.TOP).fillX()
@@ -227,9 +225,6 @@ class SettingsScreen : GdxScreen()
 
             //Title
             GdxLabel("Display").apply {
-                style = GdxCompanion.SKIN.getLabelStyle().apply {
-                    fontColor = Color.WHITE
-                }
                 addTo(this@table)
             }
             row()
@@ -240,7 +235,7 @@ class SettingsScreen : GdxScreen()
 
             //Back button
             BackButton().apply {
-                addTo(this@table).standardMinSize().bottom()
+                addTo(this@table).bottom()
             }
 
             if (isDebug()) debugAll()

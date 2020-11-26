@@ -12,6 +12,6 @@ open class GdxViewport : ScreenViewport()
         super.update(screenWidth, screenHeight, centerCamera)
 
         //Sizes are based on viewport size so the skin must be reinitialized.
-        GdxCompanion.setupSkin()
+        GdxCompanion.SKIN.setup()
     }
 }

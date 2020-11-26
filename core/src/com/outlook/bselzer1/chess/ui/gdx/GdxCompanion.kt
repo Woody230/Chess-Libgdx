@@ -6,17 +6,10 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.utils.Disposable
 import com.badlogic.gdx.utils.viewport.Viewport
-import com.outlook.bselzer1.chess.sharedfunctions.extension.generateStandardFont
 import com.outlook.bselzer1.chess.ui.actor.piece.PieceActor
-import com.outlook.bselzer1.chess.ui.gdx.actor.GdxLabel
-import com.outlook.bselzer1.chess.ui.gdx.actor.GdxSelectBox
-import com.outlook.bselzer1.chess.ui.gdx.actor.GdxTextButton
 import com.outlook.bselzer1.chess.ui.screen.settings.SettingsScreen
 import ktx.async.KtxAsync
 
@@ -50,7 +43,7 @@ object GdxCompanion : Disposable
     /**
      * The default skin.
      */
-    val SKIN: Skin = Skin(Gdx.files.internal("default/uiskin.json"), ATLAS)
+    val SKIN: GdxSkin = GdxSkin(Skin(Gdx.files.internal("default/uiskin.json"), ATLAS))
 
     /**
      * The camera for the current screen.
@@ -81,7 +74,7 @@ object GdxCompanion : Disposable
 
         STAGE.dispose()
         STAGE = Stage(VIEWPORT, BATCH)
-        setupSkin()
+        SKIN.setup()
     }
 
     /**
@@ -95,23 +88,6 @@ object GdxCompanion : Disposable
         STAGE.dispose()
         PieceActor.dispose()
         GdxFontCompanion.dispose()
-    }
-
-    /**
-     * Initialize the default skin.
-     */
-    internal fun setupSkin()
-    {
-        SKIN.get(Label.LabelStyle::class.java).apply {
-            font = GdxLabel.UI_STANDARD.generateStandardFont()
-        }
-        SKIN.get(TextButton.TextButtonStyle::class.java).apply {
-            font = GdxTextButton.UI_STANDARD.generateStandardFont()
-        }
-        SKIN.get(SelectBox.SelectBoxStyle::class.java).apply {
-            font = GdxSelectBox.UI_STANDARD.generateStandardFont()
-            listStyle.font = GdxSelectBox.UI_STANDARD.generateStandardFont()
-        }
     }
 }
 

@@ -1,6 +1,8 @@
 package com.outlook.bselzer1.chess.sharedfunctions.extension
 
 import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.ui.Cell
+import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.outlook.bselzer1.chess.ui.gdx.GdxCompanion
 
 /**
@@ -35,4 +37,33 @@ fun Actor.centerOnCamera()
 fun Actor.centerOn(x: Number, y: Number)
 {
     this.setPosition(x.toFloat() - (this.width / 2), y.toFloat() - (this.height / 2))
+}
+
+/**
+ * Get the standard padding.
+ */
+fun Actor.getStandardPadding(): Float
+{
+    return GdxCompanion.CAMERA.viewportHeight / 25
+}
+
+/**
+ * Get the small padding.
+ */
+fun Actor.getSmallPadding(): Float
+{
+    return getStandardPadding() / 2
+}
+
+/**
+ * Add the actor to the table.
+ */
+fun Actor.addTo(table: Table): Cell<Actor>
+{
+    if (table == this)
+    {
+        throw IllegalArgumentException("Trying to add a table to itself. Replace argument with the root table.")
+    }
+
+    return table.add(this)
 }

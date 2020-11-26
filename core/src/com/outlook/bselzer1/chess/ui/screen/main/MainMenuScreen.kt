@@ -2,11 +2,14 @@ package com.outlook.bselzer1.chess.ui.screen.main
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.outlook.bselzer1.chess.sharedfunctions.extension.addTo
 import com.outlook.bselzer1.chess.sharedfunctions.extension.applyContinuousRendering
+import com.outlook.bselzer1.chess.sharedfunctions.extension.standardPad
 import com.outlook.bselzer1.chess.ui.actor.button.ExitButton
 import com.outlook.bselzer1.chess.ui.actor.button.SettingsButton
 import com.outlook.bselzer1.chess.ui.gdx.GdxCompanion
 import com.outlook.bselzer1.chess.ui.gdx.GdxScreen
+import com.outlook.bselzer1.chess.ui.gdx.actor.GdxTable
 import com.outlook.bselzer1.chess.ui.gdx.actor.GdxTextButton
 import com.outlook.bselzer1.chess.ui.screen.settings.SettingsScreen
 import com.outlook.bselzer1.chess.ui.sharedfunctions.UiDirection
@@ -47,7 +50,7 @@ class MainMenuScreen : GdxScreen()
      */
     private fun setupLayout()
     {
-        val tblRoot = Table().apply {
+        val tblRoot = GdxTable().apply {
             debug = SettingsScreen.isDebug()
             setFillParent(true)
 
@@ -75,6 +78,6 @@ class MainMenuScreen : GdxScreen()
      */
     private fun GdxTextButton.applyTo(table: Table)
     {
-        addTo(table).standardMinSize().standardPad(UiDirection.TOP, UiDirection.BOTTOM)
+        addTo(table).fillX().standardPad(UiDirection.TOP, UiDirection.BOTTOM)
     }
 }

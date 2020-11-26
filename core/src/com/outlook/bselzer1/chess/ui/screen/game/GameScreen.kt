@@ -54,7 +54,6 @@ class GameScreen(boardName: BoardName) : GdxScreen()
         boardActor = BoardActor.createActor(board).apply {
             debug = SettingsScreen.isDebug()
         }
-
     }
 
     override fun show()
@@ -87,6 +86,7 @@ class GameScreen(boardName: BoardName) : GdxScreen()
      */
     private fun handleInput()
     {
+        //TODO separate class
         //TODO key bindings
         //TODO sensitivity
 

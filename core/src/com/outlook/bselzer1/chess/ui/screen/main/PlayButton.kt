@@ -1,11 +1,13 @@
 package com.outlook.bselzer1.chess.ui.screen.main
 
 import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.outlook.bselzer1.chess.game.ai.Difficulty
+import com.outlook.bselzer1.chess.sharedfunctions.extension.addTo
+import com.outlook.bselzer1.chess.sharedfunctions.extension.standardPad
 import com.outlook.bselzer1.chess.ui.actor.button.CancelButton
 import com.outlook.bselzer1.chess.ui.gdx.actor.GdxDialog
+import com.outlook.bselzer1.chess.ui.gdx.actor.GdxTable
 import com.outlook.bselzer1.chess.ui.gdx.actor.GdxTextButton
 import com.outlook.bselzer1.chess.ui.screen.settings.SettingsScreen
 
@@ -25,14 +27,14 @@ class PlayButton : GdxTextButton("Play")
                 }
 
                 //Add difficulty buttons on first row then center the cancel button on the next row.
-                val tblRootDialog = Table().apply {
+                val tblRootDialog = GdxTable().apply {
                     debug = SettingsScreen.isDebug()
                     Difficulty.values().forEach { difficulty ->
-                        DifficultyButton(difficulty).addTo(this).standardMinSize().standardPad()
+                        DifficultyButton(difficulty).addTo(this).fillX().standardPad()
                     }
                     row()
                     add()
-                    CancelButton(dialog).addTo(this).standardMinSize().standardPad()
+                    CancelButton(dialog).addTo(this).fillX().standardPad()
                 }
 
                 dialog.add(tblRootDialog)

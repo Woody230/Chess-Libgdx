@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.utils.Disposable
+import kotlin.math.roundToInt
 
 /**
  * The companion for creating fonts.
@@ -18,9 +19,19 @@ object GdxFontCompanion : Disposable
     private const val DEFAULT_FONT_SIZE = 17
 
     /**
+     * The default font location.
+     */
+    private const val DEFAULT_FONT_LOCATION = "default/default.fnt"
+
+    /**
+     * The main font location.
+     */
+    private const val FONT_LOCATION = "font/arial.ttf"
+
+    /**
      * The free type font generator.
      */
-    private val GENERATOR = FreeTypeFontGenerator(Gdx.files.internal("font/arial.ttf"))
+    private val GENERATOR = FreeTypeFontGenerator(Gdx.files.internal(FONT_LOCATION))
 
     /**
      * The cached fonts.
@@ -47,7 +58,7 @@ object GdxFontCompanion : Disposable
         //Cannot generate a free type font for WebGL or for a non-positive size.
         if (Gdx.app.type == Application.ApplicationType.WebGL || size <= 0)
         {
-            return BitmapFont(Gdx.files.internal("default/default.fnt"))
+            return BitmapFont(Gdx.files.internal(DEFAULT_FONT_LOCATION))
         }
 
         var font = FONTS[size]
@@ -62,6 +73,15 @@ object GdxFontCompanion : Disposable
         parameter.size = size
 
         font = GENERATOR.generateFont(parameter)
+        FONTS[size] = font
         return font
+    }
+
+    /**
+     * Generate a font from a given size.
+     */
+    fun Number.generateFont(): BitmapFont
+    {
+        return generateFont(this.toDouble().roundToInt())
     }
 }
