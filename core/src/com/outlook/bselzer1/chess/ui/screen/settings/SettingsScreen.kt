@@ -1,6 +1,7 @@
 package com.outlook.bselzer1.chess.ui.screen.settings
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.utils.Align
 import com.outlook.bselzer1.chess.sharedfunctions.extension.*
 import com.outlook.bselzer1.chess.ui.gdx.GdxCompanion
@@ -9,6 +10,7 @@ import com.outlook.bselzer1.chess.ui.gdx.GdxScreen
 import com.outlook.bselzer1.chess.ui.gdx.actor.GdxLabel
 import com.outlook.bselzer1.chess.ui.gdx.actor.GdxTable
 import com.outlook.bselzer1.chess.ui.gdx.actor.applyStyle
+import com.outlook.bselzer1.chess.ui.screen.main.MainMenuScreen
 import com.outlook.bselzer1.chess.ui.sharedfunctions.DisplayType
 import com.outlook.bselzer1.chess.ui.sharedfunctions.UiDirection
 
@@ -176,6 +178,14 @@ class SettingsScreen : GdxScreen()
         super.resize(width, height)
         GdxCompanion.STAGE.clear()
         setupLayout()
+    }
+
+    override fun handleInput()
+    {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
+        {
+            GdxCompanion.GAME.screen = MainMenuScreen()
+        }
     }
 
     /**

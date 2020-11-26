@@ -28,7 +28,14 @@ abstract class GdxScreen : Screen
             act()
             draw()
         }
+
+        handleInput()
     }
+
+    /**
+     * Handle player input.
+     */
+    abstract fun handleInput()
 
     /**
      * Resize the viewport and recreate the layout of the stage.

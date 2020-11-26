@@ -2,14 +2,10 @@ package com.outlook.bselzer1.chess.ui.screen.main
 
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
-import com.outlook.bselzer1.chess.game.ai.Difficulty
-import com.outlook.bselzer1.chess.sharedfunctions.extension.addTo
-import com.outlook.bselzer1.chess.sharedfunctions.extension.standardPad
-import com.outlook.bselzer1.chess.ui.actor.button.CancelButton
-import com.outlook.bselzer1.chess.ui.gdx.actor.GdxDialog
-import com.outlook.bselzer1.chess.ui.gdx.actor.GdxTable
+import com.outlook.bselzer1.chess.game.board.BoardName
+import com.outlook.bselzer1.chess.ui.gdx.GdxCompanion
 import com.outlook.bselzer1.chess.ui.gdx.actor.GdxTextButton
-import com.outlook.bselzer1.chess.ui.screen.settings.SettingsScreen
+import com.outlook.bselzer1.chess.ui.screen.game.GameScreen
 
 /**
  * The button for starting a game.
@@ -22,6 +18,10 @@ class PlayButton : GdxTextButton("Play")
         {
             override fun changed(event: ChangeEvent, actor: Actor)
             {
+                GdxCompanion.GAME.screen = GameScreen(BoardName.WESTERN)
+
+                //TODO ai difficulty selection
+                /*
                 val dialog = GdxDialog("AI Difficulty").apply {
                     isMovable = false
                 }
@@ -38,7 +38,7 @@ class PlayButton : GdxTextButton("Play")
                 }
 
                 dialog.add(tblRootDialog)
-                dialog.show(stage)
+                dialog.show(stage)*/
             }
         })
     }

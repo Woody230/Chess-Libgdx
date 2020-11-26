@@ -1,6 +1,7 @@
 package com.outlook.bselzer1.chess.ui.screen.main
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.outlook.bselzer1.chess.sharedfunctions.extension.addTo
 import com.outlook.bselzer1.chess.sharedfunctions.extension.applyContinuousRendering
@@ -71,6 +72,14 @@ class MainMenuScreen : GdxScreen()
         }
 
         GdxCompanion.STAGE.addActor(tblRoot)
+    }
+
+    override fun handleInput()
+    {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
+        {
+            Gdx.app.exit()
+        }
     }
 
     /**

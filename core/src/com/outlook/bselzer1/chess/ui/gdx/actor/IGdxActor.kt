@@ -1,5 +1,6 @@
 package com.outlook.bselzer1.chess.ui.gdx.actor
 
+//TODO make GdxActor abstraction class over existing actors
 /**
  * Marker interface for Gdx actors.
  */

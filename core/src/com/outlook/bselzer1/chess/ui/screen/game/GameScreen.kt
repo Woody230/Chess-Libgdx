@@ -15,6 +15,7 @@ import com.outlook.bselzer1.chess.sharedfunctions.extension.worldCursorPosition
 import com.outlook.bselzer1.chess.ui.actor.board.BoardActor
 import com.outlook.bselzer1.chess.ui.gdx.GdxCompanion
 import com.outlook.bselzer1.chess.ui.gdx.GdxScreen
+import com.outlook.bselzer1.chess.ui.screen.main.MainMenuScreen
 import com.outlook.bselzer1.chess.ui.screen.settings.SettingsScreen
 import com.outlook.bselzer1.chess.ui.sharedfunctions.CameraGestureListener
 
@@ -69,12 +70,6 @@ class GameScreen(boardName: BoardName) : GdxScreen()
         GdxCompanion.CAMERA.centerOn(boardActor)
     }
 
-    override fun render(delta: Float)
-    {
-        super.render(delta)
-        handleInput()
-    }
-
     override fun resize(width: Int, height: Int)
     {
         super.resize(width, height)
@@ -85,7 +80,21 @@ class GameScreen(boardName: BoardName) : GdxScreen()
     /**
      * Handle player input.
      */
-    private fun handleInput()
+    override fun handleInput()
+    {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
+        {
+            GdxCompanion.GAME.screen = MainMenuScreen()
+        }
+
+        //TODO reenable camera?
+        //handleCameraInput()
+    }
+
+    /**
+     * Handle player input.
+     */
+    private fun handleCameraInput()
     {
         //TODO separate class
         //TODO key bindings
