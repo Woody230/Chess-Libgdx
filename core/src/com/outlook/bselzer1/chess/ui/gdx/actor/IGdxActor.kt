@@ -5,6 +5,9 @@ package com.outlook.bselzer1.chess.ui.gdx.actor
  */
 interface IGdxActor<Style> : IStyle<Style>
 
+/**
+ * Modify the associated style and apply the changes to the actor by setting it.
+ */
 inline fun <Actor : IGdxActor<Style>, Style> Actor.applyStyle(block: Style.() -> Unit): Actor
 {
     val style = getStyle().apply(block)

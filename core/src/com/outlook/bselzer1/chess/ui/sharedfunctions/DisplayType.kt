@@ -2,6 +2,7 @@ package com.outlook.bselzer1.chess.ui.sharedfunctions
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.utils.Array
+import com.outlook.bselzer1.chess.sharedfunctions.extension.isUndecorated
 import com.outlook.bselzer1.chess.sharedfunctions.extension.toDisplayableString
 
 /**
@@ -9,7 +10,7 @@ import com.outlook.bselzer1.chess.sharedfunctions.extension.toDisplayableString
  */
 enum class DisplayType
 {
-    FULLSCREEN,
+    //TODO exclusive fullscreen
     BORDERLESS_FULLSCREEN,
     WINDOWED;
 
@@ -45,7 +46,7 @@ enum class DisplayType
                 else
                 {
                     displayTypes = Array()
-                    displayTypes.add(FULLSCREEN)
+                    displayTypes.add(BORDERLESS_FULLSCREEN)
                 }
 
                 return displayTypes
@@ -57,17 +58,12 @@ enum class DisplayType
         val CURRENT_DISPLAY_TYPE: DisplayType
             get()
             {
-                return if (Gdx.graphics.isFullscreen) BORDERLESS_FULLSCREEN else WINDOWED
-
-                //TODO borderless fullscreen
-                /*
-                if(Gdx.graphics.isFullscreen())
+                return when
                 {
-                    return FULLSCREEN;
+                    Gdx.graphics.isFullscreen -> BORDERLESS_FULLSCREEN
+                    Gdx.graphics.isUndecorated() -> BORDERLESS_FULLSCREEN
+                    else -> WINDOWED
                 }
-
-                return UserInterface.isUndecorated() ? BORDERLESS_FULLSCREEN : WINDOWED;
-                */
             }
     }
 }

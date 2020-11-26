@@ -107,7 +107,6 @@ class SettingsScreen : GdxScreen()
             val vsync = pref.getBoolean(KEY_VSYNC, DEFAULT_VSYNC)
             graphics.setVSync(vsync)
 
-            val displayMode = graphics.displayMode
             val typeName = pref.getString(KEY_DISPLAY_TYPE, DEFAULT_DISPLAY_TYPE.toString())
 
             var type: DisplayType? = DisplayType.getDisplayType(typeName)
@@ -125,7 +124,7 @@ class SettingsScreen : GdxScreen()
                     graphics.setWindowedMode(width, height)
                 }
 
-                DisplayType.FULLSCREEN, DisplayType.BORDERLESS_FULLSCREEN -> graphics.setFullscreenMode(displayMode)
+                DisplayType.BORDERLESS_FULLSCREEN -> graphics.setFullscreenMode(graphics.displayMode)
             }
 
             if (centerWindow)
