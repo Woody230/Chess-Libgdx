@@ -2,7 +2,7 @@ package com.outlook.bselzer1.chess.ui.gdx.actor
 
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog
 import com.outlook.bselzer1.chess.ui.gdx.GdxCompanion
-import com.outlook.bselzer1.chess.ui.gdx.GdxFontCompanion
+import com.outlook.bselzer1.chess.ui.sharedfunctions.BackgroundAppearance
 
 //TODO resizable title
 
@@ -19,15 +19,15 @@ open class GdxDialog(title: String) : Dialog(title, GdxCompanion.SKIN.windowStyl
 
     override fun text(text: String?): Dialog
     {
-        val label = GdxLabel(text ?: "").apply {
-            style.font = GdxFontCompanion.generateFont(GdxLabel.STANDARD_FONT_SIZE / 2)
-        }
-
-        return super.text(label)
+        return super.text(GdxLabel(text ?: ""))
     }
 
     override fun button(text: String?, `object`: Any?): Dialog
     {
-        return super.button(GdxTextButton(text ?: ""), `object`)
+        val button = GdxTextButton(text ?: "").apply {
+            appearance = BackgroundAppearance.EXACT
+        }
+
+        return super.button(button, `object`)
     }
 }
